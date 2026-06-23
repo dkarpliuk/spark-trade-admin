@@ -16,7 +16,9 @@ var builder = FunctionsApplication.CreateBuilder(args);
 
 builder.ConfigureFunctionsWebApplication();
 builder.UseMiddleware<InvocationLoggingMiddleware>();
-builder.UseMiddleware<AdminAuthorizationMiddleware>();
+
+if (!builder.Environment.IsDevelopment())
+    builder.UseMiddleware<AdminAuthorizationMiddleware>();
 
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
