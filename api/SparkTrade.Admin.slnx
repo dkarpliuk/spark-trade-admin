@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="SparkTrade.Admin.Data/SparkTrade.Admin.Data.csproj" Id="864d42d8-f775-4731-a3c2-c2492334c06a" />
   <Project Path="SparkTrade.Admin/SparkTrade.Admin.csproj" />
 </Solution>
