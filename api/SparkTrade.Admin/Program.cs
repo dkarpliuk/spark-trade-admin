@@ -46,5 +46,5 @@ static void AddLogging(IServiceCollection services, string connectionString)
         .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
         .MinimumLevel.Override("Azure", LogEventLevel.Error)
         .WriteTo.Console()
-        .WriteTo.AzureTableStorage(connectionString, StorageNames.AdminLogsTable));
+        .WriteTo.AzureTableStorage(connectionString, StorageNames.AdminLogsTable, "InvocationId"));
 }
