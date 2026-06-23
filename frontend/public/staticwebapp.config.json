@@ -1,11 +1,7 @@
 {
-  "auth": {
-    "rolesSource": "/api/GetRoles"
-  },
   "routes": [
-    { "route": "/api/GetRoles", "allowedRoles": ["anonymous"] },
-    { "route": "/api/*", "allowedRoles": ["admin"] },
-    { "route": "/*", "allowedRoles": ["admin"] }
+    { "route": "/api/*", "allowedRoles": ["authenticated"] },
+    { "route": "/*", "allowedRoles": ["authenticated"] }
   ],
   "responseOverrides": {
     "401": {
