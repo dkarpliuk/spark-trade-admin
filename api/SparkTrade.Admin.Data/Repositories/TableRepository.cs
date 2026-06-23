@@ -1,10 +1,9 @@
 using Azure.Data.Tables;
-using SparkTrade.Admin.Data.Entities;
 
 namespace SparkTrade.Admin.Data.Repositories;
 
 public class TableRepository<T>(string connectionString, string tableName) : ITableRepository<T>
-    where T : TableEntityBase
+    where T : class, ITableEntity
 {
     private const int MaxSteps = 10;
 
@@ -46,6 +45,6 @@ public class TableRepository<T>(string connectionString, string tableName) : ITa
         return await _client
             .QueryAsync<TableEntity>(filter, select: ["PartitionKey"], cancellationToken: ct)
             .Select(e => e.PartitionKey)
-            .MaxAsync(ct);
+            .MaxAsync(cancellationToken: ct);
     }
 }

@@ -1,6 +1,9 @@
+using Cyberwyvern.Azure.Logging;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using Serilog.Events;
 using SparkTrade.Admin.Configuration;
 using SparkTrade.Admin.Data.Entities;
 using SparkTrade.Admin.Data.Repositories;
@@ -9,8 +12,11 @@ using SparkTrade.Admin.Services;
 var builder = FunctionsApplication.CreateBuilder(args);
 
 builder.ConfigureFunctionsWebApplication();
+builder.UseMiddleware<InvocationLoggingMiddleware>();
 
 var pipelineStorageConnection = builder.Configuration["PipelineStorage"]!;
+
+AddLogging(builder.Services, pipelineStorageConnection);
 
 builder.Services.AddSingleton<IPipelineHistoryService>(_ => new PipelineHistoryService(
     new TableRepository<ChartQuantAudit>(pipelineStorageConnection, StorageNames.ChartQuantAuditTable),
@@ -19,3 +25,13 @@ builder.Services.AddSingleton<IPipelineHistoryService>(_ => new PipelineHistoryS
     new TableRepository<LogEntity>(pipelineStorageConnection, StorageNames.SparkTradeLogsTable)));
 
 builder.Build().Run();
+
+static void AddLogging(IServiceCollection services, string connectionString)
+{
+    services.AddSerilog(lc => lc
+        .MinimumLevel.Information()
+        .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
+        .MinimumLevel.Override("Azure", LogEventLevel.Error)
+        .WriteTo.Console()
+        .WriteTo.AzureTableStorage(connectionString, StorageNames.AdminLogsTable));
+}

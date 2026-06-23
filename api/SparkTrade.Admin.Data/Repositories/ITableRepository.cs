@@ -1,8 +1,8 @@
-using SparkTrade.Admin.Data.Entities;
+using Azure.Data.Tables;
 
 namespace SparkTrade.Admin.Data.Repositories;
 
-public interface ITableRepository<T> where T : TableEntityBase
+public interface ITableRepository<T> where T : class, ITableEntity
 {
     Task<IReadOnlyList<T>> GetByPartitionAsync(
         string partitionKey,

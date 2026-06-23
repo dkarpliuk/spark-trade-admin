@@ -1,6 +1,6 @@
 namespace SparkTrade.Admin.Data.Entities;
 
-public class SparkTradeAudit : TableEntityBase
+public class SparkTradeAudit : CorrelatedTableEntity
 {
     public string Symbol { get; set; } = "";
     public string Interval { get; set; } = "";
