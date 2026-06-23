@@ -1,4 +1,3 @@
-using Cyberwyvern.Azure.Logging;
 using SparkTrade.Admin.Data.Entities;
 
 namespace SparkTrade.Admin.Contracts;
