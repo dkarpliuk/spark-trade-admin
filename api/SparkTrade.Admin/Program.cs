@@ -16,7 +16,9 @@ var builder = FunctionsApplication.CreateBuilder(args);
 
 builder.ConfigureFunctionsWebApplication();
 builder.UseMiddleware<InvocationLoggingMiddleware>();
-builder.UseMiddleware<AdminAuthorizationMiddleware>();
+
+if (!builder.Environment.IsDevelopment())
+    builder.UseMiddleware<AdminAuthorizationMiddleware>();
 
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
@@ -44,5 +46,5 @@ static void AddLogging(IServiceCollection services, string connectionString)
         .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
         .MinimumLevel.Override("Azure", LogEventLevel.Error)
         .WriteTo.Console()
-        .WriteTo.AzureTableStorage(connectionString, StorageNames.AdminLogsTable));
+        .WriteTo.AzureTableStorage(connectionString, StorageNames.AdminLogsTable, "InvocationId"));
 }
