@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using Cyberwyvern.Azure.Logging;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,8 @@ var pipelineStorageConnection = builder.Configuration["PipelineStorage"]!;
 AddLogging(builder.Services, pipelineStorageConnection);
 
 builder.Services.AddOptions<AppConfig>().Bind(builder.Configuration);
+
+builder.Services.AddSingleton(_ => new BlobContainerClient(pipelineStorageConnection, StorageNames.AnalysisImagesContainer));
 
 builder.Services.AddSingleton<IPipelineHistoryService>(_ => new PipelineHistoryService(
     new TableRepository<ChartQuantAudit>(pipelineStorageConnection, StorageNames.ChartQuantAuditTable),

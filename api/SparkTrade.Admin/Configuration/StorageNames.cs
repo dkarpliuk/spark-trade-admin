@@ -8,4 +8,6 @@ public static class StorageNames
     public const string SparkTradeLogsTable = "SparkTradeLogs";
 
     public const string AdminLogsTable = "SparkTradeAdminLogs";
+
+    public const string AnalysisImagesContainer = "analysis-images";
 }
