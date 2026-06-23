@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SparkTrade.Admin": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7106",
+      "launchBrowser": false
+    }
+  }
+}
