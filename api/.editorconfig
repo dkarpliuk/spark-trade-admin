@@ -1,0 +1,10 @@
+root = true
+
+[*.cs]
+dotnet_style_qualification_for_field    = false:silent
+dotnet_style_qualification_for_property = false:silent
+dotnet_style_qualification_for_method   = false:silent
+dotnet_style_qualification_for_event    = false:silent
+
+# CA1873: boxing in logging calls is negligible here — no hot-path/high-frequency logging in this app
+dotnet_diagnostic.CA1873.severity = none
