@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
@@ -11,11 +10,6 @@ public class GetRolesFunction(IOptions<AppConfig> appConfig)
 {
     private const string AdminRole = "admin";
 
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
-
     private readonly AppConfig _appConfig = appConfig.Value;
 
     [Function("GetRoles")]
@@ -23,7 +17,7 @@ public class GetRolesFunction(IOptions<AppConfig> appConfig)
         [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetRoles")] HttpRequest req,
         CancellationToken ct)
     {
-        var principal = await req.ReadFromJsonAsync<ClientPrincipal>(JsonOptions, ct);
+        var principal = await req.ReadFromJsonAsync<ClientPrincipal>(ct);
         var roles = new List<string>();
 
         if (principal is { IdentityProvider: "github" } &&
