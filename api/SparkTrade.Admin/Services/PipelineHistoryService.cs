@@ -1,5 +1,4 @@
 using System.Globalization;
-using Cyberwyvern.Azure.Logging;
 using SparkTrade.Admin.Contracts;
 using SparkTrade.Admin.Data.Entities;
 using SparkTrade.Admin.Data.Repositories;

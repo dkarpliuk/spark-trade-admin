@@ -18,6 +18,8 @@ var pipelineStorageConnection = builder.Configuration["PipelineStorage"]!;
 
 AddLogging(builder.Services, pipelineStorageConnection);
 
+builder.Services.AddOptions<AppConfig>().Bind(builder.Configuration);
+
 builder.Services.AddSingleton<IPipelineHistoryService>(_ => new PipelineHistoryService(
     new TableRepository<ChartQuantAudit>(pipelineStorageConnection, StorageNames.ChartQuantAuditTable),
     new TableRepository<LogEntity>(pipelineStorageConnection, StorageNames.ChartQuantLogsTable),

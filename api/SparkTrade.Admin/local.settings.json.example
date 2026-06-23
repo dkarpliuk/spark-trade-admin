@@ -3,6 +3,7 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    "PipelineStorage": "<connection string to the shared ChartQuant/SparkTrade storage account>"
+    "PipelineStorage": "<connection string to the shared ChartQuant/SparkTrade storage account>",
+    "AdminGitHubUsername": "<your GitHub username>"
   }
 }
