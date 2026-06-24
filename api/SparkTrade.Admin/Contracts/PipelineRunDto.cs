@@ -1,11 +1,35 @@
-using SparkTrade.Admin.Data.Entities;
-
 namespace SparkTrade.Admin.Contracts;
+
+public enum PipelineStatus
+{
+    Unknown,
+    Success,
+    Fail,
+}
 
 public class PipelineRunDto
 {
-    public ChartQuantAudit? ChartQuantAudit { get; set; }
-    public SparkTradeAudit? SparkTradeAudit { get; set; }
-    public IReadOnlyList<LogEntity> ChartQuantLogs { get; set; } = [];
-    public IReadOnlyList<LogEntity> SparkTradeLogs { get; set; } = [];
+    public PipelineStatus Status
+    {
+        get
+        {
+            if (Logs.Count == 0) return PipelineStatus.Unknown;
+            if (Logs.Any(x => x.Level is "Error" or "Fatal")) return PipelineStatus.Fail;
+            return PipelineStatus.Success;
+        }
+    }
+
+    public string? Symbol { get; set; }
+    public string? Interval { get; set; }
+    public DateTimeOffset? ChartTimestamp { get; set; }
+
+    public string? BlobName { get; set; }
+    public string? Signal { get; set; }
+    public string? Decision { get; set; }
+
+    public DateTimeOffset? Start => Logs.Count > 0 ? Logs[^1].Timestamp : null;
+    public DateTimeOffset? End => Logs.Count > 0 ? Logs[0].Timestamp : null;
+    public long? DurationMs => Start is { } start && End is { } end ? (long)Math.Round((end - start).TotalMilliseconds) : null;
+
+    public IReadOnlyList<PipelineLogDto> Logs { get; set; } = [];
 }

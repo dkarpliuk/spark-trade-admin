@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Azure.Storage.Blobs;
 using Cyberwyvern.Azure.Logging;
 using Microsoft.Azure.Functions.Worker.Builder;
@@ -20,8 +19,8 @@ builder.UseMiddleware<InvocationLoggingMiddleware>();
 if (!builder.Environment.IsDevelopment())
     builder.UseMiddleware<AdminAuthorizationMiddleware>();
 
-builder.Services.ConfigureHttpJsonOptions(options =>
-    options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ConfigureAppDefaults());
+builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options => options.JsonSerializerOptions.ConfigureAppDefaults());
 
 var pipelineStorageConnection = builder.Configuration["PipelineStorage"]!;
 
