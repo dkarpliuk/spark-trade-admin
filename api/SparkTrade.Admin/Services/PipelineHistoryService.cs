@@ -45,12 +45,24 @@ public class PipelineHistoryService(
         allKeys.UnionWith(sparkTradeLogs.Select(x => x.Key));
         allKeys.UnionWith(sparkTradeAudits.Select(x => x.Key));
 
-        return [.. allKeys.Select(correlationId => new PipelineRunDto
+        return [.. allKeys.Select(correlationId =>
         {
-            ChartQuantLogs = [.. chartQuantLogs[correlationId]],
-            ChartQuantAudit = chartQuantAudits[correlationId].FirstOrDefault(),
-            SparkTradeLogs = [.. sparkTradeLogs[correlationId]],
-            SparkTradeAudit = sparkTradeAudits[correlationId].FirstOrDefault()
+            var chartQuantAudit = chartQuantAudits[correlationId].FirstOrDefault();
+            var sparkTradeAudit = sparkTradeAudits[correlationId].FirstOrDefault();
+
+            return new PipelineRunDto
+            {
+                Symbol = chartQuantAudit?.Symbol ?? sparkTradeAudit?.Symbol,
+                Interval = chartQuantAudit?.Interval ?? sparkTradeAudit?.Interval,
+                ChartTimestamp = chartQuantAudit?.ChartTimestamp ?? sparkTradeAudit?.ChartTimestamp,
+                BlobName = chartQuantAudit?.BlobName,
+                Signal = chartQuantAudit?.Signal,
+                Decision = sparkTradeAudit?.DecisionResult,
+                Logs = [.. chartQuantLogs[correlationId]
+                    .Select(x => x.ToLogDto("ChartQuant"))
+                    .Concat(sparkTradeLogs[correlationId].Select(x => x.ToLogDto("SparkTrade")))
+                    .OrderBy(x => x.Id)]
+            };
         })];
     }
 
