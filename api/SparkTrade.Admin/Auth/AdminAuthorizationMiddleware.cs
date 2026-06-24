@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Middleware;
 using Microsoft.Extensions.Options;
@@ -8,13 +9,8 @@ using SparkTrade.Admin.Configuration;
 
 namespace SparkTrade.Admin.Auth;
 
-public class AdminAuthorizationMiddleware(IOptions<AppConfig> appConfig) : IFunctionsWorkerMiddleware
+public class AdminAuthorizationMiddleware(IOptions<AppConfig> appConfig, IOptions<JsonOptions> jsonOptions) : IFunctionsWorkerMiddleware
 {
-    private static readonly JsonSerializerOptions ClientPrincipalJsonOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
-
     public async Task Invoke(FunctionContext context, FunctionExecutionDelegate next)
     {
         var httpContext = context.GetHttpContext();
@@ -35,13 +31,13 @@ public class AdminAuthorizationMiddleware(IOptions<AppConfig> appConfig) : IFunc
         await next(context);
     }
 
-    private static ClientPrincipal? ReadClientPrincipal(HttpRequest request)
+    private ClientPrincipal? ReadClientPrincipal(HttpRequest request)
     {
         if (!request.Headers.TryGetValue("x-ms-client-principal", out var header) || string.IsNullOrEmpty(header))
             return null;
 
         var json = Encoding.UTF8.GetString(Convert.FromBase64String(header!));
-        return JsonSerializer.Deserialize<ClientPrincipal>(json, ClientPrincipalJsonOptions);
+        return JsonSerializer.Deserialize<ClientPrincipal>(json, jsonOptions.Value.SerializerOptions);
     }
 
     private record ClientPrincipal(
