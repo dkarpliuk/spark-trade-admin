@@ -1,0 +1,867 @@
+[
+    {
+        "status": "success",
+        "symbol": "BTCUSDT",
+        "interval": "5m",
+        "chartTimestamp": "2026-06-17T23:57:07+00:00",
+        "blobName": "eba7a1d7a68a4bffa723d5c9796de3ae.png",
+        "signal": "{\"createdAt\":\"2026-06-17T23:57:37.2012328+00:00\",\"correlation_id\":\"d0a6c496-6ac7-49a7-b2b9-31b97a8deee0\",\"symbol\":\"BTCUSDT\",\"interval\":\"5m\",\"chart_timestamp\":\"2026-06-17T23:57:07+00:00\",\"forecast_horizon_candles\":12,\"price_at_analysis\":64413.5,\"trend\":\"down\",\"levels\":[{\"from\":64350,\"to\":64500},{\"from\":63800,\"to\":63950},{\"from\":65900,\"to\":66200}],\"outcome\":{\"higher\":{\"probability\":0.2167},\"lower\":{\"probability\":0.6106},\"sideways\":{\"probability\":0.1727}}}",
+        "decision": "{\"createdAt\":\"2026-06-17T23:57:46.2436223+00:00\",\"result_type\":\"order_plan\",\"symbol\":\"BTCUSDT\",\"side\":\"sell\",\"entry_order_type\":\"limit_ioc\",\"entry_price\":64438.00,\"quantity\":0.248,\"take_profit_price\":64124.80,\"stop_loss_price\":64463.00,\"leverage\":51}",
+        "start": "2026-06-17T23:57:10.1859906+00:00",
+        "end": "2026-06-17T23:57:46.292595+00:00",
+        "durationMs": 36107,
+        "logs": [
+            {
+                "id": "2516205601337091937_4dbea122",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:46.292595+00:00",
+                "level": "Information",
+                "message": "Signal processing complete for \"BTCUSDT\" \"5m\"",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601337377674_762ba13d",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:46.2636111+00:00",
+                "level": "Information",
+                "message": "[DRY RUN] Order not sent to exchange: \"{\\\"result_type\\\":\\\"order_plan\\\",\\\"symbol\\\":\\\"BTCUSDT\\\",\\\"side\\\":\\\"sell\\\",\\\"entry_order_type\\\":\\\"limit_ioc\\\",\\\"entry_price\\\":64438.00,\\\"quantity\\\":0.248,\\\"take_profit_price\\\":64124.80,\\\"stop_loss_price\\\":64463.00,\\\"leverage\\\":51}\"",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601337589289_a40eefc3",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:46.2436223+00:00",
+                "level": "Information",
+                "message": "Placing order for \"BTCUSDT\": Sell qty=0.248",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601351988449_6fbf8a49",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.802775+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 160.9334ms - 200",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601352372432_1d52e35b",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.7637984+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 176.9652ms - 200",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601352397357_a01b77e3",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.7647213+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 82.9139ms - 200",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601352480721_1af2caa4",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.7661529+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 93.8169ms - 200",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601352538448_5e1c8adb",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.7600678+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 126.397ms - 200",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601352623524_6b19f58b",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.7591596+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 81.9686ms - 200",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601352624329_aff1becf",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.7547262+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 42.0211ms - 200",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601352650448_03f39c66",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.7477311+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 60.1371ms - 200",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601352666910_6bc7078c",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.7568014+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 119.5946ms - 200",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601352673162_8bf8887c",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.7387363+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 93.3222ms - 200",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601353139778_244e256e",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.6907635+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/balance?*\"",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601353226260_2a9137df",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.6817675+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/balance\"",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601353325381_6677bb4e",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.6707745+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/commissionRate?*\"",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601353418592_f761c53e",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.6637789+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/commissionRate?*\"",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601353515951_06b84944",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.6517845+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/exchangeInfo?*\"",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601353597811_2ba0667d",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.6447885+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/exchangeInfo?*\"",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601353707029_6ff02a77",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.6327962+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/positionRisk?*\"",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601353800286_b286e789",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.623801+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/positionRisk?*\"",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601353947480_f5f3a2a3",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.6098095+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/klines?*\"",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601354073001_2ec171af",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.5978186+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/klines?*\"",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601354310381_fefccbb5",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:44.5738291+00:00",
+                "level": "Information",
+                "message": "Received signal for \"BTCUSDT\" \"5m\"",
+                "invocationId": "5c25fdfd-4859-4281-b556-559bd472c719",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601427414113_14e1ecb1",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:57:37.2651958+00:00",
+                "level": "Information",
+                "message": "Queued analysis result for \"BTCUSDT\" \"5m\"",
+                "invocationId": "42f4bb60-2184-4ea1-9177-28f02358066a",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601428056828_a5355970",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:57:37.2012328+00:00",
+                "level": "Information",
+                "message": "AI Client: \"CompleteAsync\": in=1559 out=91 latency=2252ms model=\"claude-sonnet-4-6\"",
+                "invocationId": "42f4bb60-2184-4ea1-9177-28f02358066a",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601450691540_49097a6a",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:57:34.9375999+00:00",
+                "level": "Information",
+                "message": "AI Client: \"AnalyzeImageAsync\": in=1436 out=554 latency=15556ms model=\"claude-sonnet-4-6\"",
+                "invocationId": "42f4bb60-2184-4ea1-9177-28f02358066a",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601606700547_e8c785c1",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:57:19.3360773+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 2201.9476ms - 200",
+                "invocationId": "42f4bb60-2184-4ea1-9177-28f02358066a",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601606787611_96a8b454",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:57:19.3280819+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 2169.4237ms - 200",
+                "invocationId": "42f4bb60-2184-4ea1-9177-28f02358066a",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601607256458_327270d2",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:19.2798853+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 235.4366ms - 200",
+                "invocationId": "d5782e05-6e92-4880-b79a-41aca60d6e70",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601607554191_f86cb587",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:19.2509027+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 184.898ms - 200",
+                "invocationId": "d5782e05-6e92-4880-b79a-41aca60d6e70",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601607725972_e26991e1",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:19.2358151+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 223.2194ms - 200",
+                "invocationId": "d5782e05-6e92-4880-b79a-41aca60d6e70",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601607788980_eb46ddf6",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:19.2429058+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 143.1606ms - 200",
+                "invocationId": "d5782e05-6e92-4880-b79a-41aca60d6e70",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601607826434_ce067b5b",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:19.2278206+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 160.8793ms - 200",
+                "invocationId": "d5782e05-6e92-4880-b79a-41aca60d6e70",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601607838755_f56b0e83",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:19.2198245+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 180.7936ms - 200",
+                "invocationId": "d5782e05-6e92-4880-b79a-41aca60d6e70",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601609309032_28a516f9",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:19.0729095+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/balance?*\"",
+                "invocationId": "d5782e05-6e92-4880-b79a-41aca60d6e70",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601609402918_2f30b93d",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:19.062915+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/balance\"",
+                "invocationId": "d5782e05-6e92-4880-b79a-41aca60d6e70",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601609525002_9e7980f8",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:19.0509209+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/exchangeInfo?*\"",
+                "invocationId": "d5782e05-6e92-4880-b79a-41aca60d6e70",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601609607727_f44947b3",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:19.0419265+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/exchangeInfo?*\"",
+                "invocationId": "d5782e05-6e92-4880-b79a-41aca60d6e70",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601609762388_892071a7",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:19.0279345+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/positionRisk?*\"",
+                "invocationId": "d5782e05-6e92-4880-b79a-41aca60d6e70",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601609913402_80de4674",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:19.0129431+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/positionRisk?*\"",
+                "invocationId": "d5782e05-6e92-4880-b79a-41aca60d6e70",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601610104297_6ef4c127",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:57:18.9939542+00:00",
+                "level": "Information",
+                "message": "CanTrade check for \"BTCUSDT\" \"5m\"",
+                "invocationId": "d5782e05-6e92-4880-b79a-41aca60d6e70",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601628572375_58cd3fbc",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:57:17.149151+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://sparktrade-dad0huaph8edf2bg.japaneast-01.azurewebsites.net/api/can-trade?*\"",
+                "invocationId": "42f4bb60-2184-4ea1-9177-28f02358066a",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601628667346_22d79520",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:57:17.1401566+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://sparktrade-dad0huaph8edf2bg.japaneast-01.azurewebsites.net/api/can-trade?*\"",
+                "invocationId": "42f4bb60-2184-4ea1-9177-28f02358066a",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601628873166_a394cdbf",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:57:17.1191693+00:00",
+                "level": "Information",
+                "message": "Processing analysis for \"BTCUSDT\" \"5m\"",
+                "invocationId": "42f4bb60-2184-4ea1-9177-28f02358066a",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601697481091_62e1285f",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:57:10.254951+00:00",
+                "level": "Information",
+                "message": "Queued analysis request for \"BTCUSDT\" \"5m\"",
+                "invocationId": "96944584-1650-45d7-8a84-417bc9503b12",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            },
+            {
+                "id": "2516205601698168609_0f9666f1",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:57:10.1859906+00:00",
+                "level": "Information",
+                "message": "Received analysis request for \"BTCUSDT\" \"5m\"",
+                "invocationId": "96944584-1650-45d7-8a84-417bc9503b12",
+                "correlationId": "d0a6c496-6ac7-49a7-b2b9-31b97a8deee0"
+            }
+        ]
+    },
+    {
+        "status": "success",
+        "symbol": "BTCUSDT",
+        "interval": "5m",
+        "chartTimestamp": "2026-06-17T23:54:00+00:00",
+        "blobName": "64f15ba1450e46a386155e69878d6c04.png",
+        "signal": "{\"createdAt\":\"2026-06-17T23:54:24.7335478+00:00\",\"correlation_id\":\"a8ab3657-4bd9-43a0-932b-cc1fb9144b1c\",\"symbol\":\"BTCUSDT\",\"interval\":\"5m\",\"chart_timestamp\":\"2026-06-17T23:54:00+00:00\",\"forecast_horizon_candles\":12,\"price_at_analysis\":64465.6,\"trend\":\"down\",\"levels\":[{\"from\":64400,\"to\":64600},{\"from\":63800,\"to\":64000},{\"from\":65900,\"to\":66200}],\"outcome\":{\"higher\":{\"probability\":0.2647},\"lower\":{\"probability\":0.4706},\"sideways\":{\"probability\":0.2647}}}",
+        "decision": "{\"createdAt\":\"2026-06-17T23:54:36.9095398+00:00\",\"result_type\":\"skip\",\"reason\":\"no forecast type meets its threshold: p_directional=0.47\",\"gate_name\":\"ClassifyForecastType\"}",
+        "start": "2026-06-17T23:54:02.6279615+00:00",
+        "end": "2026-06-17T23:54:36.945519+00:00",
+        "durationMs": 34318,
+        "logs": [
+            {
+                "id": "2516205603230596774_1d30bb24",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:36.945519+00:00",
+                "level": "Information",
+                "message": "Signal processing complete for \"BTCUSDT\" \"5m\"",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603230961560_c5fddf03",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:36.9095398+00:00",
+                "level": "Information",
+                "message": "Signal skipped at gate \"ClassifyForecastType\": \"no forecast type meets its threshold: p_directional=0.47\"",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603244301441_0b52aad7",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.5750692+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 170.0356ms - 200",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603244635069_e4f6ffef",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.5412889+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 102.3022ms - 200",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603244727938_919fbe08",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.5381466+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 109.0345ms - 200",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603244803898_ea556cc1",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.5308181+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 141.1595ms - 200",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603244855967_3945ae36",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.5376224+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 165.26ms - 200",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603244911786_b5792ffd",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.5342919+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 55.2955ms - 200",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603244960065_0361fe78",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.5248124+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 72.0617ms - 200",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603244962815_f7f73849",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.5319647+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 88.0324ms - 200",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603244975811_c89f15f8",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.5088221+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 128.9093ms - 200",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603244976725_1dd84446",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.5148181+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 103.3ms - 200",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603245547446_2c83976b",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.4498558+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/balance?*\"",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603245657777_bbbaa4ca",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.4398603+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/balance\"",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603245746474_dea47647",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.4298656+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/commissionRate?*\"",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603245818197_b503d6e0",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.4228693+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/commissionRate?*\"",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603245922515_0eb4d26a",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.4118752+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/exchangeInfo?*\"",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603246001768_3c2bf9e6",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.4048802+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/exchangeInfo?*\"",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603246119808_c1939798",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.3928858+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/positionRisk?*\"",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603246212542_ec010972",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.3828917+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/positionRisk?*\"",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603246363438_078db4fd",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.3679005+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/klines?*\"",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603246460537_bc02bb54",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.3589045+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/klines?*\"",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603246684420_2491c9a6",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:35.3359178+00:00",
+                "level": "Information",
+                "message": "Received signal for \"BTCUSDT\" \"5m\"",
+                "invocationId": "79a22d7f-03ce-4639-b4ef-6c3f1d97e8b4",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603351438487_1f684f9a",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:54:24.8594772+00:00",
+                "level": "Information",
+                "message": "Queued analysis result for \"BTCUSDT\" \"5m\"",
+                "invocationId": "6ca95028-4069-46f0-84ea-99e72a18fd5d",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603352695210_0fe32d02",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:54:24.7335478+00:00",
+                "level": "Information",
+                "message": "AI Client: \"CompleteAsync\": in=1488 out=91 latency=2484ms model=\"claude-sonnet-4-6\"",
+                "invocationId": "6ca95028-4069-46f0-84ea-99e72a18fd5d",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603377636865_db7b1d3a",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:54:22.2395274+00:00",
+                "level": "Information",
+                "message": "AI Client: \"AnalyzeImageAsync\": in=1436 out=483 latency=13004ms model=\"claude-sonnet-4-6\"",
+                "invocationId": "6ca95028-4069-46f0-84ea-99e72a18fd5d",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603508164794_5a8e8bb8",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:54:09.185941+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 1931.27ms - 200",
+                "invocationId": "6ca95028-4069-46f0-84ea-99e72a18fd5d",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603508256766_8d37cad9",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:54:09.1779441+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 1899.4128ms - 200",
+                "invocationId": "6ca95028-4069-46f0-84ea-99e72a18fd5d",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603508831081_da162480",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:09.1194017+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 212.9784ms - 200",
+                "invocationId": "6935469b-c392-4c20-ab1b-b3c702824de7",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603509267294_88b8b072",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:09.0814227+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 153.5405ms - 200",
+                "invocationId": "6935469b-c392-4c20-ab1b-b3c702824de7",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603509303991_e82cd097",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:09.0745468+00:00",
+                "level": "Information",
+                "message": "End processing HTTP request after 192.5434ms - 200",
+                "invocationId": "6935469b-c392-4c20-ab1b-b3c702824de7",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603509399310_a9319f27",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:09.0685495+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 127.6506ms - 200",
+                "invocationId": "6935469b-c392-4c20-ab1b-b3c702824de7",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603509399339_9579c603",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:09.0782005+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 143.2931ms - 200",
+                "invocationId": "6935469b-c392-4c20-ab1b-b3c702824de7",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603509412694_c9570a84",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:09.0605542+00:00",
+                "level": "Information",
+                "message": "Received HTTP response headers after 157.8614ms - 200",
+                "invocationId": "6935469b-c392-4c20-ab1b-b3c702824de7",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603510739929_53107570",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:08.927883+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/balance?*\"",
+                "invocationId": "6935469b-c392-4c20-ab1b-b3c702824de7",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603510802492_e150ecdd",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:08.920888+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/balance\"",
+                "invocationId": "6935469b-c392-4c20-ab1b-b3c702824de7",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603510886266_481836ed",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:08.9122308+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/exchangeInfo?*\"",
+                "invocationId": "6935469b-c392-4c20-ab1b-b3c702824de7",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603510957738_bf29f7f8",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:08.9062338+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v1/exchangeInfo?*\"",
+                "invocationId": "6935469b-c392-4c20-ab1b-b3c702824de7",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603511082827_1ad86cf1",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:08.8932414+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/positionRisk?*\"",
+                "invocationId": "6935469b-c392-4c20-ab1b-b3c702824de7",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603511184095_174d5601",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:08.8842474+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://fapi.binance.com/fapi/v2/positionRisk?*\"",
+                "invocationId": "6935469b-c392-4c20-ab1b-b3c702824de7",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603511355799_8734c3c0",
+                "service": "SparkTrade",
+                "timestamp": "2026-06-17T23:54:08.8662567+00:00",
+                "level": "Information",
+                "message": "CanTrade check for \"BTCUSDT\" \"5m\"",
+                "invocationId": "6935469b-c392-4c20-ab1b-b3c702824de7",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603527348834_614e64d7",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:54:07.2688743+00:00",
+                "level": "Information",
+                "message": "Sending HTTP request \"GET\" \"https://sparktrade-dad0huaph8edf2bg.japaneast-01.azurewebsites.net/api/can-trade?*\"",
+                "invocationId": "6ca95028-4069-46f0-84ea-99e72a18fd5d",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603527431344_1799256a",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:54:07.2608759+00:00",
+                "level": "Information",
+                "message": "Start processing HTTP request \"GET\" \"https://sparktrade-dad0huaph8edf2bg.japaneast-01.azurewebsites.net/api/can-trade?*\"",
+                "invocationId": "6ca95028-4069-46f0-84ea-99e72a18fd5d",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603527658867_ff03fb9f",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:54:07.2368897+00:00",
+                "level": "Information",
+                "message": "Processing analysis for \"BTCUSDT\" \"5m\"",
+                "invocationId": "6ca95028-4069-46f0-84ea-99e72a18fd5d",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603573127421_359a398e",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:54:02.6909241+00:00",
+                "level": "Information",
+                "message": "Queued analysis request for \"BTCUSDT\" \"5m\"",
+                "invocationId": "24248372-ed8d-4ba6-9898-3377af725a9b",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            },
+            {
+                "id": "2516205603573756373_11b30107",
+                "service": "ChartQuant",
+                "timestamp": "2026-06-17T23:54:02.6279615+00:00",
+                "level": "Information",
+                "message": "Received analysis request for \"BTCUSDT\" \"5m\"",
+                "invocationId": "24248372-ed8d-4ba6-9898-3377af725a9b",
+                "correlationId": "a8ab3657-4bd9-43a0-932b-cc1fb9144b1c"
+            }
+        ]
+    }
+]
