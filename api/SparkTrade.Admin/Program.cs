@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Azure.Storage.Blobs;
 using Cyberwyvern.Azure.Logging;
 using Microsoft.Azure.Functions.Worker.Builder;
@@ -21,7 +22,10 @@ if (!builder.Environment.IsDevelopment())
     builder.UseMiddleware<AdminAuthorizationMiddleware>();
 
 builder.Services.ConfigureHttpJsonOptions(options =>
-    options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
+{
+    options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+});
 
 var pipelineStorageConnection = builder.Configuration["PipelineStorage"]!;
 

@@ -1,7 +1,24 @@
 namespace SparkTrade.Admin.Contracts;
 
+public enum PipelineStatus
+{
+    Unknown,
+    Success,
+    Fail,
+}
+
 public class PipelineRunDto
 {
+    public PipelineStatus Status
+    {
+        get
+        {
+            if (Logs.Count == 0) return PipelineStatus.Unknown;
+            if (Logs.Any(x => x.Level is "Error" or "Fatal")) return PipelineStatus.Fail;
+            return PipelineStatus.Success;
+        }
+    }
+
     public string? Symbol { get; set; }
     public string? Interval { get; set; }
     public DateTimeOffset? ChartTimestamp { get; set; }
