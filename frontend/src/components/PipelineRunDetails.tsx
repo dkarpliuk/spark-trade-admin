@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
+import SignalAnalysis from '@/components/SignalAnalysis'
 import type { PipelineRun } from '@/models/pipelineRun'
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+    <span className="text-xs font-semibold uppercase tracking-widest text-foreground">
       {children}
     </span>
   )
@@ -16,13 +17,14 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
   return (
     <div className="flex flex-col bg-muted-foreground/15">
       <div className="grid grid-cols-3 divide-x">
-        <div className="flex h-25 flex-col gap-3 p-2">
+        <div className="flex min-w-0 flex-col gap-3 p-2">
           <SectionTitle>Chart Screenshot</SectionTitle>
         </div>
-        <div className="flex h-25 flex-col gap-3 p-2">
+        <div className="flex min-w-0 flex-col gap-3 p-2">
           <SectionTitle>Signal * Analysis</SectionTitle>
+          {run.signal ? <SignalAnalysis signal={run.signal} /> : null}
         </div>
-        <div className="flex h-25 flex-col gap-3 p-2">
+        <div className="flex min-w-0 flex-col gap-3 p-2">
           <SectionTitle>Decision * Result</SectionTitle>
         </div>
       </div>
