@@ -5,10 +5,10 @@ function Nav() {
   const { pathname } = useLocation()
 
   return (
-    <nav className="ml-auto flex items-center gap-2 px-2">
+    <nav className="ml-auto flex items-center gap-2">
       <Button
         asChild
-        variant="ghost"
+        variant="link"
         active={pathname === '/'}
         className="h-10 text-sm font-semibold uppercase tracking-wide"
       >
@@ -16,7 +16,7 @@ function Nav() {
       </Button>
       <Button
         asChild
-        variant="ghost"
+        variant="link"
         active={pathname === '/pipeline-runs'}
         className="h-10 text-sm font-semibold uppercase tracking-wide"
       >

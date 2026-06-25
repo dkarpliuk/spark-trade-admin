@@ -19,8 +19,15 @@ export function apiUrl(path: string): string {
 
 const PIPELINE_DAY_PATH = new RegExp('^/api/pipeline-history/[^/]+$')
 const PIPELINE_PREVIOUS_DAY_PATH = new RegExp('^/api/pipeline-history/[^/]+/previous$')
+const FAKE_LATENCY_MS = 2000
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
 export async function apiGet<T>(path: string): Promise<T> {
+  await delay(FAKE_LATENCY_MS)
+
   if (PIPELINE_DAY_PATH.test(path) || PIPELINE_PREVIOUS_DAY_PATH.test(path)) {
     return pipelineHistoryFixture as unknown as T
   }
