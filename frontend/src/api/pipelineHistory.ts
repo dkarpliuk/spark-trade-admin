@@ -1,4 +1,6 @@
 import { apiGet } from '@/api/client'
+import { toUtcDateKey } from '@/lib/date'
+import { parsePipelineRun, type PipelineRun } from '@/models/pipelineRun'
 
 export type PipelineStatusDto = 'unknown' | 'success' | 'fail'
 
@@ -26,10 +28,12 @@ export interface PipelineRunDto {
   logs: PipelineLogDto[]
 }
 
-export function getPipelineDay(date: string): Promise<PipelineRunDto[]> {
-  return apiGet<PipelineRunDto[]>(`/api/pipeline-history/${date}`)
+export async function getPipelineDay(date: Date): Promise<PipelineRun[]> {
+  const dtos = await apiGet<PipelineRunDto[]>(`/api/pipeline-history/${toUtcDateKey(date)}`)
+  return dtos.map(parsePipelineRun)
 }
 
-export function getPreviousPipelineDay(date: string): Promise<PipelineRunDto[]> {
-  return apiGet<PipelineRunDto[]>(`/api/pipeline-history/${date}/previous`)
+export async function getPreviousPipelineDay(date: Date): Promise<PipelineRun[]> {
+  const dtos = await apiGet<PipelineRunDto[]>(`/api/pipeline-history/${toUtcDateKey(date)}/previous`)
+  return dtos.map(parsePipelineRun)
 }

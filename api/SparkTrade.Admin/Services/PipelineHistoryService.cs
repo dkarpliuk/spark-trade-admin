@@ -63,7 +63,7 @@ public class PipelineHistoryService(
                     .Concat(sparkTradeLogs[correlationId].Select(x => x.ToLogDto("SparkTrade")))
                     .OrderBy(x => x.Id)]
             };
-        })];
+        }).OrderByDescending(x => x.Start)];
     }
 
     private static string IncrementCallback(string partitionKey, int increment)
