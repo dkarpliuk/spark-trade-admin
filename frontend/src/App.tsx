@@ -1,18 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Menu } from 'lucide-react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 
 import Nav from '@/components/Nav'
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer'
 
 function App() {
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const { pathname } = useLocation()
-
-  useEffect(() => {
-    setDrawerOpen(false)
-  }, [pathname])
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -34,7 +29,7 @@ function App() {
             </button>
           </DrawerTrigger>
           <DrawerContent>
-            <Nav vertical />
+            <Nav vertical onNavigate={() => setDrawerOpen(false)} />
           </DrawerContent>
         </Drawer>
       </header>

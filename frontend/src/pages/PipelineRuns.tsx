@@ -63,7 +63,8 @@ function PipelineRuns() {
   const toggleRun = (key: string) =>
     setOpenRuns((prev) => {
       const next = new Set(prev)
-      prev.has(key) ? next.delete(key) : next.add(key)
+      if (prev.has(key)) next.delete(key)
+      else next.add(key)
       return next
     })
 

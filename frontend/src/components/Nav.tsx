@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 
-function Nav({ vertical = false }: { vertical?: boolean }) {
+function Nav({ vertical = false, onNavigate }: { vertical?: boolean; onNavigate?: () => void }) {
   const { pathname } = useLocation()
 
   return (
@@ -12,6 +12,7 @@ function Nav({ vertical = false }: { vertical?: boolean }) {
         variant="link"
         active={pathname === '/'}
         className="h-10 text-sm font-semibold uppercase tracking-wide"
+        onClick={onNavigate}
       >
         <Link to="/">Home</Link>
       </Button>
@@ -20,6 +21,7 @@ function Nav({ vertical = false }: { vertical?: boolean }) {
         variant="link"
         active={pathname === '/pipeline-runs'}
         className="h-10 text-sm font-semibold uppercase tracking-wide"
+        onClick={onNavigate}
       >
         <Link to="/pipeline-runs">Pipeline Runs</Link>
       </Button>
