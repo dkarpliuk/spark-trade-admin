@@ -1,5 +1,5 @@
 function Home() {
-  return <p className="px-6 py-4 text-muted-foreground">Welcome to SparkTrade Admin.</p>
+  return <p className="px-2 py-2 text-muted-foreground">Welcome to SparkTrade Admin.</p>
 }
 
 export default Home

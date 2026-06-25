@@ -101,25 +101,6 @@ body {
     @apply font-sans;
   }
 
-  button,
-  a,
-  [role='button'] {
-    border: 1px solid transparent;
-    transition: border-color 0.1s;
-  }
-  button:hover,
-  a:hover,
-  [role='button']:hover {
-    border-style: dashed;
-    border-color: var(--accent);
-  }
-  button:active,
-  a:active,
-  [role='button']:active {
-    border-style: solid;
-    border-color: var(--accent);
-  }
-
   ::selection {
     background-color: #008000;
     color: #ffffff;
