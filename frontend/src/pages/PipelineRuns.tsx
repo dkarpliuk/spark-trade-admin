@@ -17,23 +17,32 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
-import { formatDate, formatDateTime, formatDuration, getTomorrowUTC } from '@/lib/date'
+import { formatDate, formatDateTime, formatDuration, formatNA } from '@/lib/formatters'
+import { getTomorrowUTC } from '@/lib/date'
 import type { PipelineRun } from '@/models/pipelineRun'
 
 const statusTone = (status: PipelineRun['status']): 'success' | 'fail' | 'neutral' => {
-  if (status === 'success') return 'success'
-  if (status === 'fail') return 'fail'
-  return 'neutral'
+  switch (status) {
+    case 'success': return 'success'
+    case 'fail': return 'fail'
+    default: return 'neutral'
+  }
 }
 
 const decisionTone = (run: PipelineRun): 'success' | 'fail' | 'neutral' => {
-  if (!run.decision) return 'neutral'
-  return run.decision.result_type === 'order_plan' ? 'success' : 'fail'
+  switch (run.decision?.result_type) {
+    case 'order_plan': return 'success'
+    case 'skip': return 'fail'
+    default: return 'neutral'
+  }
 }
 
 const decisionLabel = (run: PipelineRun): string => {
-  if (!run.decision) return '—'
-  return run.decision.result_type === 'order_plan' ? 'ORDER' : 'SKIP'
+  switch (run.decision?.result_type) {
+    case 'order_plan': return 'ORDER'
+    case 'skip': return 'SKIP'
+    default: return formatNA()
+  }
 }
 
 interface DaySection {
@@ -106,8 +115,8 @@ function PipelineRuns() {
                           {decisionLabel(run)}
                         </Badge>
                       </TableCell>
-                      <TableCell className="font-bold">{run.symbol ?? '—'}</TableCell>
-                      <TableCell>{run.interval ?? '—'}</TableCell>
+                      <TableCell className="font-bold">{formatNA(run.symbol)}</TableCell>
+                      <TableCell>{formatNA(run.interval)}</TableCell>
                       <TableCell>{formatDateTime(run.start)}</TableCell>
                       <TableCell>{formatDuration(run.durationMs)}</TableCell>
                       <TableCell>
