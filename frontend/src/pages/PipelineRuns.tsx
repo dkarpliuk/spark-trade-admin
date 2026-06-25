@@ -52,54 +52,52 @@ function PipelineRuns() {
     getNextPageParam: (lastPage) => lastPage.date
   })
 
+  const sections = pages.filter(({ runs }) => runs.length > 0)
+
   return (
     <div className="flex flex-col gap-2">
       <h2 className="text-lg font-bold">Pipeline runs</h2>
-      {pages.map(({ date, runs }, index) => (
+      {sections.map(({ date, runs }, index) => (
         <section key={date ? date.toISOString() : `section-${index}`} className="flex flex-col gap-2">
           <span className="text-sm text-muted-foreground">
             {formatDate(date)} * {runs.length} runs
           </span>
-          {runs.length === 0 ? (
-            <p className="text-muted-foreground">No runs.</p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Decision</TableHead>
-                  <TableHead>Symbol</TableHead>
-                  <TableHead>Interval</TableHead>
-                  <TableHead>Started</TableHead>
-                  <TableHead>Duration</TableHead>
-                  <TableHead className="w-8" />
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Status</TableHead>
+                <TableHead>Decision</TableHead>
+                <TableHead>Symbol</TableHead>
+                <TableHead>Interval</TableHead>
+                <TableHead>Started</TableHead>
+                <TableHead>Duration</TableHead>
+                <TableHead className="w-8" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {runs.map((run, runIndex) => (
+                <TableRow key={runIndex}>
+                  <TableCell>
+                    <Badge variant="outline" tone={statusTone(run.status)}>
+                      {run.status.toUpperCase()}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline" tone={decisionTone(run)}>
+                      {decisionLabel(run)}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="font-bold">{run.symbol ?? '—'}</TableCell>
+                  <TableCell>{run.interval ?? '—'}</TableCell>
+                  <TableCell>{formatDateTime(run.start)}</TableCell>
+                  <TableCell>{formatDuration(run.durationMs)}</TableCell>
+                  <TableCell>
+                    <ChevronRight className="size-4 text-muted-foreground" />
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {runs.map((run, runIndex) => (
-                  <TableRow key={runIndex}>
-                    <TableCell>
-                      <Badge variant="outline" tone={statusTone(run.status)}>
-                        {run.status.toUpperCase()}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" tone={decisionTone(run)}>
-                        {decisionLabel(run)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="font-bold">{run.symbol ?? '—'}</TableCell>
-                    <TableCell>{run.interval ?? '—'}</TableCell>
-                    <TableCell>{formatDateTime(run.start)}</TableCell>
-                    <TableCell>{formatDuration(run.durationMs)}</TableCell>
-                    <TableCell>
-                      <ChevronRight className="size-4 text-muted-foreground" />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+              ))}
+            </TableBody>
+          </Table>
         </section>
       ))}
       <Button
