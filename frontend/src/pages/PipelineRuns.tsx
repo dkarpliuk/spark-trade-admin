@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { ChevronRight } from 'lucide-react'
-import { getLatestPipelineDay, getPreviousPipelineDay } from '@/api/pipelineHistory'
+import { getPreviousPipelineDay } from '@/api/pipelineHistory'
 import type { PipelineRun } from '@/models/pipelineRun'
-import { formatDateTime } from '@/lib/date'
+import { formatDate, formatDateTime, formatDuration, getTomorrowUTC } from '@/lib/date'
 import LoadingDots from '@/components/LoadingDots'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -14,16 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-
-interface DaySection {
-  date: string
-  runs: PipelineRun[]
-}
-
-const formatDuration = (durationMs: number | null): string => {
-  if (durationMs == null) return '—'
-  return `${(durationMs / 1000).toFixed(1)} s`
-}
 
 const statusTone = (status: PipelineRun['status']): 'success' | 'fail' | 'neutral' => {
   if (status === 'success') return 'success'
@@ -41,48 +31,35 @@ const decisionLabel = (run: PipelineRun): string => {
   return run.decision.result_type === 'order_plan' ? 'ORDER' : 'SKIP'
 }
 
-const inferSectionDate = (runs: PipelineRun[]): string | null => {
-  const earliest = runs[runs.length - 1]
-  return earliest?.start ? earliest.start.toISOString().slice(0, 10) : null
+interface DaySection {
+  date?: Date
+  runs: PipelineRun[]
+}
+
+const fetchSection = async (pageParam: Date): Promise<DaySection> => {
+  const runs = await getPreviousPipelineDay(pageParam)
+  const start = runs[runs.length - 1]?.start
+  const date = start ? new Date(new Date(start).setUTCHours(0, 0, 0, 0)) : undefined
+  return { date, runs }
 }
 
 function PipelineRuns() {
-  const [sections, setSections] = useState<DaySection[]>([])
-  const [loadingMore, setLoadingMore] = useState(false)
-  const [hasMore, setHasMore] = useState(true)
-
-  const loadNextDay = async () => {
-    setLoadingMore(true)
-    try {
-      const runs = sections.length === 0
-        ? await getLatestPipelineDay()
-        : await getPreviousPipelineDay(sections[sections.length - 1].date)
-      const newDate = inferSectionDate(runs)
-      if (!newDate) {
-        setHasMore(false)
-        return
-      }
-      setSections((prev) =>
-        prev.some((section) => section.date === newDate) ? prev : [...prev, { date: newDate, runs }],
-      )
-    } finally {
-      setLoadingMore(false)
-    }
-  }
-
-  useEffect(() => {
-    loadNextDay()
-  }, [])
+  const { data: { pages = [] } = {}, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
+    queryKey: ['pipelineHistory'],
+    queryFn: ({ pageParam }) => fetchSection(pageParam),
+    initialPageParam: getTomorrowUTC(),
+    getNextPageParam: (lastPage) => lastPage.date
+  })
 
   return (
     <div className="flex flex-col gap-2">
       <h2 className="text-lg font-bold">Pipeline runs</h2>
-      {sections.map((section) => (
-        <section key={section.date} className="flex flex-col gap-2">
+      {pages.map(({ date, runs }, index) => (
+        <section key={date ? date.toISOString() : `section-${index}`} className="flex flex-col gap-2">
           <span className="text-sm text-muted-foreground">
-            {section.date} · {section.runs.length} runs
+            {formatDate(date)} * {runs.length} runs
           </span>
-          {section.runs.length === 0 ? (
+          {runs.length === 0 ? (
             <p className="text-muted-foreground">No runs.</p>
           ) : (
             <Table>
@@ -98,8 +75,8 @@ function PipelineRuns() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {section.runs.map((run, index) => (
-                  <TableRow key={index}>
+                {runs.map((run, runIndex) => (
+                  <TableRow key={runIndex}>
                     <TableCell>
                       <Badge variant="outline" tone={statusTone(run.status)}>
                         {run.status.toUpperCase()}
@@ -126,11 +103,11 @@ function PipelineRuns() {
       ))}
       <Button
         variant="link"
-        onClick={loadNextDay}
-        disabled={loadingMore || !hasMore}
+        onClick={() => fetchNextPage()}
+        disabled={isFetching || !hasNextPage}
         className="self-start"
       >
-        {loadingMore ? <LoadingDots /> : hasMore ? 'Load more' : 'No more runs'}
+        {isFetching ? <LoadingDots /> : hasNextPage ? 'Load more' : 'No more runs'}
       </Button>
     </div>
   )
