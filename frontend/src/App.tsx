@@ -1,18 +1,12 @@
-import { useEffect, useState } from 'react'
-
 import { Menu } from 'lucide-react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { useState } from 'react'
+import { Outlet } from 'react-router-dom'
 
 import Nav from '@/components/Nav'
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer'
 
 function App() {
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const { pathname } = useLocation()
-
-  useEffect(() => {
-    setDrawerOpen(false)
-  }, [pathname])
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -21,8 +15,8 @@ function App() {
           <span className="text-purple-500">SPARK</span>
           <span className="text-yellow-400">.</span>
           <span className="text-white">trade</span>
-          <span className="mx-1 text-gray-500">|</span>
-          <span className="text-gray-500">Admin</span>
+          <span className="mx-1 text-muted-foreground">|</span>
+          <span className="text-muted-foreground">Admin</span>
         </span>
         <div className="ml-auto hidden md:flex">
           <Nav />
@@ -34,7 +28,7 @@ function App() {
             </button>
           </DrawerTrigger>
           <DrawerContent>
-            <Nav vertical />
+            <Nav vertical onNavigate={() => setDrawerOpen(false)} />
           </DrawerContent>
         </Drawer>
       </header>
