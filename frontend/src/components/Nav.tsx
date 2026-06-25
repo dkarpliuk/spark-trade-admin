@@ -2,11 +2,11 @@ import { Link, useLocation } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 
-function Nav() {
+function Nav({ vertical = false }: { vertical?: boolean }) {
   const { pathname } = useLocation()
 
   return (
-    <nav className="ml-auto flex items-center gap-2">
+    <nav className={vertical ? 'flex flex-col items-end gap-1 p-4' : 'flex items-center gap-2'}>
       <Button
         asChild
         variant="link"
