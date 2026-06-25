@@ -1,0 +1,22 @@
+import KeyValueTable from '@/components/KeyValueTable'
+import { Badge } from '@/components/ui/badge'
+import { formatDateTime } from '@/lib/formatters'
+import type { PipelineSkipDecision } from '@/models/pipelineRun'
+
+function SkipDecisionResult({ decision }: { decision: PipelineSkipDecision }) {
+  const rows = [
+    { label: 'Reason', value: decision.reason },
+    { label: 'Gate', value: decision.gate_name },
+    { label: 'Created at', value: formatDateTime(new Date(decision.createdAt)) },
+  ]
+  return (
+    <div className="flex flex-col gap-2">
+      <div>
+        <Badge tone="fail">SKIP</Badge>
+      </div>
+      <KeyValueTable rows={rows} />
+    </div>
+  )
+}
+
+export default SkipDecisionResult

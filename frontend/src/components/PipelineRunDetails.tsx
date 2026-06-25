@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import DecisionResult from '@/components/decision/DecisionResult'
 import SignalAnalysis from '@/components/SignalAnalysis'
 import type { PipelineRun } from '@/models/pipelineRun'
 
@@ -26,6 +27,7 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
         </div>
         <div className="flex min-w-0 flex-col gap-3 p-2">
           <SectionTitle>Decision * Result</SectionTitle>
+          {run.decision ? <DecisionResult decision={run.decision} /> : null}
         </div>
       </div>
       <div className="flex flex-col p-2 border-t border-border">
