@@ -21,8 +21,8 @@ function App() {
           <span className="text-purple-500">SPARK</span>
           <span className="text-yellow-400">.</span>
           <span className="text-white">trade</span>
-          <span className="mx-1 text-gray-500">|</span>
-          <span className="text-gray-500">Admin</span>
+          <span className="mx-1 text-muted-foreground">|</span>
+          <span className="text-muted-foreground">Admin</span>
         </span>
         <div className="ml-auto hidden md:flex">
           <Nav />

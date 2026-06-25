@@ -21,9 +21,9 @@ const badgeVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       tone: {
-        success: "border-success/40 bg-success/10 text-success",
-        fail: "border-fail/40 bg-fail/10 text-fail",
-        neutral: "border-muted-foreground/40 bg-muted-foreground/10 text-muted-foreground",
+        success: "border-success/45 bg-success/15 text-success",
+        fail: "border-fail/45 bg-fail/15 text-fail",
+        neutral: "border-muted-foreground/45 bg-muted-foreground/15 text-muted-foreground",
       },
     },
     defaultVariants: {

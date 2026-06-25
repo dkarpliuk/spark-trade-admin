@@ -1,8 +1,11 @@
+import { Fragment, useState } from 'react'
+
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { ChevronRight } from 'lucide-react'
 
 import { getPreviousPipelineDay } from '@/api/pipelineHistory'
 import LoadingDots from '@/components/LoadingDots'
+import PipelineRunDetails from '@/components/PipelineRunDetails'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { cn } from '@/lib/utils'
 import { formatDate, formatDateTime, formatDuration, getTomorrowUTC } from '@/lib/date'
 import type { PipelineRun } from '@/models/pipelineRun'
 
@@ -45,6 +49,15 @@ const fetchSection = async (pageParam: Date): Promise<DaySection> => {
 }
 
 function PipelineRuns() {
+  const [openRuns, setOpenRuns] = useState<Set<string>>(new Set())
+
+  const toggleRun = (key: string) =>
+    setOpenRuns((prev) => {
+      const next = new Set(prev)
+      prev.has(key) ? next.delete(key) : next.add(key)
+      return next
+    })
+
   const { data: { pages = [] } = {}, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
     queryKey: ['pipelineHistory'],
     queryFn: ({ pageParam }) => fetchSection(pageParam),
@@ -57,49 +70,69 @@ function PipelineRuns() {
   return (
     <div className="flex flex-col gap-2">
       <h2 className="text-lg font-bold">Pipeline runs</h2>
-      {sections.map(({ date, runs }, index) => (
-        <section key={date ? date.toISOString() : `section-${index}`} className="flex flex-col gap-2">
-          <span className="text-sm text-muted-foreground">
-            {formatDate(date)} * {runs.length} runs
-          </span>
-          <Table>
-            <TableHeader>
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-border/15 hover:bg-border/15">
+            <TableHead>Status</TableHead>
+            <TableHead>Decision</TableHead>
+            <TableHead>Symbol</TableHead>
+            <TableHead>Interval</TableHead>
+            <TableHead>Started</TableHead>
+            <TableHead>Duration</TableHead>
+            <TableHead className="w-8" />
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {sections.map(({ date, runs }, index) => (
+            <Fragment key={date ? date.toISOString() : `section-${index}`}>
               <TableRow>
-                <TableHead>Status</TableHead>
-                <TableHead>Decision</TableHead>
-                <TableHead>Symbol</TableHead>
-                <TableHead>Interval</TableHead>
-                <TableHead>Started</TableHead>
-                <TableHead>Duration</TableHead>
-                <TableHead className="w-8" />
+                <TableCell colSpan={7} className="select-none text-sm text-muted-foreground">
+                  {formatDate(date)} * {runs.length} runs
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {runs.map((run, runIndex) => (
-                <TableRow key={runIndex}>
-                  <TableCell>
-                    <Badge variant="outline" tone={statusTone(run.status)}>
-                      {run.status.toUpperCase()}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" tone={decisionTone(run)}>
-                      {decisionLabel(run)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="font-bold">{run.symbol ?? '—'}</TableCell>
-                  <TableCell>{run.interval ?? '—'}</TableCell>
-                  <TableCell>{formatDateTime(run.start)}</TableCell>
-                  <TableCell>{formatDuration(run.durationMs)}</TableCell>
-                  <TableCell>
-                    <ChevronRight className="size-4 text-muted-foreground" />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </section>
-      ))}
+              {runs.map((run, runIndex) => {
+                const key = `${index}-${runIndex}`
+                const isOpen = openRuns.has(key)
+                return (
+                  <Fragment key={key}>
+                    <TableRow className="cursor-pointer" onClick={() => toggleRun(key)}>
+                      <TableCell>
+                        <Badge variant="outline" tone={statusTone(run.status)}>
+                          {run.status.toUpperCase()}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" tone={decisionTone(run)}>
+                          {decisionLabel(run)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="font-bold">{run.symbol ?? '—'}</TableCell>
+                      <TableCell>{run.interval ?? '—'}</TableCell>
+                      <TableCell>{formatDateTime(run.start)}</TableCell>
+                      <TableCell>{formatDuration(run.durationMs)}</TableCell>
+                      <TableCell>
+                        <ChevronRight
+                          className={cn(
+                            'size-4 text-muted-foreground transition-transform',
+                            isOpen && 'rotate-90',
+                          )}
+                        />
+                      </TableCell>
+                    </TableRow>
+                    {isOpen && (
+                      <TableRow>
+                        <TableCell colSpan={7} className="p-0">
+                          <PipelineRunDetails run={run} />
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </Fragment>
+                )
+              })}
+            </Fragment>
+          ))}
+        </TableBody>
+      </Table>
       <Button
         variant="link"
         onClick={() => fetchNextPage()}
