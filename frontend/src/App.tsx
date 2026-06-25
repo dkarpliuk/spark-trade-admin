@@ -1,8 +1,19 @@
-import { Outlet } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+
+import { Menu } from 'lucide-react'
+import { Outlet, useLocation } from 'react-router-dom'
 
 import Nav from '@/components/Nav'
+import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer'
 
 function App() {
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    setDrawerOpen(false)
+  }, [pathname])
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <header className="flex h-16 items-stretch border-b border-border px-4">
@@ -13,7 +24,19 @@ function App() {
           <span className="mx-1 text-gray-500">|</span>
           <span className="text-gray-500">Admin</span>
         </span>
-        <Nav />
+        <div className="ml-auto hidden md:flex">
+          <Nav />
+        </div>
+        <Drawer direction="top" open={drawerOpen} onOpenChange={setDrawerOpen}>
+          <DrawerTrigger asChild>
+            <button className="ml-auto flex items-center md:hidden">
+              <Menu className="size-5" />
+            </button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <Nav vertical />
+          </DrawerContent>
+        </Drawer>
       </header>
       <main className="flex-1 px-4 py-4">
         <Outlet />
