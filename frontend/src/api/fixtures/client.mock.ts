@@ -1,4 +1,5 @@
 import type { PipelineRunDto } from '@/api/pipelineHistory'
+
 import pipelineHistoryFixtureJson from './pipelineHistory.fixture.json'
 
 const pipelineHistoryFixture = pipelineHistoryFixtureJson as PipelineRunDto[]

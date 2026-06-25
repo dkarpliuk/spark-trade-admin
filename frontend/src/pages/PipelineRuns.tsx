@@ -1,8 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { ChevronRight } from 'lucide-react'
+
 import { getPreviousPipelineDay } from '@/api/pipelineHistory'
-import type { PipelineRun } from '@/models/pipelineRun'
-import { formatDate, formatDateTime, formatDuration, getTomorrowUTC } from '@/lib/date'
 import LoadingDots from '@/components/LoadingDots'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -14,6 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { formatDate, formatDateTime, formatDuration, getTomorrowUTC } from '@/lib/date'
+import type { PipelineRun } from '@/models/pipelineRun'
 
 const statusTone = (status: PipelineRun['status']): 'success' | 'fail' | 'neutral' => {
   if (status === 'success') return 'success'

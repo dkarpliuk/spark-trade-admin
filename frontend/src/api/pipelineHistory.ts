@@ -1,6 +1,6 @@
 import { apiGet } from '@/api/client'
-import { parsePipelineRun, type PipelineRun } from '@/models/pipelineRun'
 import { toUtcDateKey } from '@/lib/date'
+import { parsePipelineRun, type PipelineRun } from '@/models/pipelineRun'
 
 export type PipelineStatusDto = 'unknown' | 'success' | 'fail'
 
