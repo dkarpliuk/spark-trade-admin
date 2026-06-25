@@ -1,11 +1,11 @@
 import KeyValueTable from '@/components/KeyValueTable'
 import Outcomes from '@/components/Outcomes'
-import { formatDateTime, formatNA } from '@/lib/formatters'
+import { formatDateTime } from '@/lib/formatters'
 import type { PipelineSignal } from '@/models/pipelineRun'
 
 function SignalAnalysis({ signal }: { signal: PipelineSignal }) {
   const rows = [
-    { label: 'Trend', value: formatNA(signal.trend) },
+    { label: 'Trend', value: signal.trend },
     {
       label: 'Price at analysis',
       value: signal.price_at_analysis.toLocaleString('en-US', {

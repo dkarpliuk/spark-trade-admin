@@ -1,20 +1,20 @@
+import { formatNA } from '@/lib/formatters'
+
 interface KeyValueRow {
   label: string
-  value: string
+  value: string | null | undefined
 }
 
 function KeyValueTable({ rows }: { rows: KeyValueRow[] }) {
   return (
-    <table className="w-full border-collapse">
-      <tbody>
-        {rows.map(({ label, value }) => (
-          <tr key={label} className="border-b border-muted-foreground/20 last:border-0">
-            <td className="py-0.5 pr-4 text-xs text-muted-foreground">{label}</td>
-            <td className="py-0.5 text-right text-xs text-foreground">{value}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="flex flex-col">
+      {rows.map(({ label, value }) => (
+        <div key={label} className="flex flex-wrap border-b border-muted-foreground/20 py-0.5 last:border-0">
+          <div className="shrink-0 pr-4 text-xs text-muted-foreground">{label}</div>
+          <div className="ml-auto shrink-0 text-right text-xs text-foreground">{formatNA(value)}</div>
+        </div>
+      ))}
+    </div>
   )
 }
 
