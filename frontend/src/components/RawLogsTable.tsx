@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { formatNA, formatTime } from '@/lib/formatters'
+import { cn } from '@/lib/utils'
 import type { PipelineLog } from '@/models/pipelineRun'
 
 const LEVEL_ABBR: Record<string, string> = {
@@ -15,9 +16,8 @@ const LEVEL_ABBR: Record<string, string> = {
 
 const abbreviateLevel = (level: string): string => LEVEL_ABBR[level.toLowerCase()] ?? formatNA()
 
-const thClass = 'px-[1ch] py-1 text-left font-normal text-foreground align-top'
-const tdClass = 'px-[1ch] py-0 text-muted-foreground align-top'
-const cellInner = 'overflow-hidden whitespace-nowrap text-ellipsis'
+const thClass = 'px-[1ch] py-1 text-left font-normal text-foreground align-top overflow-hidden whitespace-nowrap text-ellipsis'
+const tdClass = 'px-[1ch] py-0 text-muted-foreground align-top overflow-hidden whitespace-nowrap text-ellipsis'
 
 function RawLogsTable({ logs }: { logs: PipelineLog[] }) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
@@ -43,13 +43,13 @@ function RawLogsTable({ logs }: { logs: PipelineLog[] }) {
       </colgroup>
       <thead className="border-b border-muted-foreground/30">
         <tr>
-          <th className={thClass}><div className={cellInner}>Time</div></th>
-          <th className={thClass}><div className={cellInner}>Lvl</div></th>
-          <th className={thClass}><div className={cellInner}>Service</div></th>
-          <th className={thClass}><div className={cellInner}>Message</div></th>
-          <th className={thClass}><div className={cellInner}>Inv ID</div></th>
-          <th className={`${thClass} hidden sm:table-cell`}><div className={cellInner}>Corr ID</div></th>
-          <th className={`${thClass} hidden sm:table-cell`}><div className={`${cellInner} text-right`}>ID</div></th>
+          <th className={thClass}>Time</th>
+          <th className={thClass}>Lvl</th>
+          <th className={thClass}>Service</th>
+          <th className={thClass}>Message</th>
+          <th className={thClass}>Inv ID</th>
+          <th className={cn(thClass, 'hidden sm:table-cell')}>Corr ID</th>
+          <th className={cn(thClass, 'hidden sm:table-cell text-right')}>ID</th>
         </tr>
       </thead>
       <tbody>
@@ -59,18 +59,16 @@ function RawLogsTable({ logs }: { logs: PipelineLog[] }) {
             className="border-b border-muted-foreground/20 last:border-0 cursor-pointer"
             onClick={() => toggle(log.id)}
           >
-            <td className={tdClass}><div className={cellInner}>{formatTime(log.timestamp)}</div></td>
-            <td className={tdClass}><div className={cellInner}>{abbreviateLevel(log.level)}</div></td>
-            <td className={tdClass}><div className={cellInner}>{log.service}</div></td>
-            <td className={tdClass}>
-              <div className={expanded.has(log.id) ? 'whitespace-normal break-all' : cellInner}>
-                {log.message}
-              </div>
+            <td className={tdClass}>{formatTime(log.timestamp)}</td>
+            <td className={tdClass}>{abbreviateLevel(log.level)}</td>
+            <td className={tdClass}>{log.service}</td>
+            <td className={cn(tdClass, expanded.has(log.id) && 'overflow-visible whitespace-normal text-clip break-all')}>
+              {log.message}
             </td>
-            <td className={tdClass}><div className={cellInner}>{log.invocationId}</div></td>
-            <td className={`${tdClass} hidden sm:table-cell`}><div className={cellInner}>{log.correlationId}</div></td>
-            <td className={`${tdClass} hidden sm:table-cell`}>
-              <div className={`${cellInner} [direction:rtl]`}><span dir="ltr">{log.id}</span></div>
+            <td className={tdClass}>{log.invocationId}</td>
+            <td className={cn(tdClass, 'hidden sm:table-cell')}>{log.correlationId}</td>
+            <td className={cn(tdClass, 'hidden sm:table-cell [direction:rtl]')}>
+              <span dir="ltr">{log.id}</span>
             </td>
           </tr>
         ))}
