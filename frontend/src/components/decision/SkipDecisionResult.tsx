@@ -10,7 +10,7 @@ function SkipDecisionResult({ decision }: { decision: PipelineSkipDecision }) {
     { label: 'Created at', value: formatDateTime(new Date(decision.createdAt)) },
   ]
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-1 flex-col gap-2">
       <div>
         <Badge tone="fail">SKIP</Badge>
       </div>

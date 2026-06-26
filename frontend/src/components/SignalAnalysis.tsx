@@ -18,9 +18,9 @@ function SignalAnalysis({ signal }: { signal: PipelineSignal }) {
   ]
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-1 flex-col gap-2">
       <KeyValueTable rows={rows} />
-      <Outcomes outcome={signal.outcome} />
+      <Outcomes className="mt-auto" outcome={signal.outcome} />
     </div>
   )
 }

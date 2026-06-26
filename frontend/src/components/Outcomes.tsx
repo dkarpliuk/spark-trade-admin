@@ -7,9 +7,9 @@ const OUTCOMES = [
   { label: 'Lower', key: 'lower', className: 'border border-fail/60 bg-fail/20' },
 ] as const
 
-function Outcomes({ outcome }: { outcome: PipelineSignal['outcome'] }) {
+function Outcomes({ outcome, className }: { outcome: PipelineSignal['outcome']; className?: string }) {
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className={cn('flex flex-col gap-1.5', className)}>
       {OUTCOMES.map(({ label, key, className }) => {
         const pct = outcome[key].probability * 100
         return (
