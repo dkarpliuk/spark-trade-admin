@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 
 import { formatNA, formatTime } from '@/lib/formatters'
 import { cn } from '@/lib/utils'
@@ -16,8 +16,9 @@ const LEVEL_ABBR: Record<string, string> = {
 
 const abbreviateLevel = (level: string): string => LEVEL_ABBR[level.toLowerCase()] ?? formatNA()
 
-const thClass = 'px-[1ch] py-1 text-left font-normal text-foreground align-top overflow-hidden whitespace-nowrap text-ellipsis'
-const tdClass = 'px-[1ch] py-0 text-muted-foreground align-top overflow-hidden whitespace-nowrap text-ellipsis'
+const thClass = 'min-w-0 px-[1ch] py-1 text-left font-normal text-foreground border-b border-muted-foreground/30'
+const tdClass = 'min-w-0 px-[1ch] py-0 text-muted-foreground border-b border-muted-foreground/20'
+const clip = 'block overflow-hidden whitespace-nowrap text-ellipsis'
 
 function RawLogsTable({ logs }: { logs: PipelineLog[] }) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
@@ -31,51 +32,37 @@ function RawLogsTable({ logs }: { logs: PipelineLog[] }) {
     })
 
   return (
-    <table
-      className="table-fixed text-xs font-mono"
-      style={{ width: '100%', minWidth: '-webkit-fill-available' }}>
-      <colgroup>
-        <col className="w-[14ch]" />
-        <col className="w-[5ch]" />
-        <col className="w-[12ch]" />
-        <col />
-        <col className="w-[10ch]" />
-        <col className="w-0 sm:w-[10ch]" />
-        <col className="w-0 sm:w-[10ch]" />
-      </colgroup>
-      <thead className="border-b border-muted-foreground/30">
-        <tr>
-          <th className={thClass}>Time</th>
-          <th className={thClass}>Lvl</th>
-          <th className={thClass}>Service</th>
-          <th className={thClass}>Message</th>
-          <th className={thClass}>Inv ID</th>
-          <th className={cn(thClass, 'hidden sm:table-cell')}>Corr ID</th>
-          <th className={cn(thClass, 'hidden sm:table-cell text-right')}>ID</th>
-        </tr>
-      </thead>
-      <tbody>
-        {logs.map((log) => (
-          <tr
-            key={log.id}
-            className="border-b border-muted-foreground/20 last:border-0 cursor-pointer"
-            onClick={() => toggle(log.id)}
-          >
-            <td className={tdClass}>{formatTime(log.timestamp)}</td>
-            <td className={tdClass}>{abbreviateLevel(log.level)}</td>
-            <td className={tdClass}>{log.service}</td>
-            <td className={cn(tdClass, expanded.has(log.id) && 'overflow-visible whitespace-normal text-clip break-all')}>
-              {log.message}
-            </td>
-            <td className={tdClass}>{log.invocationId}</td>
-            <td className={cn(tdClass, 'hidden sm:table-cell')}>{log.correlationId}</td>
-            <td className={cn(tdClass, 'hidden sm:table-cell [direction:rtl]')}>
-              <span dir="ltr">{log.id}</span>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className={cn(
+      "grid text-xs font-mono",
+      "grid-cols-[14ch_5ch_12ch_1fr_10ch]",
+      "sm:grid-cols-[14ch_5ch_12ch_1fr_10ch_10ch_10ch]"
+    )}>
+      <div className={thClass}><span className={clip}>Time</span></div>
+      <div className={thClass}><span className={clip}>Lvl</span></div>
+      <div className={thClass}><span className={clip}>Service</span></div>
+      <div className={thClass}><span className={clip}>Message</span></div>
+      <div className={thClass}><span className={clip}>Inv ID</span></div>
+      <div className={cn(thClass, 'hidden sm:block')}><span className={clip}>Corr ID</span></div>
+      <div className={cn(thClass, 'hidden sm:block text-right')}><span className={clip}>ID</span></div>
+      {logs.map((log) => {
+        const isExpanded = expanded.has(log.id)
+        return (
+          <Fragment key={log.id}>
+            <div className={tdClass}><span className={clip}>{formatTime(log.timestamp)}</span></div>
+            <div className={tdClass}><span className={clip}>{abbreviateLevel(log.level)}</span></div>
+            <div className={tdClass}><span className={clip}>{log.service}</span></div>
+            <div className={tdClass} onClick={() => toggle(log.id)}>
+              <span className={cn(clip, isExpanded && 'whitespace-normal break-all')}>{log.message}</span>
+            </div>
+            <div className={tdClass}><span className={clip}>{log.invocationId}</span></div>
+            <div className={cn(tdClass, 'hidden sm:block')}><span className={clip}>{log.correlationId}</span></div>
+            <div className={cn(tdClass, 'hidden sm:block')}>
+              <span className={cn(clip, '[direction:rtl]')}><span dir="ltr">{log.id}</span></span>
+            </div>
+          </Fragment>
+        )
+      })}
+    </div>
   )
 }
 
