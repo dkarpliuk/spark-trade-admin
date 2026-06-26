@@ -7,14 +7,16 @@ interface KeyValueRow {
 
 function KeyValueTable({ rows }: { rows: KeyValueRow[] }) {
   return (
-    <div className="flex w-full flex-col">
-      {rows.map(({ label, value }) => (
-        <div key={label} className="flex flex-wrap border-b border-muted-foreground/20 py-0.5 last:border-0">
-          <div className="shrink-0 pr-4 text-xs text-muted-foreground">{label}</div>
-          <div className="ml-auto shrink-0 text-right text-xs text-foreground">{formatNA(value)}</div>
-        </div>
-      ))}
-    </div>
+    <table className="w-full text-xs">
+      <tbody>
+        {rows.map(({ label, value }) => (
+          <tr key={label} className="border-b border-muted-foreground/20 last:border-0">
+            <td className="py-0.5 pr-4 align-top text-muted-foreground">{label}</td>
+            <td className="break-words py-0.5 align-top text-right text-foreground">{formatNA(value)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   )
 }
 

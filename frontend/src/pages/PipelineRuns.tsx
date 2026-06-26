@@ -130,7 +130,7 @@ function PipelineRuns() {
                     </TableRow>
                     {isOpen && (
                       <TableRow>
-                        <TableCell colSpan={7} className="p-0">
+                        <TableCell colSpan={7} className="p-0 whitespace-normal">
                           <PipelineRunDetails run={run} />
                         </TableCell>
                       </TableRow>

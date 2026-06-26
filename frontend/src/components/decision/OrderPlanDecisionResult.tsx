@@ -9,7 +9,7 @@ function OrderPlanDecisionResult({ decision }: { decision: PipelineOrderPlanDeci
   const rows = [
     { label: 'Quantity', value: String(decision.quantity) },
     { label: 'Leverage', value: `${decision.leverage}x` },
-    { label: 'Created at', value: formatDateTime(new Date(decision.createdAt)) },
+    { label: 'Created at', value: formatDateTime(new Date(decision.createdAt)) },
   ]
   return (
     <div className="flex flex-1 flex-col gap-2">
