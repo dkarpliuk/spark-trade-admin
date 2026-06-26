@@ -31,7 +31,9 @@ function RawLogsTable({ logs }: { logs: PipelineLog[] }) {
     })
 
   return (
-    <table className="w-full table-fixed text-xs font-mono">
+    <table
+      className="table-fixed text-xs font-mono"
+      style={{ width: '100%', minWidth: '-webkit-fill-available' }}>
       <colgroup>
         <col className="w-[14ch]" />
         <col className="w-[5ch]" />
