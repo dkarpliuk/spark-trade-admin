@@ -12,7 +12,7 @@ function SkipDecisionResult({ decision }: { decision: PipelineSkipDecision }) {
   return (
     <div className="flex flex-1 flex-col gap-2">
       <div>
-        <Badge tone="fail">SKIP</Badge>
+        <Badge variant="outline">SKIP</Badge>
       </div>
       <KeyValueTable rows={rows} />
     </div>
