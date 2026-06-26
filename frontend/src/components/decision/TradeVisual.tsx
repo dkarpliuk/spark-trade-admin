@@ -18,24 +18,27 @@ function TradeVisual({ decision }: { decision: PipelineOrderPlanDecision }) {
   const topColor = isBuy ? 'var(--success)' : 'var(--fail)'
   const bottomColor = isBuy ? 'var(--fail)' : 'var(--success)'
 
-  const tpPct = (tpDist / entry_price * 100).toFixed(2)
-  const slPct = (slDist / entry_price * 100).toFixed(2)
+  const topPct = (isBuy ? tpDist : slDist) / entry_price * 100
+  const bottomPct = (isBuy ? slDist : tpDist) / entry_price * 100
+  const topPctClass = isBuy ? 'text-success' : 'text-fail'
+  const bottomPctClass = isBuy ? 'text-fail' : 'text-success'
 
   const rows = isBuy
     ? [
-        { label: 'Take profit', value: `${tpPct}% | ${fmt(take_profit_price)}` },
+        { label: 'Take profit', value: fmt(take_profit_price) },
         { label: 'Entry', value: fmt(entry_price) },
-        { label: 'Stop loss', value: `${slPct}% | ${fmt(stop_loss_price)}` },
+        { label: 'Stop loss', value: fmt(stop_loss_price) },
       ]
     : [
-        { label: 'Stop loss', value: `${slPct}% | ${fmt(stop_loss_price)}` },
+        { label: 'Stop loss', value: fmt(stop_loss_price) },
         { label: 'Entry', value: fmt(entry_price) },
-        { label: 'Take profit', value: `${tpPct}% | ${fmt(take_profit_price)}` },
+        { label: 'Take profit', value: fmt(take_profit_price) },
       ]
 
   return (
-    <div className="flex gap-2">
-      <div className="relative w-8 shrink-0 self-stretch ring-1 ring-inset ring-foreground/0">
+    <div className="grid grid-cols-[3rem_1fr] grid-rows-[auto_1fr_auto] gap-x-2">
+      <span className={`col-start-1 row-start-1 text-xs text-center ${topPctClass}`}>{topPct.toFixed(2)}%</span>
+      <div className="col-start-1 row-start-2 relative">
         <svg
           className="absolute inset-0 h-full w-full opacity-50"
           viewBox={`0 0 1 ${total}`}
@@ -45,7 +48,10 @@ function TradeVisual({ decision }: { decision: PipelineOrderPlanDecision }) {
           <rect x="0" y={topDist} width="1" height={bottomDist} fill={bottomColor} />
         </svg>
       </div>
-      <KeyValueTable rows={rows} />
+      <span className={`col-start-1 row-start-3 text-xs text-center ${bottomPctClass}`}>{bottomPct.toFixed(2)}%</span>
+      <div className="col-start-2 row-start-2">
+        <KeyValueTable rows={rows} />
+      </div>
     </div>
   )
 }
