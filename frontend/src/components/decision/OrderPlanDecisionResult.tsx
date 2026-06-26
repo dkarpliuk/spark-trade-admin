@@ -8,6 +8,13 @@ import TradeVisual from './TradeVisual'
 function OrderPlanDecisionResult({ decision }: { decision: PipelineOrderPlanDecision }) {
   const rows = [
     { label: 'Quantity', value: String(decision.quantity) },
+    {
+      label: 'Margin',
+      value: (decision.quantity * decision.entry_price / decision.leverage).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
+    },
     { label: 'Leverage', value: `${decision.leverage}x` },
     { label: 'Created at', value: formatDateTime(new Date(decision.createdAt)) },
   ]
@@ -18,7 +25,7 @@ function OrderPlanDecisionResult({ decision }: { decision: PipelineOrderPlanDeci
           {decision.side.toUpperCase()}
         </Badge>
       </div>
-      <TradeVisual />
+      <TradeVisual decision={decision} />
       <KeyValueTable rows={rows} />
     </div>
   )

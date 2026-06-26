@@ -23,6 +23,7 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       'simple-import-sort/imports': 'warn',
       'simple-import-sort/exports': 'warn',
+      'no-irregular-whitespace': 'off',
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },

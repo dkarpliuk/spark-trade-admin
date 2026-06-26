@@ -7,13 +7,13 @@ function SignalAnalysis({ signal }: { signal: PipelineSignal }) {
   const rows = [
     { label: 'Trend', value: signal.trend },
     {
-      label: 'Price at analysis',
+      label: 'Price at analysis',
       value: signal.price_at_analysis.toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       }),
     },
-    { label: 'Forecast horizon', value: `${signal.forecast_horizon_candles} candles` },
+    { label: 'Forecast horizon', value: `${signal.forecast_horizon_candles} candles` },
     { label: 'Created at', value: formatDateTime(new Date(signal.createdAt)) },
   ]
 
