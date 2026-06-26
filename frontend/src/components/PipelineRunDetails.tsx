@@ -26,7 +26,7 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
   })()
 
   return (
-    <div className="flex flex-col bg-muted-foreground/15">
+    <div className="bg-muted-foreground/15 whitespace-normal">
       <div className="grid grid-cols-3 divide-x">
         <div className="flex min-w-0 flex-col gap-3 p-2">
           <SectionTitle>Chart Screenshot</SectionTitle>
@@ -41,16 +41,20 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
           {run.decision ? <DecisionResult decision={run.decision} /> : null}
         </div>
       </div>
-      <div className="flex flex-col gap-2 p-2 border-t border-border">
+      <div className="p-2 border-t border-border">
         <button
           disabled={!run.logs.length}
           onClick={() => setLogsOpen((v) => !v)}
-          className="self-start text-xs font-semibold tracking-widest text-muted-foreground hover:text-foreground"
+          className="text-xs font-semibold tracking-widest text-muted-foreground hover:text-foreground"
         >
           {logsButtonLabel}
         </button>
-        {logsOpen && <RawLogsTable logs={run.logs} />}
       </div>
+      {logsOpen && (
+        <div className="p-2">
+          <RawLogsTable logs={run.logs} />
+        </div>
+      )}
     </div>
   )
 }

@@ -9,7 +9,7 @@ function App() {
   const [drawerOpen, setDrawerOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <div className="w-full flex min-h-screen flex-col bg-background text-foreground">
       <header className="flex h-16 items-stretch border-b border-border px-4">
         <span className="flex select-none items-center text-2xl font-bold tracking-widest">
           <span className="text-purple-500">SPARK</span>
