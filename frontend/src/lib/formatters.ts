@@ -1,3 +1,15 @@
+export function ellipsisMiddle(str: string, n: number): string {
+  if (str.length <= n * 2 + 3) return str
+  return `${str.slice(0, n)}...${str.slice(-n)}`
+}
+
+export function abbreviateBlobName(name: string): string {
+  const dotIndex = name.lastIndexOf('.')
+  const ext = dotIndex !== -1 ? name.slice(dotIndex) : ''
+  const base = dotIndex !== -1 ? name.slice(0, dotIndex) : name
+  return ellipsisMiddle(base, 4) + ext
+}
+
 export function formatNA(value?: string | null): string {
   return value ?? 'n/a'
 }

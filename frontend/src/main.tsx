@@ -5,6 +5,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
+import { TooltipProvider } from '@/components/ui/tooltip'
+
 import App from './App.tsx'
 import Home from './pages/Home.tsx'
 import PipelineRuns from './pages/PipelineRuns.tsx'
@@ -29,7 +31,9 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <TooltipProvider>
+        <RouterProvider router={router} />
+      </TooltipProvider>
     </QueryClientProvider>
   </StrictMode>,
 )

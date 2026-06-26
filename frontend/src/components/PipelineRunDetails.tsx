@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import ChartScreenshot from '@/components/ChartScreenshot'
 import DecisionResult from '@/components/decision/DecisionResult'
 import SignalAnalysis from '@/components/SignalAnalysis'
 import type { PipelineRun } from '@/models/pipelineRun'
@@ -20,6 +21,7 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
       <div className="grid grid-cols-3 divide-x">
         <div className="flex min-w-0 flex-col gap-3 p-2">
           <SectionTitle>Chart Screenshot</SectionTitle>
+          <ChartScreenshot blobName={run.blobName} />
         </div>
         <div className="flex min-w-0 flex-col gap-3 p-2">
           <SectionTitle>Signal * Analysis</SectionTitle>
