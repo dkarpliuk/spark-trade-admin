@@ -25,6 +25,11 @@ export function formatDate(date?: Date | null): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
 }
 
+export function formatTime(date: Date | null): string {
+  if (!date) return formatNA()
+  return date.toISOString().slice(11, 23)
+}
+
 export function formatDateTime(date?: Date | null): string {
   if (!date || isNaN(date.getTime())) return formatNA()
   const pad = (n: number) => n.toString().padStart(2, '0')

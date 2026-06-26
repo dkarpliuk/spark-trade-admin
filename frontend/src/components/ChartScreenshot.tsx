@@ -34,7 +34,7 @@ function ChartScreenshot({ blobName }: { blobName: string | null }) {
         }
       </div>
       {blobName && (
-        <Tooltip>
+        <Tooltip delayDuration={600}>
           <TooltipTrigger asChild>
             <span className="w-fit text-xs text-muted-foreground">{abbreviateBlobName(blobName)}</span>
           </TooltipTrigger>

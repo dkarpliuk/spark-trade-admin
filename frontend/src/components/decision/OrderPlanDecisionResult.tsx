@@ -21,7 +21,7 @@ function OrderPlanDecisionResult({ decision }: { decision: PipelineOrderPlanDeci
   return (
     <div className="flex flex-1 flex-col gap-2">
       <div>
-        <Badge variant="outline">
+        <Badge variant="outline" className="w-12">
           {decision.side.toUpperCase()}
         </Badge>
       </div>
