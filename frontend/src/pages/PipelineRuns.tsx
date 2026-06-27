@@ -1,6 +1,6 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { ChevronRight } from 'lucide-react'
-import { Fragment, useMemo, useState } from 'react'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
+import { ChevronRight, RotateCw } from 'lucide-react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 
 import { getPreviousPipelineDay } from '@/api/pipelineHistory'
 import LoadingDots from '@/components/LoadingDots'
@@ -58,8 +58,15 @@ const fetchSection = async (pageParam?: Date): Promise<DaySection> => {
 }
 
 function PipelineRuns() {
+  const queryClient = useQueryClient()
   const [openRuns, setOpenRuns] = useState<Set<string>>(new Set())
   const [hidePartial, setHidePartial] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  const handleRefresh = () => {
+    setIsRefreshing(true)
+    queryClient.resetQueries({ queryKey: ['pipelineHistory'] })
+  }
 
   const toggleRun = (key: string) =>
     setOpenRuns((prev) => {
@@ -76,6 +83,11 @@ function PipelineRuns() {
     getNextPageParam: (lastPage) => lastPage.date
   })
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (!isFetching) setIsRefreshing(false)
+  }, [isFetching])
+
   const sections = useMemo(() => {
     const allSections = pages.filter(({ runs }) => runs.length > 0)
     if (!hidePartial) return allSections
@@ -89,6 +101,9 @@ function PipelineRuns() {
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">Pipeline runs</h2>
         <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon-sm" disabled={isFetching} onClick={handleRefresh}>
+            <RotateCw className={cn('size-4', isFetching && isRefreshing && 'animate-spin')} />
+          </Button>
           <span className="text-sm text-muted-foreground">Hide partial</span>
           <Switch checked={hidePartial} onCheckedChange={setHidePartial} />
         </div>
