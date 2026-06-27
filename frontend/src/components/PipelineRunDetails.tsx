@@ -45,7 +45,7 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
         <button
           disabled={!run.logs.length}
           onClick={() => setLogsOpen((v) => !v)}
-          className="text-xs font-semibold tracking-widest text-muted-foreground hover:text-foreground"
+          className="text-xs text-muted-foreground hover:text-foreground"
         >
           {logsButtonLabel}
         </button>

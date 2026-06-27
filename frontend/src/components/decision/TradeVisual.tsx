@@ -38,14 +38,17 @@ function TradeVisual({ decision }: { decision: PipelineOrderPlanDecision }) {
   return (
     <div className="grid grid-cols-[3rem_1fr] grid-rows-[auto_1fr_auto] gap-x-2">
       <span className={`col-start-1 row-start-1 text-xs text-center ${topPctClass}`}>{topPct.toFixed(2)}%</span>
-      <div className="col-start-1 row-start-2 relative">
+      <div className="col-start-1 row-start-2 relative ring-1 ring-inset ring-muted-foreground/45">
         <svg
-          className="absolute inset-0 h-full w-full opacity-50"
+          className="absolute inset-0 h-full w-full"
           viewBox={`0 0 1 ${total}`}
           preserveAspectRatio="none"
         >
-          <rect x="0" y="0" width="1" height={topDist} fill={topColor} />
-          <rect x="0" y={topDist} width="1" height={bottomDist} fill={bottomColor} />
+          <rect x="0" y="0" width="1" height={topDist} fill={topColor} fillOpacity="0.2" />
+          <path d={`M 0 ${topDist} L 0 0 L 1 0 L 1 ${topDist}`} fill="none" stroke={topColor} strokeOpacity="0.6" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+          <rect x="0" y={topDist} width="1" height={bottomDist} fill={bottomColor} fillOpacity="0.2" />
+          <path d={`M 0 ${topDist} L 0 ${total} L 1 ${total} L 1 ${topDist}`} fill="none" stroke={bottomColor} strokeOpacity="0.6" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+          <path d={`M 0 ${topDist} L 1 ${topDist}`} fill="none" stroke="var(--foreground)" strokeOpacity="0.6" strokeWidth="1" vectorEffect="non-scaling-stroke" />
         </svg>
       </div>
       <span className={`col-start-1 row-start-3 text-xs text-center ${bottomPctClass}`}>{bottomPct.toFixed(2)}%</span>
