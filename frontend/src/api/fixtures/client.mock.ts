@@ -22,7 +22,7 @@ export function apiUrl(path: string): string {
 
 const CHART_IMAGE_PATH = new RegExp('^/api/chart-image/[^/]+$')
 const PIPELINE_DAY_PATH = new RegExp('^/api/pipeline-history/[^/]+$')
-const PIPELINE_PREVIOUS_DAY_PATH = new RegExp('^/api/pipeline-history/[^/]+/previous$')
+const PIPELINE_PREVIOUS_DAY_PATH = new RegExp('^/api/pipeline-history/previous(\\?.*)?$')
 const FAKE_LATENCY_MS = 2000
 
 function delay(ms: number): Promise<void> {

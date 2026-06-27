@@ -15,7 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { getTomorrowUTC } from '@/lib/date'
 import { formatDate, formatDateTime, formatDuration, formatNA } from '@/lib/formatters'
 import { cn } from '@/lib/utils'
 import type { PipelineRun } from '@/models/pipelineRun'
@@ -49,7 +48,7 @@ interface DaySection {
   runs: PipelineRun[]
 }
 
-const fetchSection = async (pageParam: Date): Promise<DaySection> => {
+const fetchSection = async (pageParam?: Date): Promise<DaySection> => {
   const runs = await getPreviousPipelineDay(pageParam)
   const start = runs[runs.length - 1]?.start
   const date = start ? new Date(new Date(start).setUTCHours(0, 0, 0, 0)) : undefined
@@ -70,7 +69,7 @@ function PipelineRuns() {
   const { data: { pages = [] } = {}, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
     queryKey: ['pipelineHistory'],
     queryFn: ({ pageParam }) => fetchSection(pageParam),
-    initialPageParam: getTomorrowUTC(),
+    initialPageParam: undefined as Date | undefined,
     getNextPageParam: (lastPage) => lastPage.date
   })
 
