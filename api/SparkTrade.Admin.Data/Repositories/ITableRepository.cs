@@ -12,4 +12,6 @@ public interface ITableRepository<T> where T : class, ITableEntity
         string current,
         Func<string, int, string> keyIncrement,
         CancellationToken ct = default);
+
+    Task<string?> GetTopRowKeyAsync(string partitionKey, CancellationToken ct = default);
 }

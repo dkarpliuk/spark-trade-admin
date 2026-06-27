@@ -1,4 +1,5 @@
 using System.Globalization;
+using Microsoft.Extensions.Caching.Memory;
 using SparkTrade.Admin.Contracts;
 using SparkTrade.Admin.Data.Entities;
 using SparkTrade.Admin.Data.Repositories;
@@ -9,9 +10,11 @@ public class PipelineHistoryService(
     ITableRepository<ChartQuantAudit> chartQuantAuditRepository,
     ITableRepository<LogEntity> chartQuantLogRepository,
     ITableRepository<SparkTradeAudit> sparkTradeAuditRepository,
-    ITableRepository<LogEntity> sparkTradeLogRepository) : IPipelineHistoryService
+    ITableRepository<LogEntity> sparkTradeLogRepository,
+    IMemoryCache cache) : IPipelineHistoryService
 {
     private const string PartitionKeyFormat = "yyyyMMdd";
+    private static readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(20);
 
     public async Task<IReadOnlyList<PipelineRunDto>> GetPreviousDayAsync(DateOnly current, CancellationToken ct = default)
     {
@@ -21,13 +24,27 @@ public class PipelineHistoryService(
         if (partitionKey is null)
             return [];
 
-        return await GetDayAsync(DateOnly.ParseExact(partitionKey, PartitionKeyFormat, CultureInfo.InvariantCulture), ct);
+        var date = DateOnly.ParseExact(partitionKey, PartitionKeyFormat, CultureInfo.InvariantCulture);
+        return await GetDayAsync(date, ct);
     }
 
     public async Task<IReadOnlyList<PipelineRunDto>> GetDayAsync(DateOnly date, CancellationToken ct = default)
     {
         var partitionKey = date.ToString(PartitionKeyFormat, CultureInfo.InvariantCulture);
+        var topRowKey = await chartQuantLogRepository.GetTopRowKeyAsync(partitionKey, ct);
+        if (topRowKey is null)
+            return [];
 
+        if (cache.TryGetValue<IReadOnlyList<PipelineRunDto>>(topRowKey, out var cached) && cached is not null)
+            return cached;
+
+        var result = await GetPartitionAsync(partitionKey, ct);
+        cache.Set(topRowKey, result, CacheExpiration);
+        return result;
+    }
+
+    private async Task<IReadOnlyList<PipelineRunDto>> GetPartitionAsync(string partitionKey, CancellationToken ct)
+    {
         var chartQuantLogsTask = chartQuantLogRepository.GetByPartitionAsync(partitionKey, ct);
         var chartQuantAuditsTask = chartQuantAuditRepository.GetByPartitionAsync(partitionKey, ct);
         var sparkTradeLogsTask = sparkTradeLogRepository.GetByPartitionAsync(partitionKey, ct);

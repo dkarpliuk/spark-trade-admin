@@ -38,6 +38,14 @@ public class TableRepository<T>(string connectionString, string tableName) : ITa
         return null;
     }
 
+    public async Task<string?> GetTopRowKeyAsync(string partitionKey, CancellationToken ct = default)
+    {
+        return await _client
+            .QueryAsync<TableEntity>(e => e.PartitionKey == partitionKey, select: ["RowKey"], maxPerPage: 1, cancellationToken: ct)
+            .Select(e => e.RowKey)
+            .FirstOrDefaultAsync(ct);
+    }
+
     private async Task<string?> GetMaxPartitionKeyInRangeAsync(string lowerInclusive, string upperExclusive, CancellationToken ct = default)
     {
         var filter = TableClient.CreateQueryFilter($"PartitionKey ge {lowerInclusive} and PartitionKey lt {upperExclusive}");

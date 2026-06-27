@@ -1,4 +1,5 @@
 using Azure.Storage.Blobs;
+using Microsoft.Extensions.Caching.Memory;
 using Cyberwyvern.Azure.Logging;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,11 +31,14 @@ builder.Services.AddOptions<AppConfig>().Bind(builder.Configuration);
 
 builder.Services.AddSingleton(_ => new BlobContainerClient(pipelineStorageConnection, StorageNames.AnalysisImagesContainer));
 
-builder.Services.AddSingleton<IPipelineHistoryService>(_ => new PipelineHistoryService(
+builder.Services.AddMemoryCache();
+
+builder.Services.AddSingleton<IPipelineHistoryService>(sp => new PipelineHistoryService(
     new TableRepository<ChartQuantAudit>(pipelineStorageConnection, StorageNames.ChartQuantAuditTable),
     new TableRepository<LogEntity>(pipelineStorageConnection, StorageNames.ChartQuantLogsTable),
     new TableRepository<SparkTradeAudit>(pipelineStorageConnection, StorageNames.SparkTradeAuditTable),
-    new TableRepository<LogEntity>(pipelineStorageConnection, StorageNames.SparkTradeLogsTable)));
+    new TableRepository<LogEntity>(pipelineStorageConnection, StorageNames.SparkTradeLogsTable),
+    sp.GetRequiredService<IMemoryCache>()));
 
 builder.Build().Run();
 
