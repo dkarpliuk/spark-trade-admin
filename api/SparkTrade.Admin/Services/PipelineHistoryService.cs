@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Memory;
 using SparkTrade.Admin.Contracts;
 using SparkTrade.Admin.Data.Entities;
@@ -6,7 +7,7 @@ using SparkTrade.Admin.Data.Repositories;
 
 namespace SparkTrade.Admin.Services;
 
-public class PipelineHistoryService(
+public partial class PipelineHistoryService(
     ITableRepository<ChartQuantAudit> chartQuantAuditRepository,
     ITableRepository<LogEntity> chartQuantLogRepository,
     ITableRepository<SparkTradeAudit> sparkTradeAuditRepository,
@@ -63,25 +64,44 @@ public class PipelineHistoryService(
         allKeys.UnionWith(sparkTradeLogs.Select(x => x.Key));
         allKeys.UnionWith(sparkTradeAudits.Select(x => x.Key));
 
-        return [.. allKeys.Select(correlationId =>
-        {
-            var chartQuantAudit = chartQuantAudits[correlationId].FirstOrDefault();
-            var sparkTradeAudit = sparkTradeAudits[correlationId].FirstOrDefault();
+        return [.. allKeys
+            .Select(id => BuildPipelineRun(id, chartQuantAudits, chartQuantLogs, sparkTradeAudits, sparkTradeLogs))
+            .OrderByDescending(x => x.Start)];
+    }
 
-            return new PipelineRunDto
-            {
-                Symbol = chartQuantAudit?.Symbol ?? sparkTradeAudit?.Symbol,
-                Interval = chartQuantAudit?.Interval ?? sparkTradeAudit?.Interval,
-                ChartTimestamp = chartQuantAudit?.ChartTimestamp ?? sparkTradeAudit?.ChartTimestamp,
-                BlobName = chartQuantAudit?.BlobName,
-                Signal = chartQuantAudit?.Signal,
-                Decision = sparkTradeAudit?.DecisionResult,
-                Logs = [.. chartQuantLogs[correlationId]
-                    .Select(x => x.ToLogDto("ChartQuant"))
-                    .Concat(sparkTradeLogs[correlationId].Select(x => x.ToLogDto("SparkTrade")))
-                    .OrderBy(x => x.Id)]
-            };
-        }).OrderByDescending(x => x.Start)];
+    private static PipelineRunDto BuildPipelineRun(
+        string correlationId,
+        ILookup<string, ChartQuantAudit> chartQuantAudits,
+        ILookup<string, LogEntity> chartQuantLogs,
+        ILookup<string, SparkTradeAudit> sparkTradeAudits,
+        ILookup<string, LogEntity> sparkTradeLogs)
+    {
+        var chartQuantAudit = chartQuantAudits[correlationId].FirstOrDefault();
+        var sparkTradeAudit = sparkTradeAudits[correlationId].FirstOrDefault();
+
+        var logs = chartQuantLogs[correlationId]
+            .Select(x => x.ToLogDto("ChartQuant"))
+            .Concat(sparkTradeLogs[correlationId].Select(x => x.ToLogDto("SparkTrade")))
+            .OrderBy(x => x.Id)
+            .ToList();
+
+        var (symbol, interval) = (chartQuantAudit, sparkTradeAudit) switch
+        {
+            ({ Symbol: var s, Interval: var i }, _) => (s, i),
+            (_, { Symbol: var s, Interval: var i }) => (s, i),
+            _ => ParseSymbolIntervalFromLogs(logs)
+        };
+
+        return new PipelineRunDto
+        {
+            Symbol = symbol,
+            Interval = interval,
+            ChartTimestamp = chartQuantAudit?.ChartTimestamp ?? sparkTradeAudit?.ChartTimestamp,
+            BlobName = chartQuantAudit?.BlobName,
+            Signal = chartQuantAudit?.Signal,
+            Decision = sparkTradeAudit?.DecisionResult,
+            Logs = logs
+        };
     }
 
     private static string IncrementCallback(string partitionKey, int increment)
@@ -90,5 +110,23 @@ public class PipelineHistoryService(
             .ParseExact(partitionKey, PartitionKeyFormat, CultureInfo.InvariantCulture)
             .AddDays(increment)
             .ToString(PartitionKeyFormat, CultureInfo.InvariantCulture);
+    }
+}
+
+public partial class PipelineHistoryService
+{
+    [GeneratedRegex(@"for ""(?<symbol>[A-Z]+)"" ""(?<interval>\d+[mhDWM])""")]
+    private static partial Regex SymbolIntervalRegex();
+
+    private static (string? Symbol, string? Interval) ParseSymbolIntervalFromLogs(IReadOnlyList<PipelineLogDto> logs)
+    {
+        foreach (var log in logs.OrderByDescending(x => x.Id))
+        {
+            var match = SymbolIntervalRegex().Match(log.Message);
+            if (match.Success)
+                return (match.Groups["symbol"].Value, match.Groups["interval"].Value);
+        }
+
+        return (null, null);
     }
 }
