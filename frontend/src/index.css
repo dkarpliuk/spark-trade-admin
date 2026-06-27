@@ -36,6 +36,7 @@ body {
   --color-destructive: var(--destructive);
   --color-fail: var(--fail);
   --color-success: var(--success);
+  --color-warning: var(--warning);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -77,6 +78,7 @@ body {
   --destructive: #f48771;
   --success: #008000;
   --fail: #d02020;
+  --warning: #ca8a04;
   --border: #6fc3df;
   --input: #6fc3df;
   --ring: #f38518;

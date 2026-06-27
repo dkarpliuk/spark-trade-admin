@@ -2,7 +2,7 @@ import { apiGet } from '@/api/client'
 import { toUtcDateKey } from '@/lib/date'
 import { parsePipelineRun, type PipelineRun } from '@/models/pipelineRun'
 
-export type PipelineStatusDto = 'unknown' | 'success' | 'fail'
+export type PipelineStatusDto = 'unknown' | 'success' | 'fail' | 'partial'
 
 export interface PipelineLogDto {
   id: string
