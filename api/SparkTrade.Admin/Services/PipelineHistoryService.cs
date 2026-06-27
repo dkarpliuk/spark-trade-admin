@@ -16,7 +16,7 @@ public class PipelineHistoryService(
     public async Task<IReadOnlyList<PipelineRunDto>> GetPreviousDayAsync(DateOnly current, CancellationToken ct = default)
     {
         var currentKey = current.ToString(PartitionKeyFormat, CultureInfo.InvariantCulture);
-        var partitionKey = await chartQuantAuditRepository.FindPreviousPartitionKeyAsync(currentKey, IncrementCallback, ct);
+        var partitionKey = await chartQuantLogRepository.FindPreviousPartitionKeyAsync(currentKey, IncrementCallback, ct);
 
         if (partitionKey is null)
             return [];
