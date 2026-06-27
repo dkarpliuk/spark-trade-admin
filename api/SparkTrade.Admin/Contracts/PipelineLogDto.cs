@@ -1,3 +1,4 @@
+using Cyberwyvern.Azure.Logging;
 using SparkTrade.Admin.Data.Entities;
 
 namespace SparkTrade.Admin.Contracts;
@@ -19,7 +20,7 @@ public static class PipelineLogDtoExtensions
     {
         Id = log.RowKey,
         Service = service,
-        Timestamp = log.Timestamp,
+        Timestamp = LogEventExtensions.GetUtcTimestamp(log.RowKey),
         Level = log.Level,
         Message = log.Message,
         InvocationId = log.InvocationId,
