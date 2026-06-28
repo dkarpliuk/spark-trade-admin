@@ -63,9 +63,11 @@ public class PipelineStatusService(IOptions<PipelineConfig> config) : IPipelineS
 
         return response.Value.Data.State.ToLower() switch
         {
-            "running" => AppStatus.Running,
-            "stopped" => AppStatus.Stopped,
-            _         => AppStatus.Unknown,
+            "running"  => AppStatus.Running,
+            "starting" => AppStatus.Starting,
+            "stopping" => AppStatus.Stopping,
+            "stopped"  => AppStatus.Stopped,
+            _          => AppStatus.Unknown,
         };
     }
 }

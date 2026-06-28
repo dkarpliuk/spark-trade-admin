@@ -5,6 +5,8 @@ namespace SparkTrade.Admin.Contracts;
 public enum AppStatus
 {
     Running,
+    Starting,
+    Stopping,
     Stopped,
     Unknown,
 }
