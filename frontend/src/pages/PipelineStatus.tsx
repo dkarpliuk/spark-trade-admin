@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { RotateCw } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-import { type AppStatus,getPipelineStatus } from '@/api/pipelineStatus'
+import { type AppStatus, getPipelineStatus, PipelineService } from '@/api/pipelineStatus'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -22,12 +22,6 @@ const statusTone = (status: AppStatus): 'success' | 'fail' | 'neutral' => {
     default: return 'neutral'
   }
 }
-
-const SERVICES: { label: string; key: keyof Awaited<ReturnType<typeof getPipelineStatus>> }[] = [
-  { label: 'Chart Screen', key: 'chartScreenStatus' },
-  { label: 'Chart Quant', key: 'chartQuantStatus' },
-  { label: 'Spark Trade', key: 'sparkTradeStatus' },
-]
 
 function PipelineStatus() {
   const queryClient = useQueryClient()
@@ -64,11 +58,11 @@ function PipelineStatus() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {SERVICES.map(({ label, key }) => {
-            const status = data?.[key]
+          {Object.values(PipelineService).map((service) => {
+            const status = data?.[service]
             return (
-              <TableRow key={key}>
-                <TableCell className="font-medium">{label}</TableCell>
+              <TableRow key={service}>
+                <TableCell className="font-medium">{service}</TableCell>
                 <TableCell>
                   {status ? (
                     <Badge variant="outline" tone={statusTone(status)}>
