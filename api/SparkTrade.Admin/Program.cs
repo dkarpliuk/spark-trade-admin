@@ -28,6 +28,9 @@ var pipelineStorageConnection = builder.Configuration["PipelineStorage"]!;
 AddLogging(builder.Services, pipelineStorageConnection);
 
 builder.Services.AddOptions<AppConfig>().Bind(builder.Configuration);
+builder.Services.AddOptions<PipelineConfig>().Bind(builder.Configuration.GetSection("Pipeline"));
+
+builder.Services.AddSingleton<IPipelineStatusService, PipelineStatusService>();
 
 builder.Services.AddSingleton(_ => new BlobContainerClient(pipelineStorageConnection, StorageNames.AnalysisImagesContainer));
 
