@@ -45,4 +45,14 @@ public class PipelineStatusFunction(IPipelineStatusService pipelineStatusService
 
         return new OkResult();
     }
+
+    [Function("ManualTriggerChartScreen")]
+    public async Task<IActionResult> ManualTriggerChartScreen(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "pipeline-status/chartscreen/manual-trigger")] HttpRequest req,
+        CancellationToken ct)
+    {
+        await pipelineStatusService.ManualTriggerChartScreenAsync(ct);
+
+        return new OkResult();
+    }
 }

@@ -33,6 +33,7 @@ builder.Services.AddOptions<PipelineConfig>().Bind(builder.Configuration.GetSect
 
 // Services
 builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton(_ => new BlobContainerClient(pipelineStorageConnection, StorageNames.AnalysisImagesContainer));
 builder.Services.AddSingleton<IPipelineStatusService, PipelineStatusService>();
 builder.Services.AddSingleton<IPipelineHistoryService>(sp => new PipelineHistoryService(

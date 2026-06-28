@@ -1,3 +1,4 @@
+using System.Text;
 using Azure.Core;
 using Azure.Identity;
 using Azure.ResourceManager;
@@ -8,7 +9,7 @@ using SparkTrade.Admin.Contracts;
 
 namespace SparkTrade.Admin.Services;
 
-public class PipelineStatusService(IOptions<PipelineConfig> config) : IPipelineStatusService
+public class PipelineStatusService(IOptions<PipelineConfig> config, IHttpClientFactory httpClientFactory) : IPipelineStatusService
 {
     private readonly PipelineConfig _config = config.Value;
 
@@ -40,6 +41,23 @@ public class PipelineStatusService(IOptions<PipelineConfig> config) : IPipelineS
     {
         var site = CreateArmClient().GetWebSiteResource(new ResourceIdentifier(GetResourceId(service)));
         await site.StopAsync(ct);
+    }
+
+    public async Task ManualTriggerChartScreenAsync(CancellationToken ct = default)
+    {
+        var site = CreateArmClient().GetWebSiteResource(new ResourceIdentifier(_config.ChartScreenResourceId));
+        var siteData = (await site.GetAsync(ct)).Value;
+        var hostname = siteData.Data.DefaultHostName;
+
+        var hostKeys = await site.GetHostKeysAsync(ct);
+        var masterKey = hostKeys.Value.MasterKey;
+
+        var http = httpClientFactory.CreateClient();
+        using var request = new HttpRequestMessage(HttpMethod.Post, $"https://{hostname}/admin/functions/ScreenshotTimer");
+        request.Headers.Add("x-functions-key", masterKey);
+        request.Content = new StringContent("{}", Encoding.UTF8, "application/json");
+        var response = await http.SendAsync(request, ct);
+        response.EnsureSuccessStatusCode();
     }
 
     private string GetResourceId(PipelineService service) => service switch
