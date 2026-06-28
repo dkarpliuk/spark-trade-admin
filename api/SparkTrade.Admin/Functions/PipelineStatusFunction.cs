@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
+using SparkTrade.Admin.Contracts;
 using SparkTrade.Admin.Services;
 
 namespace SparkTrade.Admin.Functions;
@@ -13,7 +14,35 @@ public class PipelineStatusFunction(IPipelineStatusService pipelineStatusService
         CancellationToken ct)
     {
         var statuses = await pipelineStatusService.GetStatusesAsync(ct);
-        
+
         return new OkObjectResult(statuses);
+    }
+
+    [Function("StartPipelineService")]
+    public async Task<IActionResult> StartService(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "pipeline-status/{service}/start")] HttpRequest req,
+        string service,
+        CancellationToken ct)
+    {
+        if (!Enum.TryParse<PipelineService>(service, ignoreCase: true, out var pipelineService))
+            return new BadRequestObjectResult($"Unknown service: {service}");
+
+        await pipelineStatusService.StartServiceAsync(pipelineService, ct);
+
+        return new OkResult();
+    }
+
+    [Function("StopPipelineService")]
+    public async Task<IActionResult> StopService(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "pipeline-status/{service}/stop")] HttpRequest req,
+        string service,
+        CancellationToken ct)
+    {
+        if (!Enum.TryParse<PipelineService>(service, ignoreCase: true, out var pipelineService))
+            return new BadRequestObjectResult($"Unknown service: {service}");
+
+        await pipelineStatusService.StopServiceAsync(pipelineService, ct);
+
+        return new OkResult();
     }
 }

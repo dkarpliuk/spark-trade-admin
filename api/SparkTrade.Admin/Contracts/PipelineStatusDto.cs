@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace SparkTrade.Admin.Contracts;
 
 public enum AppStatus
@@ -7,9 +9,21 @@ public enum AppStatus
     Unknown,
 }
 
+public enum PipelineService
+{
+    ChartScreen,
+    ChartQuant,
+    SparkTrade,
+}
+
 public class PipelineStatusDto
 {
-    public AppStatus ChartScreenStatus { get; set; }
-    public AppStatus ChartQuantStatus { get; set; }
-    public AppStatus SparkTradeStatus { get; set; }
+    [JsonPropertyName(nameof(PipelineService.ChartScreen))]
+    public AppStatus ChartScreen { get; set; }
+
+    [JsonPropertyName(nameof(PipelineService.ChartQuant))]
+    public AppStatus ChartQuant { get; set; }
+
+    [JsonPropertyName(nameof(PipelineService.SparkTrade))]
+    public AppStatus SparkTrade { get; set; }
 }
