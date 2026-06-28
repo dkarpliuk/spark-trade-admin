@@ -18,6 +18,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { formatDate, formatDateTime, formatDuration, formatNA } from '@/lib/formatters'
+import { cn } from '@/lib/utils'
 import type { PipelineRun } from '@/models/pipelineRun'
 
 const statusTone = (status: PipelineRun['status']): 'success' | 'fail' | 'warning' | 'neutral' => {
