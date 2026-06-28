@@ -25,3 +25,7 @@ export async function startService(service: PipelineService): Promise<void> {
 export async function stopService(service: PipelineService): Promise<void> {
   return apiPost(`/api/pipeline-status/${service}/stop`)
 }
+
+export async function manualTriggerChartScreen(): Promise<void> {
+  return apiPost('/api/pipeline-status/chartscreen/manual-trigger')
+}
