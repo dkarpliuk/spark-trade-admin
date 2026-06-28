@@ -1,10 +1,8 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { RotateCw } from 'lucide-react'
-import { useEffect, useState } from 'react'
 
 import { type AppStatus, getPipelineStatus, PipelineService } from '@/api/pipelineStatus'
+import RefreshButton from '@/components/RefreshButton'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -13,7 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { cn } from '@/lib/utils'
 
 const statusTone = (status: AppStatus): 'success' | 'fail' | 'neutral' => {
   switch (status) {
@@ -25,30 +22,19 @@ const statusTone = (status: AppStatus): 'success' | 'fail' | 'neutral' => {
 
 function PipelineStatus() {
   const queryClient = useQueryClient()
-  const [isRefreshing, setIsRefreshing] = useState(false)
 
   const { data, isFetching } = useQuery({
     queryKey: ['pipelineStatus'],
     queryFn: getPipelineStatus,
   })
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (!isFetching) setIsRefreshing(false)
-  }, [isFetching])
-
-  const handleRefresh = () => {
-    setIsRefreshing(true)
-    queryClient.invalidateQueries({ queryKey: ['pipelineStatus'] })
-  }
+  const handleRefresh = () => queryClient.invalidateQueries({ queryKey: ['pipelineStatus'] })
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">Pipeline status</h2>
-        <Button variant="ghost" size="icon-sm" disabled={isFetching} onClick={handleRefresh}>
-          <RotateCw className={cn('size-4', isFetching && isRefreshing && 'animate-spin')} />
-        </Button>
+        <RefreshButton isFetching={isFetching} onRefresh={handleRefresh} />
       </div>
       <Table>
         <TableHeader>
