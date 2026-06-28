@@ -1,6 +1,6 @@
 import { apiGet } from '@/api/client'
 
-export type AppStatus = 'Running' | 'Stopped' | 'Unknown'
+export type AppStatus = 'running' | 'stopped' | 'unknown'
 
 export interface PipelineStatusDto {
   chartScreenStatus: AppStatus
