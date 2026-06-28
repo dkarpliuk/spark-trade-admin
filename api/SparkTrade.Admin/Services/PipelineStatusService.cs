@@ -14,7 +14,10 @@ public class PipelineStatusService(IOptions<PipelineConfig> config) : IPipelineS
 
     public async Task<PipelineStatusDto> GetStatusesAsync(CancellationToken ct = default)
     {
-        var client = new ArmClient(new DefaultAzureCredential());
+        var client = new ArmClient(new DefaultAzureCredential(new DefaultAzureCredentialOptions
+        {
+            ExcludeVisualStudioCredential = true,
+        }));
 
         var chartScreenTask = GetStatusAsync(client, _config.ChartScreenResourceId, ct);
         var chartQuantTask  = GetStatusAsync(client, _config.ChartQuantResourceId, ct);
