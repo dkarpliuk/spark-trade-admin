@@ -16,7 +16,6 @@ var builder = FunctionsApplication.CreateBuilder(args);
 
 builder.ConfigureFunctionsWebApplication();
 builder.UseMiddleware<InvocationLoggingMiddleware>();
-
 if (!builder.Environment.IsDevelopment())
     builder.UseMiddleware<AdminAuthorizationMiddleware>();
 
@@ -25,17 +24,17 @@ builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options => opti
 
 var pipelineStorageConnection = builder.Configuration["PipelineStorage"]!;
 
+// Logging
 AddLogging(builder.Services, pipelineStorageConnection);
 
+// Options
 builder.Services.AddOptions<AppConfig>().Bind(builder.Configuration);
 builder.Services.AddOptions<PipelineConfig>().Bind(builder.Configuration.GetSection("Pipeline"));
 
-builder.Services.AddSingleton<IPipelineStatusService, PipelineStatusService>();
-
-builder.Services.AddSingleton(_ => new BlobContainerClient(pipelineStorageConnection, StorageNames.AnalysisImagesContainer));
-
+// Services
 builder.Services.AddMemoryCache();
-
+builder.Services.AddSingleton(_ => new BlobContainerClient(pipelineStorageConnection, StorageNames.AnalysisImagesContainer));
+builder.Services.AddSingleton<IPipelineStatusService, PipelineStatusService>();
 builder.Services.AddSingleton<IPipelineHistoryService>(sp => new PipelineHistoryService(
     new TableRepository<ChartQuantAudit>(pipelineStorageConnection, StorageNames.ChartQuantAuditTable),
     new TableRepository<LogEntity>(pipelineStorageConnection, StorageNames.ChartQuantLogsTable),
