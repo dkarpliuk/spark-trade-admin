@@ -5,6 +5,7 @@ import { useState } from 'react'
 import {
   type AppStatus,
   getPipelineStatus,
+  manualTriggerChartScreen,
   PipelineService,
   type PipelineStatusDto,
   startService,
@@ -62,6 +63,7 @@ const getAppAction = (status: AppStatus): AppAction | undefined => {
 function PipelineStatus() {
   const queryClient = useQueryClient()
   const [dialog, setDialog] = useState<DialogAction | null>(null)
+  const [triggerDialog, setTriggerDialog] = useState(false)
   const allServices = Object.values(PipelineService)
 
   const { data, isFetching } = useQuery({
@@ -85,6 +87,11 @@ function PipelineStatus() {
   const { mutate: stop } = useMutation({
     mutationFn: stopService,
     onMutate: (service) => setServiceStatus(service, 'stopping'),
+  })
+
+  const { mutate: triggerChartScreen, isPending: isTriggerPending } = useMutation({
+    mutationFn: manualTriggerChartScreen,
+    onSettled: () => setTriggerDialog(false),
   })
 
   const handleConfirm = () => {
@@ -124,6 +131,14 @@ function PipelineStatus() {
             onClick={() => setDialog({ services: allServices, action: 'stop' })}
           >
             Stop All
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            disabled={isFetching || data?.ChartScreen !== 'running'}
+            onClick={() => setTriggerDialog(true)}
+          >
+            Manual Trigger
           </Button>
         </div>
       </div>
@@ -195,6 +210,27 @@ function PipelineStatus() {
             </DialogFooter>
           </DialogContent>
         )}
+      </Dialog>
+
+      <Dialog open={triggerDialog} onOpenChange={(open) => !open && setTriggerDialog(false)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Manual Trigger ChartScreen?</DialogTitle>
+            <DialogDescription>
+              This will manually trigger the ScreenshotTimer on ChartScreen.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter showCloseButton>
+            <DialogClose asChild>
+              <Button
+                onClick={() => triggerChartScreen()}
+                disabled={isTriggerPending}
+              >
+                Trigger
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     </div>
   )
