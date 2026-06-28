@@ -1,6 +1,6 @@
 import { apiGet } from '@/api/client'
 
-export type AppStatus = 'running' | 'stopped' | 'unknown'
+export type AppStatus = 'running' | 'starting' | 'stopping' | 'stopped' | 'unknown'
 
 export const PipelineService = {
   ChartScreen: 'ChartScreen',
