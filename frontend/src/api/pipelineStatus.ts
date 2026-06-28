@@ -1,4 +1,4 @@
-import { apiGet } from '@/api/client'
+import { apiGet, apiPost } from '@/api/client'
 
 export type AppStatus = 'running' | 'starting' | 'stopping' | 'stopped' | 'unknown'
 
@@ -16,4 +16,12 @@ export type PipelineStatusDto = {
 
 export async function getPipelineStatus(): Promise<PipelineStatusDto> {
   return apiGet<PipelineStatusDto>('/api/pipeline-status')
+}
+
+export async function startService(service: PipelineService): Promise<void> {
+  return apiPost(`/api/pipeline-status/${service}/start`)
+}
+
+export async function stopService(service: PipelineService): Promise<void> {
+  return apiPost(`/api/pipeline-status/${service}/stop`)
 }

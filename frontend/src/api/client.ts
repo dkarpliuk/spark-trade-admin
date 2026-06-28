@@ -23,3 +23,11 @@ export async function apiGet<T>(path: string): Promise<T> {
 
   return (await response.json()) as T
 }
+
+export async function apiPost(path: string): Promise<void> {
+  const response = await fetch(apiUrl(path), { method: 'POST' })
+
+  if (!response.ok) {
+    throw new ApiError(`POST ${path} failed with status ${response.status}`, response.status)
+  }
+}
