@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Play, Square } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 import {
   type AppStatus,
@@ -13,17 +14,18 @@ import {
 } from '@/api/pipelineStatus'
 import LoadingDots from '@/components/LoadingDots'
 import RefreshButton from '@/components/RefreshButton'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import {
   Table,
   TableBody,
@@ -32,9 +34,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { toSentenceCase } from '@/lib/formatters'
 
 type AppAction = 'start' | 'stop'
-type DialogAction = { services: PipelineService[]; action: AppAction }
+type DialogAction = { open: boolean; services: PipelineService[]; action: AppAction; }
 
 const statusTone = (status: AppStatus): 'success' | 'fail' | 'neutral' => {
   switch (status) {
@@ -45,9 +48,9 @@ const statusTone = (status: AppStatus): 'success' | 'fail' | 'neutral' => {
 }
 
 const isTransitional = (status: AppStatus) => status === 'starting' || status === 'stopping'
+
 const hasTransitional = (data?: PipelineStatusDto) =>
   data ? Object.values(data).some(isTransitional) : false
-
 
 const formatTarget = (services: PipelineService[]) =>
   services.length === Object.values(PipelineService).length ? 'all services' : services.join(', ')
@@ -62,7 +65,7 @@ const getAppAction = (status: AppStatus): AppAction | undefined => {
 
 function PipelineStatus() {
   const queryClient = useQueryClient()
-  const [dialog, setDialog] = useState<DialogAction | null>(null)
+  const [dialog, setDialog] = useState<DialogAction>({ open: false, services: [], action: 'start'})
   const [triggerDialog, setTriggerDialog] = useState(false)
   const allServices = Object.values(PipelineService)
 
@@ -91,16 +94,15 @@ function PipelineStatus() {
 
   const { mutate: triggerChartScreen, isPending: isTriggerPending } = useMutation({
     mutationFn: manualTriggerChartScreen,
-    onSettled: () => setTriggerDialog(false),
+    onSuccess: () => toast.success('ChartScreen triggered', { position: 'top-center', duration: 4000 }),
+    onError: () => toast.error('Failed to trigger ChartScreen', { position: 'top-center', duration: 4000 }),
   })
 
   const handleConfirm = () => {
-    if (!dialog) return
     if (dialog.action === 'start')
       dialog.services.filter((s) => data?.[s] === 'stopped').forEach((s) => start(s))
     else
       dialog.services.filter((s) => data?.[s] === 'running').forEach((s) => stop(s))
-    setDialog(null)
   }
 
   const canToggleAll = (action: AppAction) => {
@@ -120,7 +122,7 @@ function PipelineStatus() {
             variant="ghost"
             size="sm"
             disabled={!canToggleAll('start')}
-            onClick={() => setDialog({ services: allServices, action: 'start' })}
+            onClick={() => setDialog({ open: true, services: allServices, action: 'start' })}
           >
             Start All
           </Button>
@@ -128,14 +130,14 @@ function PipelineStatus() {
             variant="ghost"
             size="sm"
             disabled={!canToggleAll('stop')}
-            onClick={() => setDialog({ services: allServices, action: 'stop' })}
+            onClick={() => setDialog({ open: true, services: allServices, action: 'stop' })}
           >
             Stop All
           </Button>
           <Button
             variant="ghost"
             size="sm"
-            disabled={isFetching || data?.ChartScreen !== 'running'}
+            disabled={isFetching || isTriggerPending || data?.ChartScreen !== 'running'}
             onClick={() => setTriggerDialog(true)}
           >
             Manual Trigger
@@ -170,7 +172,7 @@ function PipelineStatus() {
                           variant="ghost"
                           size="icon-sm"
                           disabled={disabled}
-                          onClick={() => setDialog({ services: [service], action })}
+                          onClick={() => setDialog({ open: true, services: [service], action })}
                         >
                           {action === 'start'
                             ? <Play className="size-4 text-success" />
@@ -189,49 +191,35 @@ function PipelineStatus() {
 
       {!data && <LoadingDots className="text-muted-foreground" />}
 
-      <Dialog open={!!dialog} onOpenChange={(open) => !open && setDialog(null)}>
-        {dialog && (
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{dialog.action === 'start' ? 'Start' : 'Stop'} {formatTarget(dialog.services)}?</DialogTitle>
-              <DialogDescription>
-                Are you sure you want to {dialog.action} {formatTarget(dialog.services)}?
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter showCloseButton>
-              <DialogClose asChild>
-                <Button
-                  variant={dialog.action === 'stop' ? 'destructive' : 'default'}
-                  onClick={handleConfirm}
-                >
-                  {dialog.action === 'start' ? 'Start' : 'Stop'}
-                </Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        )}
-      </Dialog>
+      <AlertDialog open={dialog.open} onOpenChange={(open) => setDialog((prev) => ({ ...prev, open }))}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{dialog.action === 'start' ? 'Start' : 'Stop'} {formatTarget(dialog.services)}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to {dialog.action} {formatTarget(dialog.services)}?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirm}>{toSentenceCase(dialog.action)}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
-      <Dialog open={triggerDialog} onOpenChange={(open) => !open && setTriggerDialog(false)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Manual Trigger ChartScreen?</DialogTitle>
-            <DialogDescription>
+      <AlertDialog open={triggerDialog} onOpenChange={setTriggerDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Manual Trigger ChartScreen?</AlertDialogTitle>
+            <AlertDialogDescription>
               This will manually trigger the ScreenshotTimer on ChartScreen.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter showCloseButton>
-            <DialogClose asChild>
-              <Button
-                onClick={() => triggerChartScreen()}
-                disabled={isTriggerPending}
-              >
-                Trigger
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => triggerChartScreen()}>Trigger</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

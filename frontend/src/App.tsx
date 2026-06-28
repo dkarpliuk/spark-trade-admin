@@ -4,6 +4,7 @@ import { Outlet } from 'react-router-dom'
 
 import Nav from '@/components/Nav'
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer'
+import { Toaster } from '@/components/ui/sonner'
 
 function App() {
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -35,6 +36,7 @@ function App() {
       <main className="flex-1 px-4 py-4">
         <Outlet />
       </main>
+      <Toaster />
     </div>
   )
 }

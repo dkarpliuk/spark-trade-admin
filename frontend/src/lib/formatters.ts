@@ -1,3 +1,5 @@
+export const toSentenceCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+
 export function ellipsisMiddle(str: string, n: number): string {
   if (str.length <= n * 2 + 3) return str
   return `${str.slice(0, n)}...${str.slice(-n)}`
