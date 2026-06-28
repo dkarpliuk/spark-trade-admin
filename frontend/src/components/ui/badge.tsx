@@ -23,6 +23,7 @@ const badgeVariants = cva(
       tone: {
         success: "border-success/45 bg-success/15 text-success",
         fail: "border-fail/45 bg-fail/15 text-fail",
+        warning: "border-warning/45 bg-warning/15 text-warning",
         neutral: "border-muted-foreground/45 bg-muted-foreground/15 text-muted-foreground",
       },
     },

@@ -11,5 +11,8 @@ public interface ITableRepository<T> where T : class, ITableEntity
     Task<string?> FindPreviousPartitionKeyAsync(
         string current,
         Func<string, int, string> keyIncrement,
+        string? additionalFilter = null,
         CancellationToken ct = default);
+
+    Task<string?> GetTopRowKeyAsync(string partitionKey, CancellationToken ct = default);
 }

@@ -1,5 +1,8 @@
 import { useState } from 'react'
 
+import ChartScreenshot from '@/components/ChartScreenshot'
+import DecisionResult from '@/components/decision/DecisionResult'
+import RawLogsTable from '@/components/RawLogsTable'
 import SignalAnalysis from '@/components/SignalAnalysis'
 import type { PipelineRun } from '@/models/pipelineRun'
 
@@ -14,11 +17,20 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 function PipelineRunDetails({ run }: { run: PipelineRun }) {
   const [logsOpen, setLogsOpen] = useState(false)
 
+  const logsButtonLabel = (() => {
+    switch (true) {
+      case logsOpen: return `− Hide raw logs (${run.logs.length})`
+      case run.logs.length === 0: return 'No raw logs'
+      default: return `+ View raw logs (${run.logs.length})`
+    }
+  })()
+
   return (
-    <div className="flex flex-col bg-muted-foreground/15">
+    <div className="bg-muted-foreground/15 whitespace-normal">
       <div className="grid grid-cols-3 divide-x">
         <div className="flex min-w-0 flex-col gap-3 p-2">
           <SectionTitle>Chart Screenshot</SectionTitle>
+          <ChartScreenshot blobName={run.blobName} />
         </div>
         <div className="flex min-w-0 flex-col gap-3 p-2">
           <SectionTitle>Signal * Analysis</SectionTitle>
@@ -26,17 +38,23 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
         </div>
         <div className="flex min-w-0 flex-col gap-3 p-2">
           <SectionTitle>Decision * Result</SectionTitle>
+          {run.decision ? <DecisionResult decision={run.decision} /> : null}
         </div>
       </div>
-      <div className="flex flex-col p-2 border-t border-border">
+      <div className="p-2 border-t border-border">
         <button
+          disabled={!run.logs.length}
           onClick={() => setLogsOpen((v) => !v)}
-          className="self-start text-xs font-semibold tracking-widest text-muted-foreground hover:text-foreground"
+          className="text-xs text-muted-foreground hover:text-foreground"
         >
-          {logsOpen ? '− Hide raw logs' : '+ View raw logs'} ({run.logs.length})
+          {logsButtonLabel}
         </button>
-        {logsOpen && <div className="p-2"/>}
       </div>
+      {logsOpen && (
+        <div className="p-2">
+          <RawLogsTable logs={run.logs} />
+        </div>
+      )}
     </div>
   )
 }

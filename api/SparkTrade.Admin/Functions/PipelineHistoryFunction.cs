@@ -9,7 +9,7 @@ public class PipelineHistoryFunction(IPipelineHistoryService pipelineHistoryServ
 {
     [Function("GetPipelineDay")]
     public async Task<IActionResult> GetDay(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "pipeline-history/{date}")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "pipeline-history/{date:datetime}")] HttpRequest req,
         string date,
         CancellationToken ct)
     {
@@ -22,14 +22,13 @@ public class PipelineHistoryFunction(IPipelineHistoryService pipelineHistoryServ
 
     [Function("GetPreviousPipelineDay")]
     public async Task<IActionResult> GetPreviousDay(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "pipeline-history/{date}/previous")] HttpRequest req,
-        string date,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "pipeline-history/previous")] HttpRequest req,
         CancellationToken ct)
     {
-        if (!DateOnly.TryParse(date, out var parsedDate))
-            return new BadRequestResult();
+        if (!DateOnly.TryParse(req.Query["current"], out var current))
+            current = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(1);
 
-        var runs = await pipelineHistoryService.GetPreviousDayAsync(parsedDate, ct);
+        var runs = await pipelineHistoryService.GetPreviousDayAsync(current, ct);
         return new OkObjectResult(runs);
     }
 }

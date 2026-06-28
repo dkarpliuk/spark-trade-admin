@@ -1,3 +1,17 @@
+export const toSentenceCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+
+export function ellipsisMiddle(str: string, n: number): string {
+  if (str.length <= n * 2 + 3) return str
+  return `${str.slice(0, n)}...${str.slice(-n)}`
+}
+
+export function abbreviateBlobName(name: string): string {
+  const dotIndex = name.lastIndexOf('.')
+  const ext = dotIndex !== -1 ? name.slice(dotIndex) : ''
+  const base = dotIndex !== -1 ? name.slice(0, dotIndex) : name
+  return ellipsisMiddle(base, 4) + ext
+}
+
 export function formatNA(value?: string | null): string {
   return value ?? 'n/a'
 }
@@ -8,13 +22,18 @@ export function formatDuration(durationMs: number | null): string {
 }
 
 export function formatDate(date?: Date | null): string {
-  if (!date) return formatNA()
+  if (!date || isNaN(date.getTime())) return formatNA()
   const pad = (n: number) => n.toString().padStart(2, '0')
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
 }
 
-export function formatDateTime(date?: Date | null): string {
+export function formatTime(date: Date | null): string {
   if (!date) return formatNA()
+  return date.toISOString().slice(11, 23)
+}
+
+export function formatDateTime(date?: Date | null): string {
+  if (!date || isNaN(date.getTime())) return formatNA()
   const pad = (n: number) => n.toString().padStart(2, '0')
   return (
     `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +

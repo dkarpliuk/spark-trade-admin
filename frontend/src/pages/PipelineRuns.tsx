@@ -1,12 +1,14 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { ChevronRight } from 'lucide-react'
-import { Fragment, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 
 import { getPreviousPipelineDay } from '@/api/pipelineHistory'
 import LoadingDots from '@/components/LoadingDots'
 import PipelineRunDetails from '@/components/PipelineRunDetails'
+import RefreshButton from '@/components/RefreshButton'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 import {
   Table,
   TableBody,
@@ -15,15 +17,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { getTomorrowUTC } from '@/lib/date'
 import { formatDate, formatDateTime, formatDuration, formatNA } from '@/lib/formatters'
 import { cn } from '@/lib/utils'
 import type { PipelineRun } from '@/models/pipelineRun'
 
-const statusTone = (status: PipelineRun['status']): 'success' | 'fail' | 'neutral' => {
+const statusTone = (status: PipelineRun['status']): 'success' | 'fail' | 'warning' | 'neutral' => {
   switch (status) {
     case 'success': return 'success'
     case 'fail': return 'fail'
+    case 'partial': return 'warning'
     default: return 'neutral'
   }
 }
@@ -49,7 +51,7 @@ interface DaySection {
   runs: PipelineRun[]
 }
 
-const fetchSection = async (pageParam: Date): Promise<DaySection> => {
+const fetchSection = async (pageParam?: Date): Promise<DaySection> => {
   const runs = await getPreviousPipelineDay(pageParam)
   const start = runs[runs.length - 1]?.start
   const date = start ? new Date(new Date(start).setUTCHours(0, 0, 0, 0)) : undefined
@@ -57,7 +59,11 @@ const fetchSection = async (pageParam: Date): Promise<DaySection> => {
 }
 
 function PipelineRuns() {
+  const queryClient = useQueryClient()
   const [openRuns, setOpenRuns] = useState<Set<string>>(new Set())
+  const [hidePartial, setHidePartial] = useState(false)
+
+  const handleRefresh = () => queryClient.resetQueries({ queryKey: ['pipelineHistory'] })
 
   const toggleRun = (key: string) =>
     setOpenRuns((prev) => {
@@ -70,15 +76,28 @@ function PipelineRuns() {
   const { data: { pages = [] } = {}, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
     queryKey: ['pipelineHistory'],
     queryFn: ({ pageParam }) => fetchSection(pageParam),
-    initialPageParam: getTomorrowUTC(),
+    initialPageParam: undefined as Date | undefined,
     getNextPageParam: (lastPage) => lastPage.date
   })
 
-  const sections = pages.filter(({ runs }) => runs.length > 0)
+  const sections = useMemo(() => {
+    const allSections = pages.filter(({ runs }) => runs.length > 0)
+    if (!hidePartial) return allSections
+    return allSections
+      .map(({ date, runs }) => ({ date, runs: runs.filter(r => r.status !== 'partial') }))
+      .filter(({ runs }) => runs.length > 0)
+  }, [pages, hidePartial])
 
   return (
     <div className="flex flex-col gap-2">
-      <h2 className="text-lg font-bold">Pipeline runs</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold">Pipeline runs</h2>
+        <div className="flex items-center gap-2">
+          <RefreshButton isFetching={isFetching} onRefresh={handleRefresh} />
+          <span className="text-sm text-muted-foreground">Hide partial</span>
+          <Switch checked={hidePartial} onCheckedChange={setHidePartial} />
+        </div>
+      </div>
       <Table>
         <TableHeader>
           <TableRow className="bg-border/15 hover:bg-border/15">

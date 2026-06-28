@@ -25,6 +25,15 @@ function Nav({ vertical = false, onNavigate }: { vertical?: boolean; onNavigate?
       >
         <Link to="/pipeline-runs">Pipeline Runs</Link>
       </Button>
+      <Button
+        asChild
+        variant="link"
+        active={pathname === '/pipeline-status'}
+        className="h-10 text-sm font-semibold uppercase tracking-wide"
+        onClick={onNavigate}
+      >
+        <Link to="/pipeline-status">Pipeline Status</Link>
+      </Button>
     </nav>
   )
 }

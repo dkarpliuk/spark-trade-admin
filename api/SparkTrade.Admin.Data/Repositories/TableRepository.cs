@@ -19,6 +19,7 @@ public class TableRepository<T>(string connectionString, string tableName) : ITa
     public async Task<string?> FindPreviousPartitionKeyAsync(
         string current,
         Func<string, int, string> keyIncrement,
+        string? additionalFilter = null,
         CancellationToken ct = default)
     {
         var upperExclusive = current;
@@ -28,7 +29,7 @@ public class TableRepository<T>(string connectionString, string tableName) : ITa
             var rangeWidth = 1 << step;
             var lowerInclusive = keyIncrement(upperExclusive, -rangeWidth);
 
-            var found = await GetMaxPartitionKeyInRangeAsync(lowerInclusive, upperExclusive, ct);
+            var found = await GetMaxPartitionKeyInRangeAsync(lowerInclusive, upperExclusive, additionalFilter, ct);
             if (found is not null)
                 return found;
 
@@ -38,9 +39,23 @@ public class TableRepository<T>(string connectionString, string tableName) : ITa
         return null;
     }
 
-    private async Task<string?> GetMaxPartitionKeyInRangeAsync(string lowerInclusive, string upperExclusive, CancellationToken ct = default)
+    public async Task<string?> GetTopRowKeyAsync(string partitionKey, CancellationToken ct = default)
+    {
+        return await _client
+            .QueryAsync<TableEntity>(e => e.PartitionKey == partitionKey, select: ["RowKey"], maxPerPage: 1, cancellationToken: ct)
+            .Select(e => e.RowKey)
+            .FirstOrDefaultAsync(ct);
+    }
+
+    private async Task<string?> GetMaxPartitionKeyInRangeAsync(
+        string lowerInclusive,
+        string upperExclusive,
+        string? additionalFilter = null,
+        CancellationToken ct = default)
     {
         var filter = TableClient.CreateQueryFilter($"PartitionKey ge {lowerInclusive} and PartitionKey lt {upperExclusive}");
+        if (additionalFilter is not null)
+            filter = $"{filter} and {additionalFilter}";
 
         return await _client
             .QueryAsync<TableEntity>(filter, select: ["PartitionKey"], cancellationToken: ct)

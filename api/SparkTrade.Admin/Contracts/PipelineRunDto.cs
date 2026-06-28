@@ -5,6 +5,7 @@ public enum PipelineStatus
     Unknown,
     Success,
     Fail,
+    Partial
 }
 
 public class PipelineRunDto
@@ -13,8 +14,12 @@ public class PipelineRunDto
     {
         get
         {
-            if (Logs.Count == 0) return PipelineStatus.Unknown;
-            if (Logs.Any(x => x.Level is "Error" or "Fatal")) return PipelineStatus.Fail;
+            if (Logs.Count == 0)
+                return PipelineStatus.Unknown;
+            if (Logs.Any(x => x.Level is "Error" or "Fatal" or "Critical"))
+                return PipelineStatus.Fail;
+            if (Decision is null)
+                return PipelineStatus.Partial;
             return PipelineStatus.Success;
         }
     }

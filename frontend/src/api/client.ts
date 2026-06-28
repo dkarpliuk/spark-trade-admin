@@ -1,5 +1,4 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? 'http://localhost:7071' : '')
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
 
 export function apiUrl(path: string): string {
   return `${API_BASE_URL}${path}`
@@ -23,4 +22,12 @@ export async function apiGet<T>(path: string): Promise<T> {
   }
 
   return (await response.json()) as T
+}
+
+export async function apiPost(path: string): Promise<void> {
+  const response = await fetch(apiUrl(path), { method: 'POST' })
+
+  if (!response.ok) {
+    throw new ApiError(`POST ${path} failed with status ${response.status}`, response.status)
+  }
 }

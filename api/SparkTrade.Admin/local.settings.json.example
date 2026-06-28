@@ -1,9 +1,15 @@
 {
   "IsEncrypted": false,
+  "Host": {
+    "CORS": "http://localhost:5173"
+  },
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
     "PipelineStorage": "<connection string to the shared ChartQuant/SparkTrade storage account>",
-    "AdminGitHubUsername": "<your GitHub username>"
+    "AdminGitHubUsername": "<your GitHub username>",
+    "Pipeline__ChartScreenResourceId": "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Web/sites/<name>",
+    "Pipeline__ChartQuantResourceId": "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Web/sites/<name>",
+    "Pipeline__SparkTradeResourceId": "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Web/sites/<name>"
   }
 }
