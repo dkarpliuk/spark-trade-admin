@@ -14,7 +14,7 @@ function SignalAnalysis({ signal }: { signal: PipelineSignal }) {
       }),
     },
     { label: 'Forecast horizon', value: `${signal.forecast_horizon_candles} candles` },
-    { label: 'Created at', value: formatDateTime(new Date(signal.createdAt)) },
+    { label: 'Created at', value: formatDateTime(new Date(signal.created_at)) },
   ]
 
   return (

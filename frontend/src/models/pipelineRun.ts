@@ -8,7 +8,7 @@ export interface PipelineLevel {
 }
 
 export interface PipelineSignal {
-  createdAt: string
+  created_at: string
   correlation_id: string
   symbol: string
   interval: string
@@ -25,7 +25,7 @@ export interface PipelineSignal {
 }
 
 export interface PipelineOrderPlanDecision {
-  createdAt: string
+  created_at: string
   result_type: 'order_plan'
   symbol: string
   side: string
@@ -38,7 +38,7 @@ export interface PipelineOrderPlanDecision {
 }
 
 export interface PipelineSkipDecision {
-  createdAt: string
+  created_at: string
   result_type: 'skip'
   reason: string
   gate_name: string

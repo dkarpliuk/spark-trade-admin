@@ -7,7 +7,7 @@ function SkipDecisionResult({ decision }: { decision: PipelineSkipDecision }) {
   const rows = [
     { label: 'Reason', value: decision.reason },
     { label: 'Gate', value: decision.gate_name },
-    { label: 'Created at', value: formatDateTime(new Date(decision.createdAt)) },
+    { label: 'Created at', value: formatDateTime(new Date(decision.created_at)) },
   ]
   return (
     <div className="flex flex-1 flex-col gap-2">
