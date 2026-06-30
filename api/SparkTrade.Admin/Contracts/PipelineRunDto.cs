@@ -3,9 +3,10 @@ namespace SparkTrade.Admin.Contracts;
 public enum PipelineStatus
 {
     Unknown,
-    Success,
-    Fail,
-    Partial
+    Complete,
+    Partial,
+    Running,
+    Failed,
 }
 
 public class PipelineRunDto
@@ -17,10 +18,12 @@ public class PipelineRunDto
             if (Logs.Count == 0)
                 return PipelineStatus.Unknown;
             if (Logs.Any(x => x.Level is "Error" or "Fatal" or "Critical"))
-                return PipelineStatus.Fail;
+                return PipelineStatus.Failed;
+            if (Decision is null && End is { } end && DateTimeOffset.UtcNow - end < TimeSpan.FromMinutes(1))
+                return PipelineStatus.Running;
             if (Decision is null)
                 return PipelineStatus.Partial;
-            return PipelineStatus.Success;
+            return PipelineStatus.Complete;
         }
     }
 
