@@ -13,11 +13,11 @@ function KeyValueTable({ rows }: { rows: KeyValueRow[] }) {
         <div
           key={label}
           className={cn(
-            "flex flex-wrap items-start gap-x-2",
+            "flex flex-wrap items-start",
             "border-b border-muted-foreground/20 py-0.5 last:border-0"
           )}>
-          <span className="text-muted-foreground">{label}</span>
-          <span className="flex-1 min-w-fit text-right text-foreground">
+          <span className="flex-1 text-muted-foreground">{label}</span>
+          <span className="flex-1 min-w-fit pl-4 text-right text-foreground">
             {formatNA(value)}
           </span>
         </div>
