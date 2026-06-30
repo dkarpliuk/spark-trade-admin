@@ -42,9 +42,7 @@ public partial class PipelineHistoryService(
 
         var result = await GetPartitionAsync(partitionKey, ct);
 
-        var isRunning = result.Count > 0
-            && result[0] is { Status: PipelineStatus.Partial, End: { } end }
-            && DateTimeOffset.UtcNow - end < CacheExpiration;
+        var isRunning = result.Count > 0 && result[0].Status is PipelineStatus.Running;
 
         if (!isRunning)
             cache.Set(topRowKey, result, CacheExpiration);
