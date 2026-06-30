@@ -61,7 +61,7 @@ const fetchSection = async (pageParam?: Date): Promise<DaySection> => {
 function PipelineRuns() {
   const queryClient = useQueryClient()
   const [openRuns, setOpenRuns] = useState<Set<string>>(new Set())
-  const [hidePartial, setHidePartial] = useState(true)
+  const [showPartial, setShowPartial] = useState(false)
 
   const handleRefresh = () => queryClient.resetQueries({ queryKey: ['pipelineHistory'] })
 
@@ -83,12 +83,12 @@ function PipelineRuns() {
   const sections = useMemo(() => {
     const filteredRuns = pages
       .flatMap(p => p.runs)
-      .filter(r => (!hidePartial || r.status !== 'partial') && r.start != null)
+      .filter(r => (showPartial || r.status !== 'partial') && r.start != null)
 
     const grouped = Map.groupBy(filteredRuns, r => new Date(r.start!).setHours(0, 0, 0, 0))
 
     return Array.from(grouped, ([key, runs]) => ({ date: new Date(key), runs }))
-  }, [pages, hidePartial])
+  }, [pages, showPartial])
 
   const totalRuns = sections.reduce((sum, s) => sum + s.runs.length, 0)
 
@@ -102,8 +102,8 @@ function PipelineRuns() {
         <h2 className="text-lg font-bold">Pipeline runs</h2>
         <div className="flex items-center gap-2">
           <RefreshButton isFetching={isFetching} onRefresh={handleRefresh} />
-          <span className="text-sm text-muted-foreground">Hide partial</span>
-          <Switch checked={hidePartial} onCheckedChange={setHidePartial} />
+          <span className="text-sm text-muted-foreground">Show partial</span>
+          <Switch checked={showPartial} onCheckedChange={setShowPartial} />
         </div>
       </div>
       <Table>
