@@ -23,9 +23,9 @@ import type { PipelineRun } from '@/models/pipelineRun'
 
 const statusTone = (status: PipelineRun['status']): 'success' | 'fail' | 'warning' | 'neutral' => {
   switch (status) {
-    case 'success': return 'success'
-    case 'fail': return 'fail'
-    case 'partial': return 'warning'
+    case 'complete': return 'success'
+    case 'failed': return 'fail'
+    case 'running': return 'warning'
     default: return 'neutral'
   }
 }
@@ -61,7 +61,7 @@ const fetchSection = async (pageParam?: Date): Promise<DaySection> => {
 function PipelineRuns() {
   const queryClient = useQueryClient()
   const [openRuns, setOpenRuns] = useState<Set<string>>(new Set())
-  const [hidePartial, setHidePartial] = useState(false)
+  const [hidePartial, setHidePartial] = useState(true)
 
   const handleRefresh = () => queryClient.resetQueries({ queryKey: ['pipelineHistory'] })
 
