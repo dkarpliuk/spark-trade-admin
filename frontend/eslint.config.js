@@ -21,6 +21,7 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'simple-import-sort/imports': 'warn',
       'simple-import-sort/exports': 'warn',
       'no-irregular-whitespace': 'off',

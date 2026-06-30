@@ -29,7 +29,9 @@ export function formatDate(date?: Date | null): string {
 
 export function formatTime(date: Date | null): string {
   if (!date) return formatNA()
-  return date.toISOString().slice(11, 23)
+  const pad = (n: number) => n.toString().padStart(2, '0')
+  const ms = date.getMilliseconds().toString().padStart(3, '0')
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}.${ms}`
 }
 
 export function formatDateTime(date?: Date | null): string {
