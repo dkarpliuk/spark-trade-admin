@@ -38,3 +38,7 @@ export async function apiGet<T>(path: string): Promise<T> {
 
   throw new ApiError(`No mock registered for ${path}`, 404)
 }
+
+export async function apiPost(_path: string): Promise<void> {
+  await delay(FAKE_LATENCY_MS)
+}

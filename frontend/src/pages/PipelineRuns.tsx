@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { ChevronRight } from 'lucide-react'
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 
 import { getPreviousPipelineDay } from '@/api/pipelineHistory'
 import LoadingDots from '@/components/LoadingDots'
@@ -89,6 +89,12 @@ function PipelineRuns() {
 
     return Array.from(grouped, ([key, runs]) => ({ date: new Date(key), runs }))
   }, [pages, hidePartial])
+
+  const totalRuns = sections.reduce((sum, s) => sum + s.runs.length, 0)
+
+  useEffect(() => {
+    if (!isFetching && hasNextPage && totalRuns < 10) fetchNextPage()
+  }, [isFetching, hasNextPage, totalRuns, fetchNextPage])
 
   return (
     <div className="flex flex-col gap-2">
