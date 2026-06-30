@@ -81,11 +81,13 @@ function PipelineRuns() {
   })
 
   const sections = useMemo(() => {
-    const allSections = pages.filter(({ runs }) => runs.length > 0)
-    if (!hidePartial) return allSections
-    return allSections
-      .map(({ date, runs }) => ({ date, runs: runs.filter(r => r.status !== 'partial') }))
-      .filter(({ runs }) => runs.length > 0)
+    const filteredRuns = pages
+      .flatMap(p => p.runs)
+      .filter(r => (!hidePartial || r.status !== 'partial') && r.start != null)
+
+    const grouped = Map.groupBy(filteredRuns, r => new Date(r.start!).setHours(0, 0, 0, 0))
+
+    return Array.from(grouped, ([key, runs]) => ({ date: new Date(key), runs }))
   }, [pages, hidePartial])
 
   return (
