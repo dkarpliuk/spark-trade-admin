@@ -39,11 +39,11 @@ import { toSentenceCase } from '@/lib/formatters'
 type AppAction = 'start' | 'stop'
 type DialogAction = { open: boolean; services: PipelineService[]; action: AppAction; }
 
-const statusTone = (status: AppStatus): 'success' | 'fail' | 'neutral' => {
+const statusClassName = (status: AppStatus): string => {
   switch (status) {
-    case 'running': return 'success'
-    case 'stopped': return 'fail'
-    default: return 'neutral'
+    case 'running': return 'status-success'
+    case 'stopped': return 'status-fail'
+    default: return 'status-neutral'
   }
 }
 
@@ -162,7 +162,7 @@ function PipelineStatus() {
                   <TableRow key={service}>
                     <TableCell className="font-medium">{service}</TableCell>
                     <TableCell>
-                      <Badge variant="outline" tone={statusTone(status)}>
+                      <Badge variant="outline" className={statusClassName(status)}>
                         {status.toUpperCase()}
                       </Badge>
                     </TableCell>
