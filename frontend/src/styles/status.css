@@ -10,25 +10,26 @@
     --warning: oklch(0.769 0.188 70.08);
 }
 
-@layer components {
-    .status-success {
-        border-color: color-mix(in oklab, var(--success) 50%, transparent);
-        background-color: color-mix(in oklab, var(--success) 10%, transparent);
-        color: var(--success);
-    }
-    .status-fail {
-        border-color: color-mix(in oklab, var(--fail) 50%, transparent);
-        background-color: color-mix(in oklab, var(--fail) 10%, transparent);
-        color: var(--fail);
-    }
-    .status-warning {
-        border-color: color-mix(in oklab, var(--warning) 50%, transparent);
-        background-color: color-mix(in oklab, var(--warning) 10%, transparent);
-        color: var(--warning);
-    }
-    .status-neutral {
-        border-color: color-mix(in oklab, var(--muted-foreground) 50%, transparent);
-        background-color: var(--muted);
-        color: var(--muted-foreground);
-    }
+.status-success {
+    border-color: color-mix(in oklab, var(--success) 50%, transparent);
+    background-color: color-mix(in oklab, var(--success) 10%, transparent);
+    color: var(--success);
+}
+
+.status-fail {
+    border-color: color-mix(in oklab, var(--fail) 50%, transparent);
+    background-color: color-mix(in oklab, var(--fail) 10%, transparent);
+    color: var(--fail);
+}
+
+.status-warning {
+    border-color: color-mix(in oklab, var(--warning) 50%, transparent);
+    background-color: color-mix(in oklab, var(--warning) 10%, transparent);
+    color: var(--warning);
+}
+
+.status-neutral {
+    border-color: color-mix(in oklab, var(--muted-foreground) 50%, transparent);
+    background-color: color-mix(in oklab, var(--muted) 10%, transparent);
+    color: var(--muted-foreground);
 }
