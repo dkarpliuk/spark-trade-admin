@@ -26,13 +26,15 @@ function RawLogsTable({ logs }: { logs: PipelineLog[] }) {
   useTabularCopy(ref)
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
 
-  const toggle = (id: string) =>
+  const toggle = (id: string) => {
+    if (document.getSelection()?.toString()) return
     setExpanded((prev) => {
       const next = new Set(prev)
       if (prev.has(id)) next.delete(id)
       else next.add(id)
       return next
     })
+  }
 
   return (
     <div ref={ref} className={cn(
@@ -49,24 +51,20 @@ function RawLogsTable({ logs }: { logs: PipelineLog[] }) {
         <div className={cn(thClass, 'hidden sm:block')}><span data-cell className={clip}>Corr ID</span></div>
         <div className={cn(thClass, 'hidden sm:block text-right')}><span data-cell className={clip}>ID</span></div>
       </div>
-      {logs.map((log) => {
-        const isExpanded = expanded.has(log.id)
-        return (
-          <div key={log.id} data-row className="contents">
-            <div className={tdClass}><span data-cell className={clip}>{formatTime(log.timestamp)}</span></div>
-            <div className={tdClass}><span data-cell className={clip}>{abbreviateLevel(log.level)}</span></div>
-            <div className={tdClass}><span data-cell className={clip}>{log.service}</span></div>
-            <div className={tdClass} onClick={() => toggle(log.id)}>
-              <span data-cell className={cn(clip, isExpanded && 'whitespace-normal break-all')}>{log.message}</span>
-            </div>
-            <div className={tdClass}><span data-cell className={clip}>{log.invocationId}</span></div>
-            <div className={cn(tdClass, 'hidden sm:block')}><span data-cell className={clip}>{log.correlationId}</span></div>
-            <div className={cn(tdClass, 'hidden sm:block')}>
-              <span data-cell className={cn(clip, '[direction:rtl]')}><span dir="ltr">{log.id}</span></span>
-            </div>
+      {logs.map((log) =>
+        <div key={log.id} data-row className="contents">
+          <div className={tdClass}><span data-cell className={clip}>{formatTime(log.timestamp)}</span></div>
+          <div className={tdClass}><span data-cell className={clip}>{abbreviateLevel(log.level)}</span></div>
+          <div className={tdClass}><span data-cell className={clip}>{log.service}</span></div>
+          <div className={tdClass} onClick={() => toggle(log.id)}>
+            <span data-cell className={cn(clip, expanded.has(log.id) && 'whitespace-normal break-all')}>{log.message}</span>
           </div>
-        )
-      })}
+          <div className={tdClass}><span data-cell className={clip}>{log.invocationId}</span></div>
+          <div className={cn(tdClass, 'hidden sm:block')}><span data-cell className={clip}>{log.correlationId}</span></div>
+          <div className={cn(tdClass, 'hidden sm:block')}>
+            <span data-cell className={cn(clip, '[direction:rtl]')}><span dir="ltr">{log.id}</span></span>
+          </div>
+        </div>)}
     </div>
   )
 }

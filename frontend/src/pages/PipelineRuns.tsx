@@ -65,13 +65,15 @@ function PipelineRuns() {
 
   const handleRefresh = () => queryClient.resetQueries({ queryKey: ['pipelineHistory'] })
 
-  const toggleRun = (key: string) =>
+  const toggleRun = (key: string) => {
+    if (document.getSelection()?.toString()) return
     setOpenRuns((prev) => {
       const next = new Set(prev)
       if (prev.has(key)) next.delete(key)
       else next.add(key)
       return next
     })
+  }
 
   const { data: { pages = [] } = {}, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
     queryKey: ['pipelineHistory'],
