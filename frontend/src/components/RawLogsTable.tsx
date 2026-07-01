@@ -1,6 +1,7 @@
-import { Fragment, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { formatNA, formatTime } from '@/lib/formatters'
+import { useTabularCopy } from '@/lib/tabularCopy'
 import { cn } from '@/lib/utils'
 import type { PipelineLog } from '@/models/pipelineRun'
 
@@ -21,6 +22,8 @@ const tdClass = 'min-w-0 px-[1ch] py-0 text-muted-foreground border-b border-mut
 const clip = 'block overflow-hidden whitespace-nowrap text-ellipsis'
 
 function RawLogsTable({ logs }: { logs: PipelineLog[] }) {
+  const ref = useRef<HTMLDivElement>(null)
+  useTabularCopy(ref)
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
 
   const toggle = (id: string) =>
@@ -32,34 +35,36 @@ function RawLogsTable({ logs }: { logs: PipelineLog[] }) {
     })
 
   return (
-    <div className={cn(
+    <div ref={ref} className={cn(
       "grid text-xs font-mono",
       "grid-cols-[14ch_5ch_12ch_1fr_10ch]",
       "sm:grid-cols-[14ch_5ch_12ch_1fr_10ch_10ch_10ch]"
     )}>
-      <div className={thClass}><span className={clip}>Time</span></div>
-      <div className={thClass}><span className={clip}>Lvl</span></div>
-      <div className={thClass}><span className={clip}>Service</span></div>
-      <div className={thClass}><span className={clip}>Message</span></div>
-      <div className={thClass}><span className={clip}>Inv ID</span></div>
-      <div className={cn(thClass, 'hidden sm:block')}><span className={clip}>Corr ID</span></div>
-      <div className={cn(thClass, 'hidden sm:block text-right')}><span className={clip}>ID</span></div>
+      <div data-row className="contents">
+        <div className={thClass}><span data-cell className={clip}>Time</span></div>
+        <div className={thClass}><span data-cell className={clip}>Lvl</span></div>
+        <div className={thClass}><span data-cell className={clip}>Service</span></div>
+        <div className={thClass}><span data-cell className={clip}>Message</span></div>
+        <div className={thClass}><span data-cell className={clip}>Inv ID</span></div>
+        <div className={cn(thClass, 'hidden sm:block')}><span data-cell className={clip}>Corr ID</span></div>
+        <div className={cn(thClass, 'hidden sm:block text-right')}><span data-cell className={clip}>ID</span></div>
+      </div>
       {logs.map((log) => {
         const isExpanded = expanded.has(log.id)
         return (
-          <Fragment key={log.id}>
-            <div className={tdClass}><span className={clip}>{formatTime(log.timestamp)}</span></div>
-            <div className={tdClass}><span className={clip}>{abbreviateLevel(log.level)}</span></div>
-            <div className={tdClass}><span className={clip}>{log.service}</span></div>
+          <div key={log.id} data-row className="contents">
+            <div className={tdClass}><span data-cell className={clip}>{formatTime(log.timestamp)}</span></div>
+            <div className={tdClass}><span data-cell className={clip}>{abbreviateLevel(log.level)}</span></div>
+            <div className={tdClass}><span data-cell className={clip}>{log.service}</span></div>
             <div className={tdClass} onClick={() => toggle(log.id)}>
-              <span className={cn(clip, isExpanded && 'whitespace-normal break-all')}>{log.message}</span>
+              <span data-cell className={cn(clip, isExpanded && 'whitespace-normal break-all')}>{log.message}</span>
             </div>
-            <div className={tdClass}><span className={clip}>{log.invocationId}</span></div>
-            <div className={cn(tdClass, 'hidden sm:block')}><span className={clip}>{log.correlationId}</span></div>
+            <div className={tdClass}><span data-cell className={clip}>{log.invocationId}</span></div>
+            <div className={cn(tdClass, 'hidden sm:block')}><span data-cell className={clip}>{log.correlationId}</span></div>
             <div className={cn(tdClass, 'hidden sm:block')}>
-              <span className={cn(clip, '[direction:rtl]')}><span dir="ltr">{log.id}</span></span>
+              <span data-cell className={cn(clip, '[direction:rtl]')}><span dir="ltr">{log.id}</span></span>
             </div>
-          </Fragment>
+          </div>
         )
       })}
     </div>
