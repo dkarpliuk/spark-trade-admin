@@ -21,20 +21,20 @@ import { formatDate, formatDateTime, formatDuration, formatNA } from '@/lib/form
 import { cn } from '@/lib/utils'
 import type { PipelineRun } from '@/models/pipelineRun'
 
-const statusTone = (status: PipelineRun['status']): 'success' | 'fail' | 'warning' | 'neutral' => {
+const statusClassName = (status: PipelineRun['status']): string => {
   switch (status) {
-    case 'complete': return 'success'
-    case 'failed': return 'fail'
-    case 'running': return 'warning'
-    default: return 'neutral'
+    case 'complete': return 'status-success'
+    case 'failed': return 'status-fail'
+    case 'running': return 'status-warning'
+    default: return 'status-neutral'
   }
 }
 
-const decisionTone = (run: PipelineRun): 'success' | 'fail' | 'neutral' => {
+const decisionClassName = (run: PipelineRun): string | undefined => {
   switch (run.decision?.result_type) {
-    case 'order_plan': return 'success'
-    case 'skip': return 'fail'
-    default: return 'neutral'
+    case 'order_plan': return 'status-success'
+    case 'skip': return 'status-fail'
+    default: return undefined
   }
 }
 
@@ -135,12 +135,12 @@ function PipelineRuns() {
                   <Fragment key={key}>
                     <TableRow className="cursor-pointer" onClick={() => toggleRun(key)}>
                       <TableCell>
-                        <Badge variant="outline" tone={statusTone(run.status)}>
+                        <Badge variant="outline" className={statusClassName(run.status)}>
                           {run.status.toUpperCase()}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline" tone={decisionTone(run)}>
+                        <Badge variant="outline" className={decisionClassName(run)}>
                           {decisionLabel(run)}
                         </Badge>
                       </TableCell>
