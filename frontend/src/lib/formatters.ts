@@ -5,7 +5,7 @@ export function ellipsisMiddle(str: string, n: number): string {
   return `${str.slice(0, n)}...${str.slice(-n)}`
 }
 
-export function abbreviateBlobName(name: string): string {
+export function abbreviateFileName(name: string): string {
   const dotIndex = name.lastIndexOf('.')
   const ext = dotIndex !== -1 ? name.slice(dotIndex) : ''
   const base = dotIndex !== -1 ? name.slice(0, dotIndex) : name

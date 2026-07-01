@@ -4,7 +4,7 @@ import { getChartImageUrl } from '@/api/chartImage'
 import LoadingDots from '@/components/LoadingDots'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { abbreviateBlobName } from '@/lib/formatters'
+import { abbreviateFileName } from '@/lib/formatters'
 
 function ChartScreenshot({ blobName }: { blobName: string | null }) {
   const [error, setError] = useState(false)
@@ -30,13 +30,13 @@ function ChartScreenshot({ blobName }: { blobName: string | null }) {
                 onError={() => setError(true)}
               />
             </>
-          : <span className="text-xs text-muted-foreground">Screenshot not found</span>
+          : <span className="text-xs text-muted-foreground">{blobName ? 'Not found' : 'Not exist'}</span>
         }
       </div>
       {blobName && (
         <Tooltip delayDuration={600}>
           <TooltipTrigger asChild>
-            <span className="w-fit text-xs text-muted-foreground">{abbreviateBlobName(blobName)}</span>
+            <span className="w-fit text-xs text-muted-foreground">{abbreviateFileName(blobName)}</span>
           </TooltipTrigger>
           <TooltipContent side="bottom">{blobName}</TooltipContent>
         </Tooltip>
@@ -44,13 +44,12 @@ function ChartScreenshot({ blobName }: { blobName: string | null }) {
       {hasImage && (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent
-            showCloseButton={false}
-            className="w-fit p-0 bg-transparent ring-0 rounded-none gap-0 shadow-none"
+            className="w-fit max-w-none sm:max-w-none p-0 bg-transparent ring-0 rounded-none gap-0 shadow-none"
           >
             <img
               src={getChartImageUrl(blobName)}
               alt="Chart screenshot"
-              className="block max-w-[80vw] max-h-[80vh] object-contain"
+              className="block max-w-screen max-h-screen object-contain"
             />
           </DialogContent>
         </Dialog>

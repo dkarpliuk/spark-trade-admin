@@ -2,6 +2,7 @@ import { Menu } from 'lucide-react'
 import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 
+import Logo from '@/components/Logo'
 import Nav from '@/components/Nav'
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer'
 import { Toaster } from '@/components/ui/sonner'
@@ -12,13 +13,7 @@ function App() {
   return (
     <div className="w-full flex min-h-screen flex-col bg-background text-foreground">
       <header className="flex h-16 items-stretch border-b border-border px-4">
-        <span className="flex select-none items-center text-2xl font-bold tracking-widest">
-          <span className="text-purple-500">SPARK</span>
-          <span className="text-yellow-400">.</span>
-          <span className="text-white">trade</span>
-          <span className="mx-1 text-muted-foreground">|</span>
-          <span className="text-muted-foreground">Admin</span>
-        </span>
+        <Logo />
         <div className="ml-auto hidden md:flex">
           <Nav />
         </div>
