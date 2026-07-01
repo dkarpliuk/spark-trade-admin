@@ -15,13 +15,13 @@ function TradeVisual({ decision }: { decision: PipelineOrderPlanDecision }) {
 
   const topDist = isBuy ? tpDist : slDist
   const bottomDist = isBuy ? slDist : tpDist
-  const topColor = isBuy ? 'var(--success)' : 'var(--fail)'
-  const bottomColor = isBuy ? 'var(--fail)' : 'var(--success)'
+  const topColor = isBuy ? 'var(--chart-green)' : 'var(--chart-red)'
+  const bottomColor = isBuy ? 'var(--chart-red)' : 'var(--chart-green)'
 
   const topPct = (isBuy ? tpDist : slDist) / entry_price * 100
   const bottomPct = (isBuy ? slDist : tpDist) / entry_price * 100
-  const topPctClass = isBuy ? 'text-success' : 'text-fail'
-  const bottomPctClass = isBuy ? 'text-fail' : 'text-success'
+  const topPctClass = isBuy ? 'text-chart-green' : 'text-chart-red'
+  const bottomPctClass = isBuy ? 'text-chart-red' : 'text-chart-green'
 
   const rows = isBuy
     ? [

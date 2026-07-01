@@ -1,0 +1,17 @@
+:root {
+    --chart-green: oklch(0.627 0.194 149.214);
+    --chart-red: oklch(0.577 0.245 27.325);
+    --chart-white: oklch(1 0 0);
+}
+
+.dark {
+    --chart-green: oklch(0.723 0.219 149.579);
+    --chart-red: oklch(0.704 0.191 22.216);
+    --chart-white: oklch(1 0 0);
+}
+
+@theme inline {
+    --color-chart-green: var(--chart-green);
+    --color-chart-red: var(--chart-red);
+    --color-chart-white: var(--chart-white);
+}

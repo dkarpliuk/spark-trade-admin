@@ -2,9 +2,9 @@ import { cn } from '@/lib/utils'
 import type { PipelineSignal } from '@/models/pipelineRun'
 
 const OUTCOMES = [
-  { label: 'Higher', key: 'higher', className: 'border border-success/60 bg-success/20' },
-  { label: 'Sideways', key: 'sideways', className: 'border border-foreground/60 bg-foreground/20' },
-  { label: 'Lower', key: 'lower', className: 'border border-fail/60 bg-fail/20' },
+  { label: 'Higher', key: 'higher', className: 'border border-chart-green/60 bg-chart-green/20' },
+  { label: 'Sideways', key: 'sideways', className: 'border border-chart-white/60 bg-chart-white/20' },
+  { label: 'Lower', key: 'lower', className: 'border border-chart-red/60 bg-chart-red/20' },
 ] as const
 
 function Outcomes({ outcome, className }: { outcome: PipelineSignal['outcome']; className?: string }) {
