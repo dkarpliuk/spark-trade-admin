@@ -9,12 +9,13 @@ function SignalAnalysis({ signal }: { signal: PipelineSignal }) {
     { label: 'Price at analysis', value: formatPrice(signal.price_at_analysis) },
     { label: 'Forecast horizon', value: `${signal.forecast_horizon_candles} candles` },
     { label: 'Created at', value: formatDateTime(new Date(signal.created_at)) },
+    { label: 'Outcomes:', value: '' }
   ]
 
   return (
     <div className="flex flex-1 flex-col gap-2">
       <KeyValueTable rows={rows} />
-      <Outcomes className="mt-auto" outcome={signal.outcome} />
+      <Outcomes className="m-auto" outcome={signal.outcome} />
     </div>
   )
 }
