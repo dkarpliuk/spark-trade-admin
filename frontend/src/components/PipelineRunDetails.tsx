@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import ChartScreenshot from '@/components/ChartScreenshot'
+import Attachments from '@/components/Attachments'
 import DecisionResult from '@/components/decision/DecisionResult'
 import RawLogsTable from '@/components/RawLogsTable'
 import SignalAnalysis from '@/components/SignalAnalysis'
@@ -30,8 +30,8 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
     <div className="whitespace-normal">
       <div className="grid grid-cols-3 divide-x">
         <div className="flex min-w-0 flex-col gap-3 p-2">
-          <SectionTitle>Chart Screenshot</SectionTitle>
-          <ChartScreenshot blobName={run.blobName} />
+          <SectionTitle>Attachments</SectionTitle>
+          <Attachments blobName={run.blobName} />
         </div>
         <div className="flex min-w-0 flex-col gap-3 p-2">
           <SectionTitle>Signal * Analysis</SectionTitle>
