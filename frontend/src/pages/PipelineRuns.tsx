@@ -128,7 +128,7 @@ function PipelineRuns() {
               <TableHead>{!isMobile && 'Status'}</TableHead>
               <TableHead>Decision</TableHead>
               <TableHead>Symbol</TableHead>
-              <TableHead>Interval</TableHead>
+              <TableHead>{isMobile ? 'TF' : "Interval"}</TableHead>
               <TableHead>Started</TableHead>
               <TableHead>Duration</TableHead>
               <TableHead className="w-4" />
