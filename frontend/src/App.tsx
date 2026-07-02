@@ -13,7 +13,9 @@ function App() {
   return (
     <div className="w-full flex min-h-screen flex-col bg-background text-foreground">
       <header className="flex h-16 items-stretch border-b border-border px-4">
-        <Logo />
+        <div className="py-2">
+          <Logo />
+        </div>
         <div className="ml-auto hidden md:flex">
           <Nav />
         </div>
