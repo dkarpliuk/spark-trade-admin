@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 
-import { formatNA, formatTime } from '@/lib/formatters'
+import { formatNA, formatTimeMs } from '@/lib/formatters'
 import { useTabularCopy } from '@/lib/tabularCopy'
 import { cn } from '@/lib/utils'
 import type { PipelineLog } from '@/models/pipelineRun'
@@ -53,7 +53,7 @@ function RawLogsTable({ logs }: { logs: PipelineLog[] }) {
       </div>
       {logs.map((log) =>
         <div key={log.id} data-row className="contents [&:last-child>*]:border-0">
-          <div className={tdClass}><span data-cell className={clip}>{formatTime(log.timestamp)}</span></div>
+          <div className={tdClass}><span data-cell className={clip}>{formatTimeMs(log.timestamp)}</span></div>
           <div className={tdClass}><span data-cell className={clip}>{abbreviateLevel(log.level)}</span></div>
           <div className={tdClass}><span data-cell className={clip}>{log.service}</span></div>
           <div className={tdClass} onClick={() => toggle(log.id)}>

@@ -162,7 +162,7 @@ function PipelineStatus() {
           </DropdownMenu>
         </div>
       </div>
-      <div className="overflow-x-auto">
+      <div className="-mx-4 sm:mx-0">
         <Table>
           <TableHeader>
             <TableRow>
