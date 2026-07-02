@@ -170,17 +170,21 @@ function PipelineRuns() {
               })}
             </Fragment>
           ))}
+          <TableRow className="hover:bg-transparent">
+            <TableCell colSpan={7}>
+              <Button
+                variant="link"
+                size="sm"
+                onClick={() => fetchNextPage()}
+                disabled={isFetching || !hasNextPage}
+                className="p-0"
+              >
+                {isFetching ? <LoadingDots /> : hasNextPage ? 'Load more' : 'No more runs'}
+              </Button>
+            </TableCell>
+          </TableRow>
         </TableBody>
       </Table>
-      <Button
-        variant="link"
-        size="sm"
-        onClick={() => fetchNextPage()}
-        disabled={isFetching || !hasNextPage}
-        className="self-start"
-      >
-        {isFetching ? <LoadingDots /> : hasNextPage ? 'Load more' : 'No more runs'}
-      </Button>
     </div>
   )
 }

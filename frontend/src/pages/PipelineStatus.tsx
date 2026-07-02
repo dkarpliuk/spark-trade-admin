@@ -65,7 +65,7 @@ const getAppAction = (status: AppStatus): AppAction | undefined => {
 
 function PipelineStatus() {
   const queryClient = useQueryClient()
-  const [dialog, setDialog] = useState<DialogAction>({ open: false, services: [], action: 'start'})
+  const [dialog, setDialog] = useState<DialogAction>({ open: false, services: [], action: 'start' })
   const [triggerDialog, setTriggerDialog] = useState(false)
   const allServices = Object.values(PipelineService)
 
@@ -154,44 +154,47 @@ function PipelineStatus() {
               <TableHead className="w-8" />
             </TableRow>
           </TableHeader>
-          {data && (
-            <TableBody>
-              {(Object.entries(data) as Array<[PipelineService, AppStatus]>).map(([service, status]) => {
-                const disabled = isFetching || isTransitional(status)
-                const action = getAppAction(status)
-                return (
-                  <TableRow key={service}>
-                    <TableCell>{service}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={statusClassName(status)}>
-                        {status.toUpperCase()}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {action && (
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          className="rounded-full"
-                          disabled={disabled}
-                          onClick={() => setDialog({ open: true, services: [service], action })}
-                        >
-                          {action === 'start'
-                            ? <Play className="size-4 text-success" />
-                            : <Square className="size-4 text-fail" />
-                          }
-                        </Button>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          )}
+          <TableBody>
+            {data && (Object.entries(data) as Array<[PipelineService, AppStatus]>).map(([service, status]) => {
+              const disabled = isFetching || isTransitional(status)
+              const action = getAppAction(status)
+              return (
+                <TableRow key={service}>
+                  <TableCell>{service}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className={statusClassName(status)}>
+                      {status.toUpperCase()}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {action && (
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="rounded-full"
+                        disabled={disabled}
+                        onClick={() => setDialog({ open: true, services: [service], action })}
+                      >
+                        {action === 'start'
+                          ? <Play className="size-4 text-success" />
+                          : <Square className="size-4 text-fail" />
+                        }
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+            {!data && (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={3}>
+                  <LoadingDots className="text-muted-foreground" />
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
       </div>
-
-      {!data && <LoadingDots className="text-muted-foreground pl-2" />}
 
       <AlertDialog open={dialog.open} onOpenChange={(open) => setDialog((prev) => ({ ...prev, open }))}>
         <AlertDialogContent>
