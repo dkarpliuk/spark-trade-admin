@@ -27,6 +27,12 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
   Table,
   TableBody,
   TableCell,
@@ -113,36 +119,47 @@ function PipelineStatus() {
     return false
   }
 
+  const actions = [
+    {
+      label: 'Start All',
+      disabled: !canToggleAll('start'),
+      onClick: () => setDialog({ open: true, services: allServices, action: 'start' }),
+    },
+    {
+      label: 'Stop All',
+      disabled: !canToggleAll('stop'),
+      onClick: () => setDialog({ open: true, services: allServices, action: 'stop' }),
+    },
+    {
+      label: 'Manual Trigger',
+      disabled: isFetching || isTriggerPending || data?.ChartScreen !== 'running',
+      onClick: () => setTriggerDialog(true),
+    },
+  ]
+
   return (
     <div className="flex flex-col gap-2">
-      <div className="grid gap-2 grid-cols-1 md:grid-cols-2">
+      <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">Pipeline status</h2>
-        <div className="flex gap-1 items-center justify-end">
+        <div className="flex items-center gap-1">
           <RefreshButton isFetching={isFetching} onRefresh={handleRefresh} />
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={!canToggleAll('start')}
-            onClick={() => setDialog({ open: true, services: allServices, action: 'start' })}
-          >
-            Start All
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={!canToggleAll('stop')}
-            onClick={() => setDialog({ open: true, services: allServices, action: 'stop' })}
-          >
-            Stop All
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={isFetching || isTriggerPending || data?.ChartScreen !== 'running'}
-            onClick={() => setTriggerDialog(true)}
-          >
-            Manual Trigger
-          </Button>
+          <div className="hidden gap-1 md:flex">
+            {actions.map(({ label, disabled, onClick }) => (
+              <Button key={label} variant="outline" size="sm" disabled={disabled} onClick={onClick}>
+                {label}
+              </Button>
+            ))}
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="md:hidden">Actions</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {actions.map(({ label, disabled, onClick }) => (
+                <DropdownMenuItem key={label} disabled={disabled} onSelect={onClick}>{label}</DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <div className="overflow-x-auto">
