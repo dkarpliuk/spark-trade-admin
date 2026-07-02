@@ -1,61 +1,49 @@
-import KeyValueTable from '@/components/KeyValueTable'
-import type { PipelineOrderPlanDecision } from '@/models/pipelineRun'
+import { Bar, BarChart, BarStack, LabelList, YAxis } from 'recharts'
 
-function fmt(price: number) {
-  return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-}
+import { type ChartConfig, ChartContainer } from '@/components/ui/chart'
+import type { PipelineOrderPlanDecision } from '@/models/pipelineRun'
 
 function TradeVisual({ decision }: { decision: PipelineOrderPlanDecision }) {
   const { entry_price, take_profit_price, stop_loss_price, side } = decision
   const isBuy = side.toLowerCase() === 'buy'
 
-  const tpDist = Math.abs(take_profit_price - entry_price)
-  const slDist = Math.abs(entry_price - stop_loss_price)
-  const total = tpDist + slDist
+  const upperPrice = isBuy ? take_profit_price : stop_loss_price
+  const lowerPrice = isBuy ? stop_loss_price : take_profit_price
 
-  const topDist = isBuy ? tpDist : slDist
-  const bottomDist = isBuy ? slDist : tpDist
   const topColor = isBuy ? 'var(--chart-green)' : 'var(--chart-red)'
   const bottomColor = isBuy ? 'var(--chart-red)' : 'var(--chart-green)'
 
-  const topPct = (isBuy ? tpDist : slDist) / entry_price * 100
-  const bottomPct = (isBuy ? slDist : tpDist) / entry_price * 100
-  const topPctClass = isBuy ? 'text-chart-green' : 'text-chart-red'
-  const bottomPctClass = isBuy ? 'text-chart-red' : 'text-chart-green'
+  const formatSegmentPct = (value: unknown) => {
+    const [start, end] = value as [number, number]
+    return `${((end - start) / entry_price * 100).toFixed(2)}%`
+  }
 
-  const rows = isBuy
-    ? [
-        { label: 'Take profit', value: fmt(take_profit_price) },
-        { label: 'Entry', value: fmt(entry_price) },
-        { label: 'Stop loss', value: fmt(stop_loss_price) },
-      ]
-    : [
-        { label: 'Stop loss', value: fmt(stop_loss_price) },
-        { label: 'Entry', value: fmt(entry_price) },
-        { label: 'Take profit', value: fmt(take_profit_price) },
-      ]
+  const chartConfig = {
+    top: { label: 'Top', color: topColor },
+    bottom: { label: 'Bottom', color: bottomColor },
+  } satisfies ChartConfig
+
+  const chartData = [{ name: 'trade', bottom: [lowerPrice, entry_price], top: [entry_price, upperPrice] }]
 
   return (
-    <div className="grid grid-cols-[3rem_1fr] grid-rows-[auto_1fr_auto] gap-x-2">
-      <span className={`col-start-1 row-start-1 text-xs text-center ${topPctClass}`}>{topPct.toFixed(2)}%</span>
-      <div className="col-start-1 row-start-2 relative ring-1 ring-inset ring-muted-foreground/45">
-        <svg
-          className="absolute inset-0 h-full w-full"
-          viewBox={`0 0 1 ${total}`}
-          preserveAspectRatio="none"
-        >
-          <rect x="0" y="0" width="1" height={topDist} fill={topColor} fillOpacity="0.2" />
-          <path d={`M 0 ${topDist} L 0 0 L 1 0 L 1 ${topDist}`} fill="none" stroke={topColor} strokeOpacity="0.6" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-          <rect x="0" y={topDist} width="1" height={bottomDist} fill={bottomColor} fillOpacity="0.2" />
-          <path d={`M 0 ${topDist} L 0 ${total} L 1 ${total} L 1 ${topDist}`} fill="none" stroke={bottomColor} strokeOpacity="0.6" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-          <path d={`M 0 ${topDist} L 1 ${topDist}`} fill="none" stroke="var(--foreground)" strokeOpacity="0.6" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-        </svg>
-      </div>
-      <span className={`col-start-1 row-start-3 text-xs text-center ${bottomPctClass}`}>{bottomPct.toFixed(2)}%</span>
-      <div className="col-start-2 row-start-2">
-        <KeyValueTable rows={rows} />
-      </div>
-    </div>
+    <ChartContainer config={chartConfig} className="h-full min-h-24 w-12 min-w-12">
+      <BarChart
+        data={chartData}
+        margin={{ top: 16, right: 5, bottom: 16, left: 5 }}
+        barCategoryGap={0}
+        barGap={0}
+      >
+        <YAxis hide domain={[lowerPrice, upperPrice]} />
+        <BarStack radius={4}>
+          <Bar dataKey="bottom" fill={bottomColor} fillOpacity={0.4}>
+            <LabelList dataKey="bottom" position="bottom" formatter={formatSegmentPct} fill={bottomColor} fontSize={12} />
+          </Bar>
+          <Bar dataKey="top" fill={topColor} fillOpacity={0.4}>
+            <LabelList dataKey="top" position="top" formatter={formatSegmentPct} fill={topColor} fontSize={12} />
+          </Bar>
+        </BarStack>
+      </BarChart>
+    </ChartContainer>
   )
 }
 

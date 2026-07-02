@@ -25,7 +25,7 @@ function Outcomes({ outcome, className }: { outcome: PipelineSignal['outcome']; 
         <YAxis
           dataKey="label"
           type="category"
-          minTickGap={0}
+          interval={0}
           tickLine={false}
           width="auto"
           tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
