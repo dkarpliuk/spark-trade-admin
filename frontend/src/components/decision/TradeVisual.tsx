@@ -1,7 +1,9 @@
 import { Bar, BarChart, BarStack, LabelList, YAxis } from 'recharts'
 
-import { type ChartConfig, ChartContainer } from '@/components/ui/chart'
 import type { PipelineOrderPlanDecision } from '@/models/pipelineRun'
+
+const CHART_WIDTH = 48
+const CHART_HEIGHT = 96
 
 function TradeVisual({ decision }: { decision: PipelineOrderPlanDecision }) {
   const { entry_price, take_profit_price, stop_loss_price, side } = decision
@@ -18,16 +20,13 @@ function TradeVisual({ decision }: { decision: PipelineOrderPlanDecision }) {
     return `${((end - start) / entry_price * 100).toFixed(2)}%`
   }
 
-  const chartConfig = {
-    top: { label: 'Top', color: topColor },
-    bottom: { label: 'Bottom', color: bottomColor },
-  } satisfies ChartConfig
-
   const chartData = [{ name: 'trade', bottom: [lowerPrice, entry_price], top: [entry_price, upperPrice] }]
 
   return (
-    <ChartContainer config={chartConfig} className="h-full min-h-24 w-12 min-w-12">
+    <div className="flex justify-center text-xs">
       <BarChart
+        width={CHART_WIDTH}
+        height={CHART_HEIGHT}
         data={chartData}
         margin={{ top: 16, right: 5, bottom: 16, left: 5 }}
         barCategoryGap={0}
@@ -43,7 +42,7 @@ function TradeVisual({ decision }: { decision: PipelineOrderPlanDecision }) {
           </Bar>
         </BarStack>
       </BarChart>
-    </ChartContainer>
+    </div>
   )
 }
 
