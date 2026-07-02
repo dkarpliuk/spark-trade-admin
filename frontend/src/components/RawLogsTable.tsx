@@ -52,7 +52,7 @@ function RawLogsTable({ logs }: { logs: PipelineLog[] }) {
         <div className={cn(thClass, 'hidden sm:block text-right')}><span data-cell className={clip}>ID</span></div>
       </div>
       {logs.map((log) =>
-        <div key={log.id} data-row className="contents">
+        <div key={log.id} data-row className="contents [&:last-child>*]:border-0">
           <div className={tdClass}><span data-cell className={clip}>{formatTime(log.timestamp)}</span></div>
           <div className={tdClass}><span data-cell className={clip}>{abbreviateLevel(log.level)}</span></div>
           <div className={tdClass}><span data-cell className={clip}>{log.service}</span></div>

@@ -1,33 +1,54 @@
+import type { BarShapeProps } from 'recharts'
+import { Bar, BarChart, LabelList, Rectangle, XAxis, YAxis } from 'recharts'
+
+import { type ChartConfig, ChartContainer } from '@/components/ui/chart'
 import { cn } from '@/lib/utils'
 import type { PipelineSignal } from '@/models/pipelineRun'
 
-const OUTCOMES = [
-  { label: 'Higher', key: 'higher', className: 'border border-success/60 bg-success/20' },
-  { label: 'Sideways', key: 'sideways', className: 'border border-foreground/60 bg-foreground/20' },
-  { label: 'Lower', key: 'lower', className: 'border border-fail/60 bg-fail/20' },
-] as const
+const chartConfig = {
+  higher: { label: 'Higher', color: 'var(--chart-green)' },
+  sideways: { label: 'Sideways', color: 'var(--chart-white)' },
+  lower: { label: 'Lower', color: 'var(--chart-red)' },
+} satisfies Record<keyof PipelineSignal['outcome'], ChartConfig[string]>
 
 function Outcomes({ outcome, className }: { outcome: PipelineSignal['outcome']; className?: string }) {
+  const chartData = Object.entries(chartConfig).map(([key, config]) => ({
+    key,
+    ...config,
+    value: outcome[key as keyof PipelineSignal['outcome']].probability * 100,
+  }))
+
   return (
-    <div className={cn('flex flex-col gap-1.5', className)}>
-      {OUTCOMES.map(({ label, key, className }) => {
-        const pct = outcome[key].probability * 100
-        return (
-          <div key={key} className="flex items-center gap-2">
-            <span className="w-14 shrink-0 text-xs text-muted-foreground">{label}</span>
-            <div className="flex-1 h-2 rounded-sm ring-1 ring-inset ring-muted-foreground/45">
-              <div
-                className={cn('h-full rounded-sm', className)}
-                style={{ width: `${pct}%` }}
-              />
-            </div>
-            <span className="w-10 shrink-0 text-right text-xs text-foreground">
-              {pct.toFixed(1)}%
-            </span>
-          </div>
-        )
-      })}
-    </div>
+    <ChartContainer config={chartConfig} className={cn('h-18 w-full', className)}>
+      <BarChart data={chartData} layout="vertical">
+        <XAxis type="number" domain={[0, 100]} hide />
+        <YAxis
+          dataKey="label"
+          type="category"
+          interval={0}
+          tickLine={false}
+          width="auto"
+          tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
+        />
+        <Bar
+          dataKey="value"
+          barSize={8}
+          radius={[0, 4, 4, 0]}
+          background={{ fill: 'var(--muted-foreground)', opacity: 0.1, radius: 4 }}
+          shape={({ payload, ...rest }: BarShapeProps) => (
+            <Rectangle {...rest} fill={payload.color} fillOpacity={0.2} stroke={payload.color} strokeOpacity={0.6} />
+          )}
+        >
+          <LabelList
+            dataKey="value"
+            position="right"
+            fill="var(--foreground)"
+            fontSize={12}
+            formatter={(value) => `${Number(value).toFixed(1)}%`}
+          />
+        </Bar>
+      </BarChart>
+    </ChartContainer>
   )
 }
 

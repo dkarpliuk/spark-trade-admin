@@ -21,20 +21,20 @@ import { formatDate, formatDateTime, formatDuration, formatNA } from '@/lib/form
 import { cn } from '@/lib/utils'
 import type { PipelineRun } from '@/models/pipelineRun'
 
-const statusTone = (status: PipelineRun['status']): 'success' | 'fail' | 'warning' | 'neutral' => {
+const statusClassName = (status: PipelineRun['status']): string => {
   switch (status) {
-    case 'complete': return 'success'
-    case 'failed': return 'fail'
-    case 'running': return 'warning'
-    default: return 'neutral'
+    case 'complete': return 'status-success'
+    case 'failed': return 'status-fail'
+    case 'running': return 'status-warning'
+    default: return 'status-neutral'
   }
 }
 
-const decisionTone = (run: PipelineRun): 'success' | 'fail' | 'neutral' => {
+const decisionClassName = (run: PipelineRun): string | undefined => {
   switch (run.decision?.result_type) {
-    case 'order_plan': return 'success'
-    case 'skip': return 'fail'
-    default: return 'neutral'
+    case 'order_plan': return 'status-success'
+    case 'skip': return 'status-fail'
+    default: return undefined
   }
 }
 
@@ -79,7 +79,8 @@ function PipelineRuns() {
     queryKey: ['pipelineHistory'],
     queryFn: ({ pageParam }) => fetchSection(pageParam),
     initialPageParam: undefined as Date | undefined,
-    getNextPageParam: (lastPage) => lastPage.date
+    getNextPageParam: (lastPage) => lastPage.date,
+    staleTime: 60 * 1000
   })
 
   const sections = useMemo(() => {
@@ -104,27 +105,27 @@ function PipelineRuns() {
         <h2 className="text-lg font-bold">Pipeline runs</h2>
         <div className="flex items-center gap-2">
           <RefreshButton isFetching={isFetching} onRefresh={handleRefresh} />
-          <span className="text-sm text-muted-foreground">Show partial</span>
+          <span className="text-xs text-muted-foreground">Show partial</span>
           <Switch checked={showPartial} onCheckedChange={setShowPartial} />
         </div>
       </div>
       <Table>
         <TableHeader>
-          <TableRow className="bg-border/15 hover:bg-border/15">
+          <TableRow>
             <TableHead>Status</TableHead>
             <TableHead>Decision</TableHead>
             <TableHead>Symbol</TableHead>
             <TableHead>Interval</TableHead>
             <TableHead>Started</TableHead>
             <TableHead>Duration</TableHead>
-            <TableHead className="w-8" />
+            <TableHead className="w-4" />
           </TableRow>
         </TableHeader>
         <TableBody>
           {sections.map(({ date, runs }, index) => (
             <Fragment key={date ? date.toISOString() : `section-${index}`}>
               <TableRow>
-                <TableCell colSpan={7} className="select-none text-sm text-muted-foreground">
+                <TableCell colSpan={7} className="select-none text-xs text-muted-foreground">
                   {formatDate(date)} * {runs.length} runs
                 </TableCell>
               </TableRow>
@@ -135,16 +136,16 @@ function PipelineRuns() {
                   <Fragment key={key}>
                     <TableRow className="cursor-pointer" onClick={() => toggleRun(key)}>
                       <TableCell>
-                        <Badge variant="outline" tone={statusTone(run.status)}>
+                        <Badge variant="outline" className={statusClassName(run.status)}>
                           {run.status.toUpperCase()}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline" tone={decisionTone(run)}>
+                        <Badge variant="outline" className={decisionClassName(run)}>
                           {decisionLabel(run)}
                         </Badge>
                       </TableCell>
-                      <TableCell className="font-bold">{formatNA(run.symbol)}</TableCell>
+                      <TableCell>{formatNA(run.symbol)}</TableCell>
                       <TableCell>{formatNA(run.interval)}</TableCell>
                       <TableCell>{formatDateTime(run.start)}</TableCell>
                       <TableCell>{formatDuration(run.durationMs)}</TableCell>
@@ -173,6 +174,7 @@ function PipelineRuns() {
       </Table>
       <Button
         variant="link"
+        size="sm"
         onClick={() => fetchNextPage()}
         disabled={isFetching || !hasNextPage}
         className="self-start"

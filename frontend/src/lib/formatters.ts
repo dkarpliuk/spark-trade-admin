@@ -16,6 +16,10 @@ export function formatNA(value?: string | null): string {
   return value ?? 'n/a'
 }
 
+export function formatPrice(value: number, fractionDigits = 2): string {
+  return value.toLocaleString('en-US', { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits })
+}
+
 export function formatDuration(durationMs: number | null): string {
   if (durationMs == null) return formatNA()
   return `${(durationMs / 1000).toFixed(1)} s`
