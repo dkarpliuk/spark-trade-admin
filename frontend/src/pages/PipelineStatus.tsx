@@ -119,7 +119,7 @@ function PipelineStatus() {
         <div className="flex gap-1 items-center justify-end">
           <RefreshButton isFetching={isFetching} onRefresh={handleRefresh} />
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             disabled={!canToggleAll('start')}
             onClick={() => setDialog({ open: true, services: allServices, action: 'start' })}
@@ -127,7 +127,7 @@ function PipelineStatus() {
             Start All
           </Button>
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             disabled={!canToggleAll('stop')}
             onClick={() => setDialog({ open: true, services: allServices, action: 'stop' })}
@@ -135,7 +135,7 @@ function PipelineStatus() {
             Stop All
           </Button>
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             disabled={isFetching || isTriggerPending || data?.ChartScreen !== 'running'}
             onClick={() => setTriggerDialog(true)}
@@ -147,10 +147,10 @@ function PipelineStatus() {
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-border/15 hover:bg-border/15">
+            <TableRow>
               <TableHead>Service</TableHead>
               <TableHead className="w-32">Status</TableHead>
-              <TableHead className="w-10" />
+              <TableHead className="w-8" />
             </TableRow>
           </TableHeader>
           {data && (
@@ -160,7 +160,7 @@ function PipelineStatus() {
                 const action = getAppAction(status)
                 return (
                   <TableRow key={service}>
-                    <TableCell className="font-medium">{service}</TableCell>
+                    <TableCell>{service}</TableCell>
                     <TableCell>
                       <Badge variant="outline" className={statusClassName(status)}>
                         {status.toUpperCase()}
@@ -171,6 +171,7 @@ function PipelineStatus() {
                         <Button
                           variant="ghost"
                           size="icon-sm"
+                          className="rounded-full"
                           disabled={disabled}
                           onClick={() => setDialog({ open: true, services: [service], action })}
                         >
@@ -189,7 +190,7 @@ function PipelineStatus() {
         </Table>
       </div>
 
-      {!data && <LoadingDots className="text-muted-foreground" />}
+      {!data && <LoadingDots className="text-muted-foreground pl-2" />}
 
       <AlertDialog open={dialog.open} onOpenChange={(open) => setDialog((prev) => ({ ...prev, open }))}>
         <AlertDialogContent>

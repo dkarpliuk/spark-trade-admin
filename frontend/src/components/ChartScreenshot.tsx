@@ -30,7 +30,7 @@ function ChartScreenshot({ blobName }: { blobName: string | null }) {
                 onError={() => setError(true)}
               />
             </>
-          : <span className="text-xs text-muted-foreground">{blobName ? 'Not found' : 'Not exist'}</span>
+          : <span className="text-xs text-muted-foreground">{blobName ? 'Not found' : 'No screenshot'}</span>
         }
       </div>
       {blobName && (

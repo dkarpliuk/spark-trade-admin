@@ -104,27 +104,27 @@ function PipelineRuns() {
         <h2 className="text-lg font-bold">Pipeline runs</h2>
         <div className="flex items-center gap-2">
           <RefreshButton isFetching={isFetching} onRefresh={handleRefresh} />
-          <span className="text-sm text-muted-foreground">Show partial</span>
+          <span className="text-xs text-muted-foreground">Show partial</span>
           <Switch checked={showPartial} onCheckedChange={setShowPartial} />
         </div>
       </div>
       <Table>
         <TableHeader>
-          <TableRow className="bg-border/15 hover:bg-border/15">
+          <TableRow>
             <TableHead>Status</TableHead>
             <TableHead>Decision</TableHead>
             <TableHead>Symbol</TableHead>
             <TableHead>Interval</TableHead>
             <TableHead>Started</TableHead>
             <TableHead>Duration</TableHead>
-            <TableHead className="w-8" />
+            <TableHead className="w-4" />
           </TableRow>
         </TableHeader>
         <TableBody>
           {sections.map(({ date, runs }, index) => (
             <Fragment key={date ? date.toISOString() : `section-${index}`}>
               <TableRow>
-                <TableCell colSpan={7} className="select-none text-sm text-muted-foreground">
+                <TableCell colSpan={7} className="select-none text-xs text-muted-foreground">
                   {formatDate(date)} * {runs.length} runs
                 </TableCell>
               </TableRow>
@@ -144,7 +144,7 @@ function PipelineRuns() {
                           {decisionLabel(run)}
                         </Badge>
                       </TableCell>
-                      <TableCell className="font-bold">{formatNA(run.symbol)}</TableCell>
+                      <TableCell>{formatNA(run.symbol)}</TableCell>
                       <TableCell>{formatNA(run.interval)}</TableCell>
                       <TableCell>{formatDateTime(run.start)}</TableCell>
                       <TableCell>{formatDuration(run.durationMs)}</TableCell>
@@ -173,6 +173,7 @@ function PipelineRuns() {
       </Table>
       <Button
         variant="link"
+        size="sm"
         onClick={() => fetchNextPage()}
         disabled={isFetching || !hasNextPage}
         className="self-start"

@@ -8,6 +8,7 @@
     "dev:mock": "vite --mode test",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "fix": "eslint . --fix",
     "preview": "vite preview"
   },
   "dependencies": {

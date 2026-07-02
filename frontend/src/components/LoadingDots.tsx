@@ -16,7 +16,7 @@ function LoadingDots({ label = 'Loading', className }: LoadingDotsProps) {
   }, [])
 
   return (
-    <span className={cn('text-sm font-medium', className)}>
+    <span className={cn('text-xs', className)}>
       {label}
       <span className="font-mono" style={{ letterSpacing: 'calc(-2ch / 3)' }}>
         <span style={{ opacity: frame > 0 ? 1 : 0 }}>.</span>

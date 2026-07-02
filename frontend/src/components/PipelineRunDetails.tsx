@@ -4,6 +4,7 @@ import ChartScreenshot from '@/components/ChartScreenshot'
 import DecisionResult from '@/components/decision/DecisionResult'
 import RawLogsTable from '@/components/RawLogsTable'
 import SignalAnalysis from '@/components/SignalAnalysis'
+import { Button } from '@/components/ui/button'
 import type { PipelineRun } from '@/models/pipelineRun'
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -19,14 +20,14 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
 
   const logsButtonLabel = (() => {
     switch (true) {
-      case logsOpen: return `− Hide raw logs (${run.logs.length})`
+      case logsOpen: return `- Hide raw logs (${run.logs.length})`
       case run.logs.length === 0: return 'No raw logs'
       default: return `+ View raw logs (${run.logs.length})`
     }
   })()
 
   return (
-    <div className="bg-muted-foreground/15 whitespace-normal">
+    <div className="whitespace-normal">
       <div className="grid grid-cols-3 divide-x">
         <div className="flex min-w-0 flex-col gap-3 p-2">
           <SectionTitle>Chart Screenshot</SectionTitle>
@@ -42,13 +43,15 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
         </div>
       </div>
       <div className="p-2 border-t border-border">
-        <button
+        <Button
+          variant="link"
+          size="sm"
           disabled={!run.logs.length}
           onClick={() => setLogsOpen((v) => !v)}
-          className="text-xs text-muted-foreground hover:text-foreground"
+          className="h-auto p-0"
         >
           {logsButtonLabel}
-        </button>
+        </Button>
       </div>
       {logsOpen && (
         <div className="p-2">
