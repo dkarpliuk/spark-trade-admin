@@ -5,8 +5,9 @@ import DecisionResult from '@/components/decision/DecisionResult'
 import RawLogsTable from '@/components/RawLogsTable'
 import SignalAnalysis from '@/components/SignalAnalysis'
 import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useIsMobile } from '@/hooks/use-breakpoint'
+import { useBreakpoint, useIsMobile } from '@/hooks/use-breakpoint'
 import type { PipelineRun } from '@/models/pipelineRun'
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -30,6 +31,7 @@ const sections = [
 function PipelineRunDetails({ run }: { run: PipelineRun }) {
   const [logsOpen, setLogsOpen] = useState(false)
   const isMobile = useIsMobile()
+  const isMd = useBreakpoint('md')
 
   const logsButtonLabel = (() => {
     switch (true) {
@@ -75,10 +77,21 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
           {logsButtonLabel}
         </Button>
       </div>
-      {logsOpen && (
+      {isMd && logsOpen ? (
         <div className="p-2">
-          <RawLogsTable logs={run.logs} />
+          <RawLogsTable logs={run.logs} fontFamily="Inconsolata Variable" />
         </div>
+      ) : (
+        <Sheet open={logsOpen} onOpenChange={setLogsOpen}>
+          <SheetContent side="bottom" className="data-[side=bottom]:max-h-[80vh]">
+            <SheetHeader className="p-4">
+              <SheetTitle className="text-xs font-normal">Raw logs</SheetTitle>
+            </SheetHeader>
+            <div className="flex-1 overflow-y-auto py-2">
+              <RawLogsTable logs={run.logs} fontFamily="Inconsolata Variable" />
+            </div>
+          </SheetContent>
+        </Sheet>
       )}
     </div>
   )

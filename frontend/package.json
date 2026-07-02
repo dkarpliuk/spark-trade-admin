@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource-variable/inconsolata": "^5.2.8",
     "@fontsource-variable/roboto-mono": "^5.2.9",
     "@tailwindcss/vite": "^4.3.1",
     "@tanstack/react-query": "^5.101.1",
