@@ -36,7 +36,7 @@ const minStatusClassName = (status: PipelineRun['status']): string => {
   switch (status) {
     case 'complete': return 'bg-success'
     case 'failed': return 'bg-fail'
-    case 'running': return 'bg-warning'
+    case 'running': return 'bg-warning animate-[blink_1s_ease-in-out_infinite]'
     default: return 'bg-muted-foreground'
   }
 }
