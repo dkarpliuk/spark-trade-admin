@@ -33,3 +33,9 @@
     background-color: color-mix(in oklab, var(--muted) 10%, transparent);
     color: var(--muted-foreground);
 }
+
+@theme inline {
+    --color-success: var(--success);
+    --color-fail: var(--fail);
+    --color-warning: var(--warning);
+}
