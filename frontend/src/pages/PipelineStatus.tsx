@@ -73,6 +73,7 @@ function PipelineStatus() {
     queryKey: ['pipelineStatus'],
     queryFn: getPipelineStatus,
     refetchInterval: (query) => hasTransitional(query.state.data) ? 4000 : false,
+    staleTime: 60 * 1000
   })
 
   const handleRefresh = () => queryClient.invalidateQueries({ queryKey: ['pipelineStatus'] })
