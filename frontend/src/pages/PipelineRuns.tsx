@@ -18,7 +18,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { formatDate, formatDateTime, formatDuration, formatNA } from '@/lib/formatters'
+import { useIsMobile } from '@/hooks/use-breakpoint'
+import { formatDate, formatDateTime, formatDuration, formatMonthDay, formatNA,formatTime } from '@/lib/formatters'
 import { cn } from '@/lib/utils'
 import type { PipelineRun } from '@/models/pipelineRun'
 
@@ -28,6 +29,15 @@ const statusClassName = (status: PipelineRun['status']): string => {
     case 'failed': return 'status-fail'
     case 'running': return 'status-warning'
     default: return 'status-neutral'
+  }
+}
+
+const minStatusClassName = (status: PipelineRun['status']): string => {
+  switch (status) {
+    case 'complete': return 'bg-success'
+    case 'failed': return 'bg-fail'
+    case 'running': return 'bg-warning'
+    default: return 'bg-muted-foreground'
   }
 }
 
@@ -63,6 +73,7 @@ function PipelineRuns() {
   const queryClient = useQueryClient()
   const [openRuns, setOpenRuns] = useState<Set<string>>(new Set())
   const [showPartial, setShowPartial] = useState(false)
+  const isMobile = useIsMobile()
 
   const handleRefresh = () => queryClient.resetQueries({ queryKey: ['pipelineHistory'] })
 
@@ -110,82 +121,88 @@ function PipelineRuns() {
           <Switch id="show-partial" checked={showPartial} onCheckedChange={setShowPartial} />
         </div>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Status</TableHead>
-            <TableHead>Decision</TableHead>
-            <TableHead>Symbol</TableHead>
-            <TableHead>Interval</TableHead>
-            <TableHead>Started</TableHead>
-            <TableHead>Duration</TableHead>
-            <TableHead className="w-4" />
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {sections.map(({ date, runs }, index) => (
-            <Fragment key={date ? date.toISOString() : `section-${index}`}>
-              <TableRow>
-                <TableCell colSpan={7} className="select-none text-xs text-muted-foreground">
-                  {formatDate(date)} * {runs.length} runs
-                </TableCell>
-              </TableRow>
-              {runs.map((run, runIndex) => {
-                const key = `${index}-${runIndex}`
-                const isOpen = openRuns.has(key)
-                return (
-                  <Fragment key={key}>
-                    <TableRow className="cursor-pointer" onClick={() => toggleRun(key)}>
-                      <TableCell>
-                        <Badge variant="outline" className={statusClassName(run.status)}>
-                          {run.status.toUpperCase()}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className={decisionClassName(run)}>
-                          {decisionLabel(run)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{formatNA(run.symbol)}</TableCell>
-                      <TableCell>{formatNA(run.interval)}</TableCell>
-                      <TableCell>{formatDateTime(run.start)}</TableCell>
-                      <TableCell>{formatDuration(run.durationMs)}</TableCell>
-                      <TableCell>
-                        <ChevronRight
-                          className={cn(
-                            'size-4 text-muted-foreground transition-transform',
-                            isOpen && 'rotate-90',
+      <div className="-mx-4 sm:mx-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{!isMobile && 'Status'}</TableHead>
+              <TableHead>Decision</TableHead>
+              <TableHead>Symbol</TableHead>
+              <TableHead>{isMobile ? 'TF' : "Interval"}</TableHead>
+              <TableHead>Started</TableHead>
+              <TableHead>Duration</TableHead>
+              <TableHead className="w-4" />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {sections.map(({ date, runs }, index) => (
+              <Fragment key={date ? date.toISOString() : `section-${index}`}>
+                <TableRow>
+                  <TableCell colSpan={7} className="select-none text-xs text-muted-foreground">
+                    {isMobile ? formatMonthDay(date) : formatDate(date)} * {runs.length} runs
+                  </TableCell>
+                </TableRow>
+                {runs.map((run, runIndex) => {
+                  const key = `${index}-${runIndex}`
+                  const isOpen = openRuns.has(key)
+                  return (
+                    <Fragment key={key}>
+                      <TableRow className="cursor-pointer" onClick={() => toggleRun(key)}>
+                        <TableCell>
+                          {isMobile ? (
+                            <span className={cn("flex size-2 rounded-full", minStatusClassName(run.status))} />
+                          ) : (
+                            <Badge variant="outline" className={statusClassName(run.status)}>
+                              {run.status.toUpperCase()}
+                            </Badge>
                           )}
-                        />
-                      </TableCell>
-                    </TableRow>
-                    {isOpen && (
-                      <TableRow>
-                        <TableCell colSpan={7} className="p-0">
-                          <PipelineRunDetails run={run} />
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className={decisionClassName(run)}>
+                            {decisionLabel(run)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{formatNA(run.symbol)}</TableCell>
+                        <TableCell>{formatNA(run.interval)}</TableCell>
+                        <TableCell>{isMobile ? formatTime(run.start) : formatDateTime(run.start)}</TableCell>
+                        <TableCell>{formatDuration(run.durationMs)}</TableCell>
+                        <TableCell>
+                          <ChevronRight
+                            className={cn(
+                              'size-4 text-muted-foreground transition-transform',
+                              isOpen && 'rotate-90',
+                            )}
+                          />
                         </TableCell>
                       </TableRow>
-                    )}
-                  </Fragment>
-                )
-              })}
-            </Fragment>
-          ))}
-          <TableRow className="hover:bg-transparent">
-            <TableCell colSpan={7}>
-              <Button
-                variant="link"
-                size="sm"
-                onClick={() => fetchNextPage()}
-                disabled={isFetching || !hasNextPage}
-                className="p-0"
-              >
-                {isFetching ? <LoadingDots /> : hasNextPage ? 'Load more' : 'No more runs'}
-              </Button>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+                      {isOpen && (
+                        <TableRow>
+                          <TableCell colSpan={7} className="p-0">
+                            <PipelineRunDetails run={run} />
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </Fragment>
+                  )
+                })}
+              </Fragment>
+            ))}
+            <TableRow className="hover:bg-transparent">
+              <TableCell colSpan={7}>
+                <Button
+                  variant="link"
+                  size="sm"
+                  onClick={() => fetchNextPage()}
+                  disabled={isFetching || !hasNextPage}
+                  className="p-0"
+                >
+                  {isFetching ? <LoadingDots /> : hasNextPage ? 'Load more' : 'No more runs'}
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
     </div>
   )
 }
