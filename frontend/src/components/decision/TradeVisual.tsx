@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Bar, BarChart, BarStack, LabelList, YAxis } from 'recharts'
 
 import type { PipelineOrderPlanDecision } from '@/models/pipelineRun'
@@ -20,7 +21,10 @@ function TradeVisual({ decision }: { decision: PipelineOrderPlanDecision }) {
     return `${((end - start) / entry_price * 100).toFixed(2)}%`
   }
 
-  const chartData = [{ name: 'trade', bottom: [lowerPrice, entry_price], top: [entry_price, upperPrice] }]
+  const chartData = useMemo(
+    () => [{ name: 'trade', bottom: [lowerPrice, entry_price], top: [entry_price, upperPrice] }],
+    [lowerPrice, entry_price, upperPrice],
+  )
 
   return (
     <div className="flex justify-center text-xs">

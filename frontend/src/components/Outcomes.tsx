@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { BarShapeProps } from 'recharts'
 import { Bar, BarChart, LabelList, Rectangle, XAxis, YAxis } from 'recharts'
 
@@ -12,11 +13,14 @@ const chartConfig = {
 } satisfies Record<keyof PipelineSignal['outcome'], ChartConfig[string]>
 
 function Outcomes({ outcome, className }: { outcome: PipelineSignal['outcome']; className?: string }) {
-  const chartData = Object.entries(chartConfig).map(([key, config]) => ({
-    key,
-    ...config,
-    value: outcome[key as keyof PipelineSignal['outcome']].probability * 100,
-  }))
+  const chartData = useMemo(
+    () => Object.entries(chartConfig).map(([key, config]) => ({
+      key,
+      ...config,
+      value: outcome[key as keyof PipelineSignal['outcome']].probability * 100,
+    })),
+    [outcome],
+  )
 
   return (
     <ChartContainer config={chartConfig} className={cn('h-18 w-full', className)}>
