@@ -24,7 +24,12 @@ function RefreshButton({ isFetching, onRefresh }: RefreshButtonProps) {
 
   return (
     <Button variant="ghost" size="icon-sm" disabled={isFetching} onClick={handleClick}>
-      <RotateCw className={cn('size-4', isFetching && isRefreshing && 'animate-spin')} />
+      <RotateCw
+        className={cn(
+          'size-4 origin-center transform-fill',
+          isFetching && isRefreshing && 'animate-spin',
+        )}
+      />
     </Button>
   )
 }
