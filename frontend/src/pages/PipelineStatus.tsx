@@ -27,6 +27,12 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
   Table,
   TableBody,
   TableCell,
@@ -65,7 +71,7 @@ const getAppAction = (status: AppStatus): AppAction | undefined => {
 
 function PipelineStatus() {
   const queryClient = useQueryClient()
-  const [dialog, setDialog] = useState<DialogAction>({ open: false, services: [], action: 'start'})
+  const [dialog, setDialog] = useState<DialogAction>({ open: false, services: [], action: 'start' })
   const [triggerDialog, setTriggerDialog] = useState(false)
   const allServices = Object.values(PipelineService)
 
@@ -113,36 +119,47 @@ function PipelineStatus() {
     return false
   }
 
+  const actions = [
+    {
+      label: 'Start All',
+      disabled: !canToggleAll('start'),
+      onClick: () => setDialog({ open: true, services: allServices, action: 'start' }),
+    },
+    {
+      label: 'Stop All',
+      disabled: !canToggleAll('stop'),
+      onClick: () => setDialog({ open: true, services: allServices, action: 'stop' }),
+    },
+    {
+      label: 'Manual Trigger',
+      disabled: isFetching || isTriggerPending || data?.ChartScreen !== 'running',
+      onClick: () => setTriggerDialog(true),
+    },
+  ]
+
   return (
     <div className="flex flex-col gap-2">
-      <div className="grid gap-2 grid-cols-1 md:grid-cols-2">
+      <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">Pipeline status</h2>
-        <div className="flex gap-1 items-center justify-end">
+        <div className="flex items-center gap-1">
           <RefreshButton isFetching={isFetching} onRefresh={handleRefresh} />
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={!canToggleAll('start')}
-            onClick={() => setDialog({ open: true, services: allServices, action: 'start' })}
-          >
-            Start All
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={!canToggleAll('stop')}
-            onClick={() => setDialog({ open: true, services: allServices, action: 'stop' })}
-          >
-            Stop All
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={isFetching || isTriggerPending || data?.ChartScreen !== 'running'}
-            onClick={() => setTriggerDialog(true)}
-          >
-            Manual Trigger
-          </Button>
+          <div className="hidden gap-1 md:flex">
+            {actions.map(({ label, disabled, onClick }) => (
+              <Button key={label} variant="outline" size="sm" disabled={disabled} onClick={onClick}>
+                {label}
+              </Button>
+            ))}
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="md:hidden">Actions</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {actions.map(({ label, disabled, onClick }) => (
+                <DropdownMenuItem key={label} disabled={disabled} onSelect={onClick}>{label}</DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -154,44 +171,47 @@ function PipelineStatus() {
               <TableHead className="w-8" />
             </TableRow>
           </TableHeader>
-          {data && (
-            <TableBody>
-              {(Object.entries(data) as Array<[PipelineService, AppStatus]>).map(([service, status]) => {
-                const disabled = isFetching || isTransitional(status)
-                const action = getAppAction(status)
-                return (
-                  <TableRow key={service}>
-                    <TableCell>{service}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={statusClassName(status)}>
-                        {status.toUpperCase()}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {action && (
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          className="rounded-full"
-                          disabled={disabled}
-                          onClick={() => setDialog({ open: true, services: [service], action })}
-                        >
-                          {action === 'start'
-                            ? <Play className="size-4 text-success" />
-                            : <Square className="size-4 text-fail" />
-                          }
-                        </Button>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          )}
+          <TableBody>
+            {data && (Object.entries(data) as Array<[PipelineService, AppStatus]>).map(([service, status]) => {
+              const disabled = isFetching || isTransitional(status)
+              const action = getAppAction(status)
+              return (
+                <TableRow key={service}>
+                  <TableCell>{service}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className={statusClassName(status)}>
+                      {status.toUpperCase()}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {action && (
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="rounded-full"
+                        disabled={disabled}
+                        onClick={() => setDialog({ open: true, services: [service], action })}
+                      >
+                        {action === 'start'
+                          ? <Play className="size-4 text-success" />
+                          : <Square className="size-4 text-fail" />
+                        }
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+            {!data && (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={3}>
+                  <LoadingDots className="text-muted-foreground" />
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
       </div>
-
-      {!data && <LoadingDots className="text-muted-foreground pl-2" />}
 
       <AlertDialog open={dialog.open} onOpenChange={(open) => setDialog((prev) => ({ ...prev, open }))}>
         <AlertDialogContent>
