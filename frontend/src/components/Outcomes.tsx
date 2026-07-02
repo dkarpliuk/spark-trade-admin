@@ -34,6 +34,7 @@ function Outcomes({ outcome, className }: { outcome: PipelineSignal['outcome']; 
           dataKey="value"
           barSize={8}
           radius={[0, 4, 4, 0]}
+          background={{ fill: 'var(--muted-foreground)', opacity: 0.1, radius: 4 }}
           shape={({ payload, ...rest }: BarShapeProps) => (
             <Rectangle {...rest} fill={payload.color} fillOpacity={0.2} stroke={payload.color} strokeOpacity={0.6} />
           )}
