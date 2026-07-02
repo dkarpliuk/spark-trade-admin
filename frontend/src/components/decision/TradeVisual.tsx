@@ -35,11 +35,11 @@ function TradeVisual({ decision }: { decision: PipelineOrderPlanDecision }) {
       >
         <YAxis hide domain={[lowerPrice, upperPrice]} />
         <BarStack radius={4}>
-          <Bar dataKey="bottom" fill={bottomColor} fillOpacity={0.4}>
-            <LabelList dataKey="bottom" position="bottom" formatter={formatSegmentPct} fill={bottomColor} fontSize={12} />
+          <Bar dataKey="bottom" fill={bottomColor} fillOpacity={0.4} style={{ fill: bottomColor }}>
+            <LabelList dataKey="bottom" position="bottom" formatter={formatSegmentPct} fill={bottomColor} style={{ fill: bottomColor }} fontSize={12} />
           </Bar>
-          <Bar dataKey="top" fill={topColor} fillOpacity={0.4}>
-            <LabelList dataKey="top" position="top" formatter={formatSegmentPct} fill={topColor} fontSize={12} />
+          <Bar dataKey="top" fill={topColor} fillOpacity={0.4} style={{ fill: topColor }}>
+            <LabelList dataKey="top" position="top" formatter={formatSegmentPct} fill={topColor} style={{ fill: topColor }} fontSize={12} />
           </Bar>
         </BarStack>
       </BarChart>
