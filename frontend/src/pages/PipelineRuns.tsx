@@ -8,6 +8,7 @@ import PipelineRunDetails from '@/components/PipelineRunDetails'
 import RefreshButton from '@/components/RefreshButton'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import {
   Table,
@@ -105,8 +106,8 @@ function PipelineRuns() {
         <h2 className="text-lg font-bold">Pipeline runs</h2>
         <div className="flex items-center gap-2">
           <RefreshButton isFetching={isFetching} onRefresh={handleRefresh} />
-          <span className="text-xs text-muted-foreground">Show partial</span>
-          <Switch checked={showPartial} onCheckedChange={setShowPartial} />
+          <Label htmlFor="show-partial">Show partial</Label>
+          <Switch id="show-partial" checked={showPartial} onCheckedChange={setShowPartial} />
         </div>
       </div>
       <Table>
