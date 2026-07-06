@@ -102,11 +102,21 @@ public partial class PipelineHistoryService(
             Symbol = symbol,
             Interval = interval,
             ChartTimestamp = chartQuantAudit?.ChartTimestamp ?? sparkTradeAudit?.ChartTimestamp,
-            BlobName = chartQuantAudit?.BlobName,
             Signal = chartQuantAudit?.Signal,
             Decision = sparkTradeAudit?.DecisionResult,
+            Attachments = BuildAttachments(chartQuantAudit),
             Logs = logs
         };
+    }
+
+    private static IReadOnlyList<PipelineAttachmentDto> BuildAttachments(ChartQuantAudit? chartQuantAudit)
+    {
+        var attachments = new List<PipelineAttachmentDto>();
+        if (!string.IsNullOrEmpty(chartQuantAudit?.BlobName))
+            attachments.Add(new PipelineAttachmentDto { BlobName = chartQuantAudit.BlobName, Type = PipelineAttachmentType.Image });
+        if (!string.IsNullOrEmpty(chartQuantAudit?.TxtBlobName))
+            attachments.Add(new PipelineAttachmentDto { BlobName = chartQuantAudit.TxtBlobName, Type = PipelineAttachmentType.Text });
+        return attachments;
     }
 
     private static string IncrementCallback(string partitionKey, int increment)
