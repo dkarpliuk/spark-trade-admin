@@ -11,8 +11,8 @@ public enum PipelineStatus
 
 public enum PipelineAttachmentType
 {
-    Image,
-    Text,
+    ChartScreenshot,
+    AnalysisText,
 }
 
 public class PipelineAttachmentDto

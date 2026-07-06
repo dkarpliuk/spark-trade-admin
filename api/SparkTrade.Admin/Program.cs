@@ -8,6 +8,7 @@ using Serilog;
 using Serilog.Events;
 using SparkTrade.Admin.Auth;
 using SparkTrade.Admin.Configuration;
+using SparkTrade.Admin.Contracts;
 using SparkTrade.Admin.Data.Entities;
 using SparkTrade.Admin.Data.Repositories;
 using SparkTrade.Admin.Services;
@@ -34,7 +35,11 @@ builder.Services.AddOptions<PipelineConfig>().Bind(builder.Configuration.GetSect
 // Services
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient();
-builder.Services.AddSingleton(_ => new BlobContainerClient(pipelineStorageConnection, StorageNames.AnalysisImagesContainer));
+builder.Services.AddSingleton<IReadOnlyDictionary<PipelineAttachmentType, BlobContainerClient>>(_ => new Dictionary<PipelineAttachmentType, BlobContainerClient>
+{
+    [PipelineAttachmentType.ChartScreenshot] = new BlobContainerClient(pipelineStorageConnection, StorageNames.AnalysisImagesContainer),
+    [PipelineAttachmentType.AnalysisText] = new BlobContainerClient(pipelineStorageConnection, StorageNames.AnalysisTextContainer),
+});
 builder.Services.AddSingleton<IPipelineStatusService, PipelineStatusService>();
 builder.Services.AddSingleton<IPipelineHistoryService>(sp => new PipelineHistoryService(
     new TableRepository<ChartQuantAudit>(pipelineStorageConnection, StorageNames.ChartQuantAuditTable),

@@ -10,4 +10,5 @@ public static class StorageNames
     public const string AdminLogsTable = "SparkTradeAdminLogs";
 
     public const string AnalysisImagesContainer = "analysis-images";
+    public const string AnalysisTextContainer = "analysis-text";
 }

@@ -113,9 +113,9 @@ public partial class PipelineHistoryService(
     {
         var attachments = new List<PipelineAttachmentDto>();
         if (!string.IsNullOrEmpty(chartQuantAudit?.BlobName))
-            attachments.Add(new PipelineAttachmentDto { BlobName = chartQuantAudit.BlobName, Type = PipelineAttachmentType.Image });
+            attachments.Add(new PipelineAttachmentDto { BlobName = chartQuantAudit.BlobName, Type = PipelineAttachmentType.ChartScreenshot });
         if (!string.IsNullOrEmpty(chartQuantAudit?.TxtBlobName))
-            attachments.Add(new PipelineAttachmentDto { BlobName = chartQuantAudit.TxtBlobName, Type = PipelineAttachmentType.Text });
+            attachments.Add(new PipelineAttachmentDto { BlobName = chartQuantAudit.TxtBlobName, Type = PipelineAttachmentType.AnalysisText });
         return attachments;
     }
 
