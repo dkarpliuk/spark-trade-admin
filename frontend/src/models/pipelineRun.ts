@@ -1,6 +1,11 @@
-import type { PipelineLogDto, PipelineRunDto, PipelineStatusDto } from '@/api/pipelineHistory'
+import type { AttachmentTypeDto, PipelineLogDto, PipelineRunDto, PipelineStatusDto } from '@/api/pipelineHistory'
 
 export type PipelineStatus = PipelineStatusDto
+
+export interface PipelineAttachment {
+  blobName: string
+  type: AttachmentTypeDto
+}
 
 export interface PipelineLevel {
   from: number
@@ -61,12 +66,12 @@ export interface PipelineRun {
   symbol: string | null
   interval: string | null
   chartTimestamp: Date | null
-  blobName: string | null
   signal: PipelineSignal | null
   decision: PipelineDecision | null
   start: Date | null
   end: Date | null
   durationMs: number | null
+  attachments: PipelineAttachment[]
   logs: PipelineLog[]
 }
 
@@ -88,12 +93,12 @@ export function parsePipelineRun(dto: PipelineRunDto): PipelineRun {
     symbol: dto.symbol,
     interval: dto.interval,
     chartTimestamp: dto.chartTimestamp ? new Date(dto.chartTimestamp) : null,
-    blobName: dto.blobName,
     signal: dto.signal ? (JSON.parse(dto.signal) as PipelineSignal) : null,
     decision: dto.decision ? (JSON.parse(dto.decision) as PipelineDecision) : null,
     start: dto.start ? new Date(dto.start) : null,
     end: dto.end ? new Date(dto.end) : null,
     durationMs: dto.durationMs,
+    attachments: dto.attachments,
     logs: dto.logs.map(parseLog),
   }
 }

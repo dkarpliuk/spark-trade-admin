@@ -4,7 +4,10 @@
         "symbol": "BTCUSDT",
         "interval": "5m",
         "chartTimestamp": "2026-06-17T23:57:07+00:00",
-        "blobName": "eba7a1d7a68a4bffa723d5c9796de3ae.png",
+        "attachments": [
+            { "blobName": "eba7a1d7a68a4bffa723d5c9796de3ae.png", "type": "chartScreenshot" },
+            { "blobName": "eba7a1d7a68a4bffa723d5c9796de3ae.txt", "type": "analysisText" }
+        ],
         "signal": "{\"createdAt\":\"2026-06-17T23:57:37.2012328+00:00\",\"correlation_id\":\"d0a6c496-6ac7-49a7-b2b9-31b97a8deee0\",\"symbol\":\"BTCUSDT\",\"interval\":\"5m\",\"chart_timestamp\":\"2026-06-17T23:57:07+00:00\",\"forecast_horizon_candles\":12,\"price_at_analysis\":64413.5,\"trend\":\"down\",\"levels\":[{\"from\":64350,\"to\":64500},{\"from\":63800,\"to\":63950},{\"from\":65900,\"to\":66200}],\"outcome\":{\"higher\":{\"probability\":0.2167},\"lower\":{\"probability\":0.6106},\"sideways\":{\"probability\":0.1727}}}",
         "decision": "{\"createdAt\":\"2026-06-17T23:57:46.2436223+00:00\",\"result_type\":\"order_plan\",\"symbol\":\"BTCUSDT\",\"side\":\"sell\",\"entry_order_type\":\"limit_ioc\",\"entry_price\":64438.00,\"quantity\":0.248,\"take_profit_price\":64124.80,\"stop_loss_price\":64463.00,\"leverage\":51}",
         "start": "2026-06-17T23:57:10.1859906+00:00",
@@ -441,7 +444,9 @@
         "symbol": "BTCUSDT",
         "interval": "5m",
         "chartTimestamp": "2026-06-17T23:54:00+00:00",
-        "blobName": "64f15ba1450e46a386155e69878d6c04.png",
+        "attachments": [
+            { "blobName": "64f15ba1450e46a386155e69878d6c04.png", "type": "chartScreenshot" }
+        ],
         "signal": "{\"createdAt\":\"2026-06-17T23:54:24.7335478+00:00\",\"correlation_id\":\"a8ab3657-4bd9-43a0-932b-cc1fb9144b1c\",\"symbol\":\"BTCUSDT\",\"interval\":\"5m\",\"chart_timestamp\":\"2026-06-17T23:54:00+00:00\",\"forecast_horizon_candles\":12,\"price_at_analysis\":64465.6,\"trend\":\"down\",\"levels\":[{\"from\":64400,\"to\":64600},{\"from\":63800,\"to\":64000},{\"from\":65900,\"to\":66200}],\"outcome\":{\"higher\":{\"probability\":0.2647},\"lower\":{\"probability\":0.4706},\"sideways\":{\"probability\":0.2647}}}",
         "decision": "{\"createdAt\":\"2026-06-17T23:54:36.9095398+00:00\",\"result_type\":\"skip\",\"reason\":\"no forecast type meets its threshold: p_directional=0.47\",\"gate_name\":\"ClassifyForecastType\"}",
         "start": "2026-06-17T23:54:02.6279615+00:00",

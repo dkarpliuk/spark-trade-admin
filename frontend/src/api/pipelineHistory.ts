@@ -3,6 +3,7 @@ import { toUtcDateKey } from '@/lib/date'
 import { parsePipelineRun, type PipelineRun } from '@/models/pipelineRun'
 
 export type PipelineStatusDto = 'unknown' | 'complete' | 'partial' | 'running' | 'failed'
+export type AttachmentTypeDto = 'chartScreenshot' | 'analysisText'
 
 export interface PipelineLogDto {
   id: string
@@ -14,17 +15,22 @@ export interface PipelineLogDto {
   correlationId: string | null
 }
 
+export interface PipelineAttachmentDto {
+  blobName: string
+  type: AttachmentTypeDto
+}
+
 export interface PipelineRunDto {
   status: PipelineStatusDto
   symbol: string | null
   interval: string | null
   chartTimestamp: string | null
-  blobName: string | null
   signal: string | null
   decision: string | null
   start: string | null
   end: string | null
   durationMs: number | null
+  attachments: PipelineAttachmentDto[]
   logs: PipelineLogDto[]
 }
 
