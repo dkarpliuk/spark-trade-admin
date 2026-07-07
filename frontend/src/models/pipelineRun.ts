@@ -7,11 +7,6 @@ export interface PipelineAttachment {
   type: AttachmentTypeDto
 }
 
-export interface PipelineLevel {
-  from: number
-  to: number
-}
-
 export interface PipelineSignal {
   created_at: string
   correlation_id: string
@@ -21,7 +16,6 @@ export interface PipelineSignal {
   forecast_horizon_candles: number
   price_at_analysis: number
   trend: string
-  levels: PipelineLevel[]
   outcome: {
     higher: { probability: number }
     lower: { probability: number }
