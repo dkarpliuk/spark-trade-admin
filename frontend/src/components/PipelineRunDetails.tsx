@@ -32,6 +32,7 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
   const [logsOpen, setLogsOpen] = useState(false)
   const isMobile = useIsMobile()
   const isMd = useBreakpoint('md')
+  const hasSections = run.attachments.length > 0 || run.signal !== null || run.decision !== null
 
   const logsButtonLabel = (() => {
     switch (true) {
@@ -41,9 +42,11 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
     }
   })()
 
-  return (
-    <div className="whitespace-normal">
-      {isMobile ? (
+  function renderSections() {
+    if (!hasSections) return null
+
+    if (isMobile) {
+      return (
         <Tabs defaultValue="decision" className="p-2">
           <TabsList variant="line">
             {sections.map(({ key, shortTitle }) => (
@@ -56,16 +59,24 @@ function PipelineRunDetails({ run }: { run: PipelineRun }) {
             </TabsContent>
           ))}
         </Tabs>
-      ) : (
-        <div className="grid grid-cols-3 divide-x">
-          {sections.map(({ key, title, Component }) => (
-            <div key={key} className="flex min-w-0 flex-col gap-3 p-2">
-              <SectionTitle>{title}</SectionTitle>
-              <Component run={run} />
-            </div>
-          ))}
-        </div>
-      )}
+      )
+    }
+
+    return (
+      <div className="grid grid-cols-3 divide-x">
+        {sections.map(({ key, title, Component }) => (
+          <div key={key} className="flex min-w-0 flex-col gap-3 p-2">
+            <SectionTitle>{title}</SectionTitle>
+            <Component run={run} />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="whitespace-normal">
+      {renderSections()}
       <div className="p-2 border-t border-border">
         <Button
           variant="link"
