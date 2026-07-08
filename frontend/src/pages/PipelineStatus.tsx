@@ -113,7 +113,7 @@ function PipelineStatus() {
   }
 
   const canToggleAll = (action: AppAction) => {
-    if (isFetching || !data || hasTransitional(data)) return false
+    if (isFetching || isTriggerPending || !data || hasTransitional(data)) return false
     if (action === 'start') return Object.values(data).some((s) => s === 'stopped')
     if (action === 'stop') return Object.values(data).some((s) => s === 'running')
     return false
