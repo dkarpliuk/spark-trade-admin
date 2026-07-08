@@ -43,6 +43,7 @@ public class PipelineRunDto
     public string? Interval { get; set; }
     public DateTimeOffset? ChartTimestamp { get; set; }
 
+    public string? ModelName { get; set; }
     public string? Signal { get; set; }
     public string? Decision { get; set; }
 

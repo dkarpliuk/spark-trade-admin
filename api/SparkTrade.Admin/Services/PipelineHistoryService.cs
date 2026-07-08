@@ -102,6 +102,7 @@ public partial class PipelineHistoryService(
             Symbol = symbol,
             Interval = interval,
             ChartTimestamp = chartQuantAudit?.ChartTimestamp ?? sparkTradeAudit?.ChartTimestamp,
+            ModelName = chartQuantAudit?.ModelName,
             Signal = chartQuantAudit?.Signal,
             Decision = sparkTradeAudit?.DecisionResult,
             Attachments = BuildAttachments(chartQuantAudit),

@@ -7,5 +7,6 @@ public class ChartQuantAudit : CorrelatedTableEntity
     public DateTimeOffset ChartTimestamp { get; set; }
     public string BlobName { get; set; } = "";
     public string TxtBlobName { get; set; } = "";
+    public string ModelName { get; set; } = "";
     public string Signal { get; set; } = "";
 }
