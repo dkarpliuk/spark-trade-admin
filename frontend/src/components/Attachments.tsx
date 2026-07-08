@@ -11,7 +11,7 @@ import {
   AttachmentMedia,
   AttachmentTrigger,
 } from '@/components/ui/attachment'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { abbreviateFileName } from '@/lib/formatters'
 import type { PipelineAttachment } from '@/models/pipelineRun'
 
@@ -60,7 +60,15 @@ function ImageAttachment({ blobName, url }: { blobName: string; url: string }) {
   )
 }
 
-function TextAttachment({ blobName, fetchText }: { blobName: string; fetchText: () => Promise<string> }) {
+function TextAttachment({
+  blobName,
+  title,
+  fetchText,
+}: {
+  blobName: string
+  title?: string | null
+  fetchText: () => Promise<string>
+}) {
   const [open, setOpen] = useState(false)
   const [text, setText] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -111,14 +119,17 @@ function TextAttachment({ blobName, fetchText }: { blobName: string; fetchText: 
       </Attachment>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-lg">
-          <div className="max-h-[80vh] overflow-y-auto whitespace-pre-wrap">{text}</div>
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+          </DialogHeader>
+          <div className="max-h-[75vh] overflow-y-auto whitespace-pre-wrap">{text}</div>
         </DialogContent>
       </Dialog>
     </>
   )
 }
 
-type AttachmentRenderer = (blobName: string) => ReactElement
+type AttachmentRenderer = (blobName: string, title?: string | null) => ReactElement
 type AttachmentRenderMap = Record<PipelineAttachment['type'], AttachmentRenderer>
 
 const renderMap: AttachmentRenderMap = {
@@ -128,18 +139,19 @@ const renderMap: AttachmentRenderMap = {
       blobName={blobName}
       url={getAttachmentUrl('chartScreenshot', blobName)} />
   ),
-  analysisText: (blobName) => (
+  analysisText: (blobName, title) => (
     <TextAttachment
       key={blobName}
       blobName={blobName}
+      title={title}
       fetchText={() => getAttachmentText(blobName)} />
   ),
 }
 
-function Attachments({ attachments }: { attachments: PipelineAttachment[] }) {
+function Attachments({ attachments, modelName }: { attachments: PipelineAttachment[]; modelName?: string | null }) {
   return (
     <AttachmentGroup>
-      {attachments.map((a) => renderMap[a.type](a.blobName))}
+      {attachments.map((a) => renderMap[a.type](a.blobName, modelName))}
     </AttachmentGroup>
   )
 }

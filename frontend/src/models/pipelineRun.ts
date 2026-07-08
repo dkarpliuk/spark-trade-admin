@@ -60,6 +60,7 @@ export interface PipelineRun {
   symbol: string | null
   interval: string | null
   chartTimestamp: Date | null
+  modelName: string | null
   signal: PipelineSignal | null
   decision: PipelineDecision | null
   start: Date | null
@@ -87,6 +88,7 @@ export function parsePipelineRun(dto: PipelineRunDto): PipelineRun {
     symbol: dto.symbol,
     interval: dto.interval,
     chartTimestamp: dto.chartTimestamp ? new Date(dto.chartTimestamp) : null,
+    modelName: dto.modelName,
     signal: dto.signal ? (JSON.parse(dto.signal) as PipelineSignal) : null,
     decision: dto.decision ? (JSON.parse(dto.decision) as PipelineDecision) : null,
     start: dto.start ? new Date(dto.start) : null,

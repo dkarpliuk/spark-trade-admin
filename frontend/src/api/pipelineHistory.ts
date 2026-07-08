@@ -25,6 +25,7 @@ export interface PipelineRunDto {
   symbol: string | null
   interval: string | null
   chartTimestamp: string | null
+  modelName: string | null
   signal: string | null
   decision: string | null
   start: string | null

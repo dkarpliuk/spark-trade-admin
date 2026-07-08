@@ -4,6 +4,7 @@
         "symbol": "BTCUSDT",
         "interval": "5m",
         "chartTimestamp": "2026-06-17T23:57:07+00:00",
+        "modelName": "claude-sonnet-4-6",
         "attachments": [
             { "blobName": "eba7a1d7a68a4bffa723d5c9796de3ae.png", "type": "chartScreenshot" },
             { "blobName": "eba7a1d7a68a4bffa723d5c9796de3ae.txt", "type": "analysisText" }

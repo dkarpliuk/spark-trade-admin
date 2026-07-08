@@ -18,7 +18,9 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   )
 }
 
-const AttachmentsSection = ({ run }: { run: PipelineRun }) => <Attachments attachments={run.attachments} />
+const AttachmentsSection = ({ run }: { run: PipelineRun }) => (
+  <Attachments attachments={run.attachments} modelName={run.modelName} />
+)
 const AnalysisSection = ({ run }: { run: PipelineRun }) => run.signal ? <SignalAnalysis signal={run.signal} /> : null
 const DecisionSection = ({ run }: { run: PipelineRun }) => run.decision ? <DecisionResult decision={run.decision} /> : null
 
