@@ -92,7 +92,7 @@ function PipelineRuns() {
     queryFn: ({ pageParam }) => fetchSection(pageParam),
     initialPageParam: undefined as Date | undefined,
     getNextPageParam: (lastPage) => lastPage.date,
-    staleTime: 60 * 1000
+    staleTime: 5 * 60 * 1000
   })
 
   const sections = useMemo(() => {
