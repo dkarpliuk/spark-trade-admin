@@ -173,7 +173,7 @@ function PipelineStatus() {
           </TableHeader>
           <TableBody>
             {data && (Object.entries(data) as Array<[PipelineService, AppStatus]>).map(([service, status]) => {
-              const disabled = isFetching || isTransitional(status)
+              const disabled = isFetching || isTriggerPending || isTransitional(status)
               const action = getAppAction(status)
               return (
                 <TableRow key={service}>
