@@ -39,22 +39,14 @@ builder.Services.AddOptions<PipelineConfig>().Bind(builder.Configuration.GetSect
 
 // Services
 builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<IBlobCache, BlobCacheService>();
 builder.Services.AddSingleton<IPipelineStatusService, PipelineStatusService>();
 builder.Services.AddSingleton<IPipelineHistoryService, PipelineHistoryService>();
 builder.Services.AddKeyedRepository<LogEntity>(StorageNames.ChartQuantLogsTable);
 builder.Services.AddKeyedRepository<LogEntity>(StorageNames.SparkTradeLogsTable);
 builder.Services.AddKeyedRepository<ChartQuantAudit>(StorageNames.ChartQuantAuditTable);
 builder.Services.AddKeyedRepository<SparkTradeAudit>(StorageNames.SparkTradeAuditTable);
-
-// Cache
-builder.Services.AddMemoryCache();
-builder.Services.AddSingleton<BlobCacheService>();
-builder.Services.AddSingleton<ICacheManager, CacheManager>();
-builder.Services.Configure<CacheManagerSettings>(o =>
-{
-    o.MemoryExpiration = TimeSpan.FromMinutes(20);
-    o.BlobExpiration = TimeSpan.MaxValue;
-});
 
 // Hosted services
 builder.Services.AddHostedService<StorageInitializer>();

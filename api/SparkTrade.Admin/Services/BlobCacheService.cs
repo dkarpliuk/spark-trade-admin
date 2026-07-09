@@ -8,14 +8,20 @@ using SparkTrade.Admin.Configuration;
 
 namespace SparkTrade.Admin.Services;
 
-public class BlobCacheService(BlobServiceClient blobServiceClient)
+public interface IBlobCache
+{
+    Task<T?> GetAsync<T>(string key, CancellationToken ct = default);
+    Task SetAsync<T>(string key, T value, CancellationToken ct = default);
+}
+
+public class BlobCacheService(BlobServiceClient blobServiceClient) : IBlobCache
 {
     private static readonly MessagePackSerializerOptions SerializerOptions =
         MessagePackSerializerOptions.Standard.WithResolver(ContractlessStandardResolver.Instance);
 
     private readonly BlobContainerClient container = blobServiceClient.GetBlobContainerClient(StorageNames.HistoryCacheContainer);
 
-    public async Task<T?> GetAsync<T>(string key, TimeSpan expiration, CancellationToken ct = default)
+    public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
     {
         Response<BlobDownloadResult> response;
         try
@@ -26,9 +32,6 @@ public class BlobCacheService(BlobServiceClient blobServiceClient)
         {
             return default;
         }
-
-        if (DateTimeOffset.UtcNow - response.Value.Details.LastModified > expiration)
-            return default;
 
         var bytes = Decompress(response.Value.Content.ToArray());
 
@@ -42,7 +45,7 @@ public class BlobCacheService(BlobServiceClient blobServiceClient)
         }
     }
 
-    public async Task SetAsync<T>(string key, T value, TimeSpan expiration, CancellationToken ct = default)
+    public async Task SetAsync<T>(string key, T value, CancellationToken ct = default)
     {
         var bytes = MessagePackSerializer.Serialize(value, SerializerOptions, ct);
         var compressed = Compress(bytes);

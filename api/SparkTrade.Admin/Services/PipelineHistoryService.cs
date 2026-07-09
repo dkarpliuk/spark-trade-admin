@@ -1,10 +1,11 @@
-using System.Globalization;
-using System.Text.RegularExpressions;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using SparkTrade.Admin.Configuration;
 using SparkTrade.Admin.Contracts;
 using SparkTrade.Admin.Data.Entities;
 using SparkTrade.Admin.Data.Repositories;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace SparkTrade.Admin.Services;
 
@@ -13,9 +14,10 @@ public partial class PipelineHistoryService(
     [FromKeyedServices(StorageNames.ChartQuantLogsTable)] ITableRepository<LogEntity> chartQuantLogRepository,
     [FromKeyedServices(StorageNames.SparkTradeAuditTable)] ITableRepository<SparkTradeAudit> sparkTradeAuditRepository,
     [FromKeyedServices(StorageNames.SparkTradeLogsTable)] ITableRepository<LogEntity> sparkTradeLogRepository,
-    ICacheManager cache) : IPipelineHistoryService
+    IBlobCache blobCache, IMemoryCache memoryCache) : IPipelineHistoryService
 {
     private const string PartitionKeyFormat = "yyyyMMdd";
+    private static readonly TimeSpan MemoryCacheExpiration = TimeSpan.FromMinutes(20);
 
     public async Task<IReadOnlyList<PipelineRunDto>> GetPreviousDayAsync(DateOnly current, CancellationToken ct = default)
     {
@@ -30,28 +32,48 @@ public partial class PipelineHistoryService(
         return await GetDayAsync(date, ct);
     }
 
+    //cached by partitionKey in both memory and blob - immutable data
     public async Task<IReadOnlyList<PipelineRunDto>> GetDayAsync(DateOnly date, CancellationToken ct = default)
     {
-        var partitionKey = date.ToString(PartitionKeyFormat, CultureInfo.InvariantCulture);
-        var topRowKey = await chartQuantLogRepository.GetTopRowKeyAsync(partitionKey, ct);
-        if (topRowKey is null)
-            return [];
+        var isToday = date == DateOnly.FromDateTime(DateTime.UtcNow);
+        if (isToday)
+            return await GetTodayAsync(ct);
 
-        var cached = await cache.GetAsync<IReadOnlyList<PipelineRunDto>>(topRowKey, ct);
+        var partitionKey = date.ToString(PartitionKeyFormat, CultureInfo.InvariantCulture);
+
+        if (memoryCache.TryGetValue<IReadOnlyList<PipelineRunDto>>(partitionKey, out var cached))
+            return cached!;
+
+        cached = await blobCache.GetAsync<IReadOnlyList<PipelineRunDto>>(partitionKey, ct);
         if (cached is not null)
             return cached;
 
         var result = await GetPartitionAsync(partitionKey, ct);
 
+        memoryCache.Set(partitionKey, result, MemoryCacheExpiration);
+        await blobCache.SetAsync(partitionKey, result, ct);
+
+        return result;
+    }
+
+    //cached by topRowKey only in memory - mutable/fluctuating data
+    private async Task<IReadOnlyList<PipelineRunDto>> GetTodayAsync(CancellationToken ct = default)
+    {
+        var todayDate = DateOnly.FromDateTime(DateTime.UtcNow);
+        var partitionKey = todayDate.ToString(PartitionKeyFormat, CultureInfo.InvariantCulture);
+
+        var topRowKey = await chartQuantLogRepository.GetTopRowKeyAsync(partitionKey, ct);
+        if (topRowKey is null)
+            return [];
+
+        if (memoryCache.TryGetValue<IReadOnlyList<PipelineRunDto>>(topRowKey, out var cached))
+            return cached!;
+
+        var result = await GetPartitionAsync(partitionKey, ct);
+
         var isRunning = result.Count > 0 && result[0].Status is PipelineStatus.Running;
-        if (isRunning)
-            return result;
-        
-        var isToday = date == DateOnly.FromDateTime(DateTime.UtcNow);
-        if (isToday)
-            await cache.SetMemoryAsync(topRowKey, result, ct);
-        else
-            await cache.SetAsync(topRowKey, result, ct);
+        if (!isRunning)
+            memoryCache.Set(topRowKey, result, MemoryCacheExpiration);
 
         return result;
     }
