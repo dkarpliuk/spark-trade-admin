@@ -4,7 +4,7 @@ using SparkTrade.Admin.Data.Repositories;
 
 namespace SparkTrade.Admin.Configuration;
 
-public static class TableRepositoryExtensions
+internal static class TableRepositoryRegistration
 {
     public static IServiceCollection AddKeyedRepository<T>(this IServiceCollection services, string tableName) where T : class, ITableEntity
     {

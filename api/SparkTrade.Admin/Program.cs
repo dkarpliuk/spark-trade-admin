@@ -1,5 +1,8 @@
+using Azure.Storage.Blobs;
 using Cyberwyvern.Azure.Logging;
 using Microsoft.Azure.Functions.Worker.Builder;
+using Microsoft.Extensions.Azure;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -8,7 +11,6 @@ using SparkTrade.Admin.Auth;
 using SparkTrade.Admin.Configuration;
 using SparkTrade.Admin.Data.Entities;
 using SparkTrade.Admin.Services;
-using Microsoft.Extensions.Azure;
 
 var builder = FunctionsApplication.CreateBuilder(args);
 
@@ -36,7 +38,6 @@ builder.Services.AddOptions<AppConfig>().Bind(builder.Configuration);
 builder.Services.AddOptions<PipelineConfig>().Bind(builder.Configuration.GetSection("Pipeline"));
 
 // Services
-builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IPipelineStatusService, PipelineStatusService>();
 builder.Services.AddSingleton<IPipelineHistoryService, PipelineHistoryService>();
@@ -44,6 +45,19 @@ builder.Services.AddKeyedRepository<LogEntity>(StorageNames.ChartQuantLogsTable)
 builder.Services.AddKeyedRepository<LogEntity>(StorageNames.SparkTradeLogsTable);
 builder.Services.AddKeyedRepository<ChartQuantAudit>(StorageNames.ChartQuantAuditTable);
 builder.Services.AddKeyedRepository<SparkTradeAudit>(StorageNames.SparkTradeAuditTable);
+
+// Cache
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<BlobCacheService>();
+builder.Services.AddSingleton<ICacheManager, CacheManager>();
+builder.Services.Configure<CacheManagerSettings>(o =>
+{
+    o.MemoryExpiration = TimeSpan.FromMinutes(20);
+    o.BlobExpiration = TimeSpan.FromDays(7);
+});
+
+// Hosted services
+builder.Services.AddHostedService<StorageInitializer>();
 
 builder.Build().Run();
 
@@ -55,4 +69,13 @@ static void AddLogging(IServiceCollection services, string connectionString)
         .MinimumLevel.Override("Azure", LogEventLevel.Error)
         .WriteTo.Console()
         .WriteTo.AzureTableStorage(connectionString, StorageNames.AdminLogsTable));
+}
+
+class StorageInitializer(BlobServiceClient blobService) : IHostedService
+{
+    public async Task StartAsync(CancellationToken ct) => await blobService
+        .GetBlobContainerClient(StorageNames.HistoryCacheContainer)
+        .CreateIfNotExistsAsync(cancellationToken: ct);
+
+    public Task StopAsync(CancellationToken ct) => Task.CompletedTask;
 }

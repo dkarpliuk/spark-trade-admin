@@ -1,6 +1,5 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using SparkTrade.Admin.Configuration;
 using SparkTrade.Admin.Contracts;
@@ -14,10 +13,9 @@ public partial class PipelineHistoryService(
     [FromKeyedServices(StorageNames.ChartQuantLogsTable)] ITableRepository<LogEntity> chartQuantLogRepository,
     [FromKeyedServices(StorageNames.SparkTradeAuditTable)] ITableRepository<SparkTradeAudit> sparkTradeAuditRepository,
     [FromKeyedServices(StorageNames.SparkTradeLogsTable)] ITableRepository<LogEntity> sparkTradeLogRepository,
-    IMemoryCache cache) : IPipelineHistoryService
+    ICacheManager cache) : IPipelineHistoryService
 {
     private const string PartitionKeyFormat = "yyyyMMdd";
-    private static readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(20);
 
     public async Task<IReadOnlyList<PipelineRunDto>> GetPreviousDayAsync(DateOnly current, CancellationToken ct = default)
     {
@@ -39,15 +37,21 @@ public partial class PipelineHistoryService(
         if (topRowKey is null)
             return [];
 
-        if (cache.TryGetValue<IReadOnlyList<PipelineRunDto>>(topRowKey, out var cached) && cached is not null)
+        var cached = await cache.GetAsync<IReadOnlyList<PipelineRunDto>>(topRowKey, ct);
+        if (cached is not null)
             return cached;
 
         var result = await GetPartitionAsync(partitionKey, ct);
 
         var isRunning = result.Count > 0 && result[0].Status is PipelineStatus.Running;
-
-        if (!isRunning)
-            cache.Set(topRowKey, result, CacheExpiration);
+        if (isRunning)
+            return result;
+        
+        var isToday = date == DateOnly.FromDateTime(DateTime.UtcNow);
+        if (isToday)
+            await cache.SetMemoryAsync(topRowKey, result, ct);
+        else
+            await cache.SetAsync(topRowKey, result, ct);
 
         return result;
     }
