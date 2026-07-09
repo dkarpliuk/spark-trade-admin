@@ -1,15 +1,17 @@
-using System.IO.Compression;
-using System.Text.Json;
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using MessagePack;
+using MessagePack.Resolvers;
 using SparkTrade.Admin.Configuration;
 
 namespace SparkTrade.Admin.Services;
 
 public class BlobCacheService(BlobServiceClient blobServiceClient)
 {
-    private static readonly JsonSerializerOptions SerializerOptions = CreateSerializerOptions();
+    private static readonly MessagePackSerializerOptions SerializerOptions = MessagePackSerializerOptions.Standard
+        .WithResolver(ContractlessStandardResolver.Instance)
+        .WithCompression(MessagePackCompression.Lz4BlockArray);
 
     private readonly BlobContainerClient container = blobServiceClient.GetBlobContainerClient(StorageNames.HistoryCacheContainer);
 
@@ -28,27 +30,14 @@ public class BlobCacheService(BlobServiceClient blobServiceClient)
         if (DateTimeOffset.UtcNow - response.Value.Details.LastModified > expiration)
             return default;
 
-        await using var raw = response.Value.Content.ToStream();
-        await using var gzip = new GZipStream(raw, CompressionMode.Decompress);
-        return await JsonSerializer.DeserializeAsync<T>(gzip, SerializerOptions, ct);
+        return MessagePackSerializer.Deserialize<T>(response.Value.Content.ToMemory(), SerializerOptions, ct);
     }
 
     public async Task SetAsync<T>(string key, T value, TimeSpan expiration, CancellationToken ct = default)
     {
-        var buffer = new MemoryStream();
-        await using (var gzip = new GZipStream(buffer, CompressionLevel.Optimal, leaveOpen: true))
-            await JsonSerializer.SerializeAsync(gzip, value, SerializerOptions, ct);
-
-        buffer.Position = 0;
-        await container.GetBlobClient(BlobName(key)).UploadAsync(buffer, overwrite: true, ct);
+        var bytes = MessagePackSerializer.Serialize(value, SerializerOptions, ct);
+        await container.GetBlobClient(BlobName(key)).UploadAsync(new BinaryData(bytes), overwrite: true, ct);
     }
 
-    private static string BlobName(string key) => $"{key}.json.gz";
-
-    private static JsonSerializerOptions CreateSerializerOptions()
-    {
-        var options = new JsonSerializerOptions();
-        options.ConfigureAppDefaults();
-        return options;
-    }
+    private static string BlobName(string key) => $"{key}.dat";
 }
