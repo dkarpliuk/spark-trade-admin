@@ -53,7 +53,7 @@ builder.Services.AddSingleton<ICacheManager, CacheManager>();
 builder.Services.Configure<CacheManagerSettings>(o =>
 {
     o.MemoryExpiration = TimeSpan.FromMinutes(20);
-    o.BlobExpiration = TimeSpan.FromDays(7);
+    o.BlobExpiration = TimeSpan.MaxValue;
 });
 
 // Hosted services

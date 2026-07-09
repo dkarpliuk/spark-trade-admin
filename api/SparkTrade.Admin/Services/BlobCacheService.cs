@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
@@ -9,9 +10,8 @@ namespace SparkTrade.Admin.Services;
 
 public class BlobCacheService(BlobServiceClient blobServiceClient)
 {
-    private static readonly MessagePackSerializerOptions SerializerOptions = MessagePackSerializerOptions.Standard
-        .WithResolver(ContractlessStandardResolver.Instance)
-        .WithCompression(MessagePackCompression.Lz4BlockArray);
+    private static readonly MessagePackSerializerOptions SerializerOptions =
+        MessagePackSerializerOptions.Standard.WithResolver(ContractlessStandardResolver.Instance);
 
     private readonly BlobContainerClient container = blobServiceClient.GetBlobContainerClient(StorageNames.HistoryCacheContainer);
 
@@ -30,14 +30,41 @@ public class BlobCacheService(BlobServiceClient blobServiceClient)
         if (DateTimeOffset.UtcNow - response.Value.Details.LastModified > expiration)
             return default;
 
-        return MessagePackSerializer.Deserialize<T>(response.Value.Content.ToMemory(), SerializerOptions, ct);
+        var bytes = Decompress(response.Value.Content.ToArray());
+
+        try
+        {
+            return MessagePackSerializer.Deserialize<T>(bytes, SerializerOptions, ct);
+        }
+        catch (MessagePackSerializationException)
+        {
+            return default;
+        }
     }
 
     public async Task SetAsync<T>(string key, T value, TimeSpan expiration, CancellationToken ct = default)
     {
         var bytes = MessagePackSerializer.Serialize(value, SerializerOptions, ct);
-        await container.GetBlobClient(BlobName(key)).UploadAsync(new BinaryData(bytes), overwrite: true, ct);
+        var compressed = Compress(bytes);
+        await container.GetBlobClient(BlobName(key)).UploadAsync(new BinaryData(compressed), overwrite: true, ct);
     }
 
-    private static string BlobName(string key) => $"{key}.dat";
+    private static string BlobName(string key) => $"{key}.dat.gz";
+
+    private static byte[] Compress(byte[] data)
+    {
+        using var output = new MemoryStream();
+        using (var gzip = new GZipStream(output, CompressionLevel.Optimal, leaveOpen: true))
+            gzip.Write(data);
+        return output.ToArray();
+    }
+
+    private static byte[] Decompress(byte[] data)
+    {
+        using var input = new MemoryStream(data);
+        using var gzip = new GZipStream(input, CompressionMode.Decompress);
+        using var output = new MemoryStream();
+        gzip.CopyTo(output);
+        return output.ToArray();
+    }
 }
