@@ -2,12 +2,12 @@ using Azure.Data.Tables;
 
 namespace SparkTrade.Admin.Data.Repositories;
 
-public class TableRepository<T>(string connectionString, string tableName) : ITableRepository<T>
+public class TableRepository<T>(TableServiceClient tableServiceClient, string tableName) : ITableRepository<T>
     where T : class, ITableEntity
 {
     private const int MaxSteps = 10;
 
-    private readonly TableClient _client = new TableServiceClient(connectionString).GetTableClient(tableName);
+    private readonly TableClient _client = tableServiceClient.GetTableClient(tableName);
 
     public async Task<IReadOnlyList<T>> GetByPartitionAsync(string partitionKey, CancellationToken ct = default)
     {

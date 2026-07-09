@@ -1,6 +1,8 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
+using SparkTrade.Admin.Configuration;
 using SparkTrade.Admin.Contracts;
 using SparkTrade.Admin.Data.Entities;
 using SparkTrade.Admin.Data.Repositories;
@@ -8,10 +10,10 @@ using SparkTrade.Admin.Data.Repositories;
 namespace SparkTrade.Admin.Services;
 
 public partial class PipelineHistoryService(
-    ITableRepository<ChartQuantAudit> chartQuantAuditRepository,
-    ITableRepository<LogEntity> chartQuantLogRepository,
-    ITableRepository<SparkTradeAudit> sparkTradeAuditRepository,
-    ITableRepository<LogEntity> sparkTradeLogRepository,
+    [FromKeyedServices(StorageNames.ChartQuantAuditTable)] ITableRepository<ChartQuantAudit> chartQuantAuditRepository,
+    [FromKeyedServices(StorageNames.ChartQuantLogsTable)] ITableRepository<LogEntity> chartQuantLogRepository,
+    [FromKeyedServices(StorageNames.SparkTradeAuditTable)] ITableRepository<SparkTradeAudit> sparkTradeAuditRepository,
+    [FromKeyedServices(StorageNames.SparkTradeLogsTable)] ITableRepository<LogEntity> sparkTradeLogRepository,
     IMemoryCache cache) : IPipelineHistoryService
 {
     private const string PartitionKeyFormat = "yyyyMMdd";

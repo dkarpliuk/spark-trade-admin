@@ -1,5 +1,3 @@
-using Azure.Storage.Blobs;
-using Microsoft.Extensions.Caching.Memory;
 using Cyberwyvern.Azure.Logging;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,15 +6,13 @@ using Serilog;
 using Serilog.Events;
 using SparkTrade.Admin.Auth;
 using SparkTrade.Admin.Configuration;
-using SparkTrade.Admin.Contracts;
 using SparkTrade.Admin.Data.Entities;
-using SparkTrade.Admin.Data.Repositories;
 using SparkTrade.Admin.Services;
+using Microsoft.Extensions.Azure;
 
 var builder = FunctionsApplication.CreateBuilder(args);
 
 builder.ConfigureFunctionsWebApplication();
-builder.UseMiddleware<InvocationLoggingMiddleware>();
 if (!builder.Environment.IsDevelopment())
     builder.UseMiddleware<AdminAuthorizationMiddleware>();
 
@@ -28,6 +24,13 @@ var pipelineStorageConnection = builder.Configuration["PipelineStorage"]!;
 // Logging
 AddLogging(builder.Services, pipelineStorageConnection);
 
+// Azure clients
+builder.Services.AddAzureClients(clients =>
+{
+    clients.AddTableServiceClient(pipelineStorageConnection);
+    clients.AddBlobServiceClient(pipelineStorageConnection);
+});
+
 // Options
 builder.Services.AddOptions<AppConfig>().Bind(builder.Configuration);
 builder.Services.AddOptions<PipelineConfig>().Bind(builder.Configuration.GetSection("Pipeline"));
@@ -35,18 +38,12 @@ builder.Services.AddOptions<PipelineConfig>().Bind(builder.Configuration.GetSect
 // Services
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient();
-builder.Services.AddSingleton<IReadOnlyDictionary<PipelineAttachmentType, BlobContainerClient>>(_ => new Dictionary<PipelineAttachmentType, BlobContainerClient>
-{
-    [PipelineAttachmentType.ChartScreenshot] = new BlobContainerClient(pipelineStorageConnection, StorageNames.AnalysisImagesContainer),
-    [PipelineAttachmentType.AnalysisText] = new BlobContainerClient(pipelineStorageConnection, StorageNames.AnalysisTextContainer),
-});
 builder.Services.AddSingleton<IPipelineStatusService, PipelineStatusService>();
-builder.Services.AddSingleton<IPipelineHistoryService>(sp => new PipelineHistoryService(
-    new TableRepository<ChartQuantAudit>(pipelineStorageConnection, StorageNames.ChartQuantAuditTable),
-    new TableRepository<LogEntity>(pipelineStorageConnection, StorageNames.ChartQuantLogsTable),
-    new TableRepository<SparkTradeAudit>(pipelineStorageConnection, StorageNames.SparkTradeAuditTable),
-    new TableRepository<LogEntity>(pipelineStorageConnection, StorageNames.SparkTradeLogsTable),
-    sp.GetRequiredService<IMemoryCache>()));
+builder.Services.AddSingleton<IPipelineHistoryService, PipelineHistoryService>();
+builder.Services.AddKeyedRepository<LogEntity>(StorageNames.ChartQuantLogsTable);
+builder.Services.AddKeyedRepository<LogEntity>(StorageNames.SparkTradeLogsTable);
+builder.Services.AddKeyedRepository<ChartQuantAudit>(StorageNames.ChartQuantAuditTable);
+builder.Services.AddKeyedRepository<SparkTradeAudit>(StorageNames.SparkTradeAuditTable);
 
 builder.Build().Run();
 
@@ -57,5 +54,5 @@ static void AddLogging(IServiceCollection services, string connectionString)
         .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
         .MinimumLevel.Override("Azure", LogEventLevel.Error)
         .WriteTo.Console()
-        .WriteTo.AzureTableStorage(connectionString, StorageNames.AdminLogsTable, "InvocationId"));
+        .WriteTo.AzureTableStorage(connectionString, StorageNames.AdminLogsTable));
 }

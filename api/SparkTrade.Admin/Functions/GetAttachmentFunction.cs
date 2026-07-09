@@ -2,11 +2,13 @@ using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
+using SparkTrade.Admin.Configuration;
 using SparkTrade.Admin.Contracts;
+using System.Diagnostics;
 
 namespace SparkTrade.Admin.Functions;
 
-public class GetAttachmentFunction(IReadOnlyDictionary<PipelineAttachmentType, BlobContainerClient> containersByType)
+public class GetAttachmentFunction(BlobServiceClient blobService)
 {
     [Function("GetAttachment")]
     public async Task<IActionResult> GetAttachment(
@@ -15,11 +17,17 @@ public class GetAttachmentFunction(IReadOnlyDictionary<PipelineAttachmentType, B
         string blobName,
         CancellationToken ct)
     {
-        if (!Enum.TryParse<PipelineAttachmentType>(type, ignoreCase: true, out var attachmentType)
-            || !containersByType.TryGetValue(attachmentType, out var container))
+        if (!Enum.TryParse<PipelineAttachmentType>(type, ignoreCase: true, out var attachmentType))
             return new NotFoundResult();
 
-        var blobClient = container.GetBlobClient(blobName);
+        var blobContainer = blobService.GetBlobContainerClient(attachmentType switch
+        {
+            PipelineAttachmentType.ChartScreenshot => StorageNames.AnalysisImagesContainer,
+            PipelineAttachmentType.AnalysisText => StorageNames.AnalysisTextContainer,
+            _ => throw new UnreachableException($"Unhandled attachment type {attachmentType}"),
+        });
+
+        var blobClient = blobContainer.GetBlobClient(blobName);
 
         if (!await blobClient.ExistsAsync(ct))
             return new NotFoundResult();
