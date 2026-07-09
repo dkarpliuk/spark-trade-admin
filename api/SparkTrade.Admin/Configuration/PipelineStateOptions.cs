@@ -1,6 +1,6 @@
 namespace SparkTrade.Admin.Configuration;
 
-public class PipelineConfig
+public class PipelineStateOptions
 {
     public string ChartScreenResourceId { get; set; } = "";
     public string ChartQuantResourceId { get; set; } = "";

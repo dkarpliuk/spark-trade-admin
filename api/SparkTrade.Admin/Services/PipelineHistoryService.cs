@@ -9,6 +9,12 @@ using System.Text.RegularExpressions;
 
 namespace SparkTrade.Admin.Services;
 
+public interface IPipelineHistoryService
+{
+    Task<IReadOnlyList<PipelineRunDto>> GetPreviousDayAsync(DateOnly current, CancellationToken ct = default);
+    Task<IReadOnlyList<PipelineRunDto>> GetDayAsync(DateOnly date, CancellationToken ct = default);
+}
+
 public partial class PipelineHistoryService(
     [FromKeyedServices(StorageNames.ChartQuantAuditTable)] ITableRepository<ChartQuantAudit> chartQuantAuditRepository,
     [FromKeyedServices(StorageNames.ChartQuantLogsTable)] ITableRepository<LogEntity> chartQuantLogRepository,

@@ -9,17 +9,25 @@ using SparkTrade.Admin.Contracts;
 
 namespace SparkTrade.Admin.Services;
 
-public class PipelineStatusService(IOptions<PipelineConfig> config, IHttpClientFactory httpClientFactory) : IPipelineStatusService
+public interface IPipelineStatusService
 {
-    private readonly PipelineConfig _config = config.Value;
+    Task<PipelineStatusDto> GetStatusesAsync(CancellationToken ct = default);
+    Task StartServiceAsync(PipelineService service, CancellationToken ct = default);
+    Task StopServiceAsync(PipelineService service, CancellationToken ct = default);
+    Task ManualTriggerChartScreenAsync(CancellationToken ct = default);
+}
+
+public class PipelineStatusService(IOptions<PipelineStateOptions> options, IHttpClientFactory httpClientFactory) : IPipelineStatusService
+{
+    private readonly PipelineStateOptions _options = options.Value;
 
     public async Task<PipelineStatusDto> GetStatusesAsync(CancellationToken ct = default)
     {
         var client = CreateArmClient();
 
-        var chartScreenTask = GetStatusAsync(client, _config.ChartScreenResourceId, ct);
-        var chartQuantTask  = GetStatusAsync(client, _config.ChartQuantResourceId, ct);
-        var sparkTradeTask  = GetStatusAsync(client, _config.SparkTradeResourceId, ct);
+        var chartScreenTask = GetStatusAsync(client, _options.ChartScreenResourceId, ct);
+        var chartQuantTask  = GetStatusAsync(client, _options.ChartQuantResourceId, ct);
+        var sparkTradeTask  = GetStatusAsync(client, _options.SparkTradeResourceId, ct);
 
         await Task.WhenAll(chartScreenTask, chartQuantTask, sparkTradeTask);
 
@@ -45,7 +53,7 @@ public class PipelineStatusService(IOptions<PipelineConfig> config, IHttpClientF
 
     public async Task ManualTriggerChartScreenAsync(CancellationToken ct = default)
     {
-        var site = CreateArmClient().GetWebSiteResource(new ResourceIdentifier(_config.ChartScreenResourceId));
+        var site = CreateArmClient().GetWebSiteResource(new ResourceIdentifier(_options.ChartScreenResourceId));
         var siteData = (await site.GetAsync(ct)).Value;
         var hostname = siteData.Data.DefaultHostName;
 
@@ -62,9 +70,9 @@ public class PipelineStatusService(IOptions<PipelineConfig> config, IHttpClientF
 
     private string GetResourceId(PipelineService service) => service switch
     {
-        PipelineService.ChartScreen => _config.ChartScreenResourceId,
-        PipelineService.ChartQuant  => _config.ChartQuantResourceId,
-        PipelineService.SparkTrade  => _config.SparkTradeResourceId,
+        PipelineService.ChartScreen => _options.ChartScreenResourceId,
+        PipelineService.ChartQuant  => _options.ChartQuantResourceId,
+        PipelineService.SparkTrade  => _options.SparkTradeResourceId,
         _ => throw new ArgumentOutOfRangeException(nameof(service), service, null),
     };
 

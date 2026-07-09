@@ -35,7 +35,7 @@ builder.Services.AddAzureClients(clients =>
 
 // Options
 builder.Services.AddOptions<AppConfig>().Bind(builder.Configuration);
-builder.Services.AddOptions<PipelineConfig>().Bind(builder.Configuration.GetSection("Pipeline"));
+builder.Services.AddOptions<PipelineStateOptions>().Bind(builder.Configuration.GetSection("Pipeline"));
 
 // Services
 builder.Services.AddHttpClient();
