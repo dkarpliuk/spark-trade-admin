@@ -30,6 +30,7 @@ AddLogging(builder.Services, pipelineStorageConnection);
 builder.Services.AddAzureClients(clients =>
 {
     clients.AddTableServiceClient(pipelineStorageConnection);
+    clients.AddBlobServiceClient(pipelineStorageConnection);
 });
 
 // Options
