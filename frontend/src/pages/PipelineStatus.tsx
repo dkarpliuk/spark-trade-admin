@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Play, Square } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import {
@@ -112,27 +112,32 @@ function PipelineStatus() {
       dialog.services.filter((s) => data?.[s] === 'running').forEach((s) => stop(s))
   }
 
-  const canToggleAll = (action: AppAction) => {
-    if (isFetching || isTriggerPending || !data || hasTransitional(data)) return false
-    if (action === 'start') return Object.values(data).some((s) => s === 'stopped')
-    if (action === 'stop') return Object.values(data).some((s) => s === 'running')
-    return false
-  }
+  const ui = useMemo(() => {
+    const busy = isFetching || isTriggerPending
+    const blocked = busy || !data || hasTransitional(data)
+    const statuses = data ? Object.values(data) : []
+    return {
+      busy,
+      canStartAll: !blocked && statuses.some((s) => s === 'stopped'),
+      canStopAll: !blocked && statuses.some((s) => s === 'running'),
+      canTrigger: !busy && data?.ChartScreen === 'running',
+    }
+  }, [data, isFetching, isTriggerPending])
 
   const actions = [
     {
       label: 'Start All',
-      disabled: !canToggleAll('start'),
+      disabled: !ui.canStartAll,
       onClick: () => setDialog({ open: true, services: allServices, action: 'start' }),
     },
     {
       label: 'Stop All',
-      disabled: !canToggleAll('stop'),
+      disabled: !ui.canStopAll,
       onClick: () => setDialog({ open: true, services: allServices, action: 'stop' }),
     },
     {
       label: 'Manual Trigger',
-      disabled: isFetching || isTriggerPending || data?.ChartScreen !== 'running',
+      disabled: !ui.canTrigger,
       onClick: () => setTriggerDialog(true),
     },
   ]
@@ -173,7 +178,7 @@ function PipelineStatus() {
           </TableHeader>
           <TableBody>
             {data && (Object.entries(data) as Array<[PipelineService, AppStatus]>).map(([service, status]) => {
-              const disabled = isFetching || isTriggerPending || isTransitional(status)
+              const disabled = ui.busy || isTransitional(status)
               const action = getAppAction(status)
               return (
                 <TableRow key={service}>
