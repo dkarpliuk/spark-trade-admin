@@ -1,3 +1,4 @@
+using Cyberwyvern.Azure.Caching;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using SparkTrade.Admin.Configuration;

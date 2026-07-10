@@ -1,4 +1,4 @@
-using Azure.Storage.Blobs;
+using Cyberwyvern.Azure.Caching;
 using Cyberwyvern.Azure.Logging;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.Azure;
@@ -30,7 +30,6 @@ AddLogging(builder.Services, pipelineStorageConnection);
 builder.Services.AddAzureClients(clients =>
 {
     clients.AddTableServiceClient(pipelineStorageConnection);
-    clients.AddBlobServiceClient(pipelineStorageConnection);
 });
 
 // Options
@@ -40,16 +39,13 @@ builder.Services.AddOptions<PipelineStateOptions>().Bind(builder.Configuration.G
 // Services
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
-builder.Services.AddSingleton<IBlobCache, BlobCacheService>();
+builder.Services.AddBlobCache(pipelineStorageConnection, StorageNames.HistoryCacheContainer);
 builder.Services.AddSingleton<IPipelineStatusService, PipelineStatusService>();
 builder.Services.AddSingleton<IPipelineHistoryService, PipelineHistoryService>();
 builder.Services.AddKeyedRepository<LogEntity>(StorageNames.ChartQuantLogsTable);
 builder.Services.AddKeyedRepository<LogEntity>(StorageNames.SparkTradeLogsTable);
 builder.Services.AddKeyedRepository<ChartQuantAudit>(StorageNames.ChartQuantAuditTable);
 builder.Services.AddKeyedRepository<SparkTradeAudit>(StorageNames.SparkTradeAuditTable);
-
-// Hosted services
-builder.Services.AddHostedService<StorageInitializer>();
 
 builder.Build().Run();
 
@@ -61,13 +57,4 @@ static void AddLogging(IServiceCollection services, string connectionString)
         .MinimumLevel.Override("Azure", LogEventLevel.Error)
         .WriteTo.Console()
         .WriteTo.AzureTableStorage(connectionString, StorageNames.AdminLogsTable));
-}
-
-class StorageInitializer(BlobServiceClient blobService) : IHostedService
-{
-    public async Task StartAsync(CancellationToken ct) => await blobService
-        .GetBlobContainerClient(StorageNames.HistoryCacheContainer)
-        .CreateIfNotExistsAsync(cancellationToken: ct);
-
-    public Task StopAsync(CancellationToken ct) => Task.CompletedTask;
 }
