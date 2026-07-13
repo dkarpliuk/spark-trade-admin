@@ -1,4 +1,3 @@
-using System.Text;
 using Azure.Core;
 using Azure.Identity;
 using Azure.ResourceManager;
@@ -61,9 +60,8 @@ public class PipelineStatusService(IOptions<PipelineStateOptions> options, IHttp
         var masterKey = hostKeys.Value.MasterKey;
 
         var http = httpClientFactory.CreateClient();
-        using var request = new HttpRequestMessage(HttpMethod.Post, $"https://{hostname}/admin/functions/ScreenshotTimer");
+        using var request = new HttpRequestMessage(HttpMethod.Post, $"https://{hostname}/api/manual");
         request.Headers.Add("x-functions-key", masterKey);
-        request.Content = new StringContent("{}", Encoding.UTF8, "application/json");
         var response = await http.SendAsync(request, ct);
         response.EnsureSuccessStatusCode();
     }
