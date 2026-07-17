@@ -4,7 +4,7 @@ namespace SparkTrade.Admin.Contracts;
 
 public class PipelineLogDto
 {
-    public string Id { get; set; } = "";
+    public string? Id { get; set; }
     public string Service { get; set; } = "";
     public DateTimeOffset? Timestamp { get; set; }
     public string Level { get; set; } = "";

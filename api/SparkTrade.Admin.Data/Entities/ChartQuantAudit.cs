@@ -4,7 +4,7 @@ namespace SparkTrade.Admin.Data.Entities;
 
 public class ChartQuantAudit : IEntity, ICorrelated
 {
-    public string CompositeId { get; set; } = "";
+    public string? CompositeId { get; set; }
 
     public string Symbol { get; set; } = "";
     public string Interval { get; set; } = "";
