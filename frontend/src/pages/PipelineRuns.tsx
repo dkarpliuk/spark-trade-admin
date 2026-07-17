@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { ChevronRight } from 'lucide-react'
 import { Fragment, useEffect, useMemo, useState } from 'react'
+import { toast } from 'sonner'
 
 import { getPreviousPipelineDay } from '@/api/pipelineHistory'
 import LoadingDots from '@/components/LoadingDots'
@@ -87,13 +88,17 @@ function PipelineRuns() {
     })
   }
 
-  const { data: { pages = [] } = {}, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
+  const { data: { pages = [] } = {}, fetchNextPage, hasNextPage, isFetching, isError } = useInfiniteQuery({
     queryKey: ['pipelineHistory'],
     queryFn: ({ pageParam }) => fetchSection(pageParam),
     initialPageParam: undefined as Date | undefined,
     getNextPageParam: (lastPage) => lastPage.date,
     staleTime: 5 * 60 * 1000
   })
+
+  useEffect(() => {
+    if (isError) toast.error('Failed to load pipeline runs', { position: 'top-center', duration: 4000 })
+  }, [isError])
 
   const sections = useMemo(() => {
     const filteredRuns = pages
@@ -108,8 +113,8 @@ function PipelineRuns() {
   const totalRuns = sections.reduce((sum, s) => sum + s.runs.length, 0)
 
   useEffect(() => {
-    if (!isFetching && hasNextPage && totalRuns < 10) fetchNextPage()
-  }, [isFetching, hasNextPage, totalRuns, fetchNextPage])
+    if (!isFetching && hasNextPage && !isError && totalRuns < 10) fetchNextPage()
+  }, [isFetching, hasNextPage, isError, totalRuns, fetchNextPage])
 
   return (
     <div className="flex flex-col gap-2">
