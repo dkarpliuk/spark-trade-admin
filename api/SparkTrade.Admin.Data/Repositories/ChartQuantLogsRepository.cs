@@ -40,9 +40,8 @@ public class ChartQuantLogsRepository : TableRepositoryBase<ChartQuantLog>
 
     public async Task<string?> GetLastRecordIdAsync(DateOnly partitionDate, CancellationToken ct = default)
     {
-        var filter = CompositeId.GetPartitionFilter(partitionDate);
         var lastRecord = await Client
-            .QueryAsync<TableEntity>(e => e.PartitionKey == filter, maxPerPage: 1, cancellationToken: ct)
+            .QueryAsync<TableEntity>(e => e.PartitionKey == ODataFilter(partitionDate), maxPerPage: 1, cancellationToken: ct)
             .ToModels<ChartQuantLog>()
             .FirstOrDefaultAsync(ct);
 
@@ -55,15 +54,15 @@ public class ChartQuantLogsRepository : TableRepositoryBase<ChartQuantLog>
         Expression<Func<ChartQuantLog, bool>>? oDataFilter = null,
         CancellationToken ct = default)
     {
-        var filterFrom = CompositeId.GetPartitionFilter(lowerInclusive);
-        var filterTo = CompositeId.GetPartitionFilter(upperExclusive);
+        var filterFrom = ODataFilter(lowerInclusive);
+        var filterTo = ODataFilter(upperExclusive);
         var filter = TableClient.CreateQueryFilter($"PartitionKey ge {filterFrom} and PartitionKey lt {filterTo}");
         if (oDataFilter is not null)
             filter = $"{filter} and {TableClient.CreateQueryFilter(oDataFilter)}";
 
         return await Client
             .QueryAsync<TableEntity>(filter, select: ["PartitionKey", "RowKey"], cancellationToken: ct)
-            .Select(e => CompositeId.FromKeys(e.PartitionKey, e.RowKey).PartitionDate)
+            .Select(e => (DateOnly?)CompositeId.FromKeys(e.PartitionKey, e.RowKey).PartitionDate)
             .MaxAsync(cancellationToken: ct);
     }
 }

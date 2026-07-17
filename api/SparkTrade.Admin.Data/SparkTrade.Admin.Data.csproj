@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Data.Tables" Version="12.11.0" />
-    <PackageReference Include="Cyberwyvern.Azure.TableRepository" Version="1.1.4" />
+    <PackageReference Include="Cyberwyvern.Azure.TableRepository" Version="1.1.5" />
     <PackageReference Include="System.Linq.Async" Version="7.0.1" />
   </ItemGroup>
 

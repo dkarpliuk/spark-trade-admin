@@ -14,10 +14,11 @@ public class TableRepositoryBase<T> : TableRepository<T> where T : IEntity, new(
 
     public async Task<IReadOnlyList<T>> GetPartitionAsync(DateOnly partitionDate, CancellationToken ct = default)
     {
-        var filter = CompositeId.GetPartitionFilter(partitionDate);
         return await Client
-            .QueryAsync<TableEntity>(e => e.PartitionKey == filter, cancellationToken: ct)
+            .QueryAsync<TableEntity>(e => e.PartitionKey == ODataFilter(partitionDate), cancellationToken: ct)
             .ToModels<T>()
             .ToListAsync(cancellationToken: ct);
     }
+
+    protected string ODataFilter(DateOnly date) => date.ToString(CompositeId.PartitionKeyFormat);
 }
