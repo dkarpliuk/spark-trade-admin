@@ -1,4 +1,3 @@
-using Cyberwyvern.Azure.Logging;
 using SparkTrade.Admin.Data.Entities;
 
 namespace SparkTrade.Admin.Contracts;
@@ -16,11 +15,22 @@ public class PipelineLogDto
 
 public static class PipelineLogDtoExtensions
 {
-    public static PipelineLogDto ToLogDto(this LogEntity log, string service) => new()
+    public static PipelineLogDto ToLogDto(this ChartQuantLog log) => new()
     {
-        Id = log.RowKey,
-        Service = service,
-        Timestamp = LogEventExtensions.GetUtcTimestamp(log.RowKey),
+        Id = log.CompositeId,
+        Service = "ChartQuant",
+        Timestamp = log.EventTimestamp,
+        Level = log.Level,
+        Message = log.Message,
+        InvocationId = log.InvocationId,
+        CorrelationId = log.CorrelationId
+    };
+
+    public static PipelineLogDto ToLogDto(this SparkTradeLog log) => new()
+    {
+        Id = log.CompositeId,
+        Service = "SparkTrade",
+        Timestamp = log.EventTimestamp,
         Level = log.Level,
         Message = log.Message,
         InvocationId = log.InvocationId,

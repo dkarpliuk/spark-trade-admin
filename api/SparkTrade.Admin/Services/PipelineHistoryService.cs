@@ -1,10 +1,7 @@
 using Cyberwyvern.Azure.Caching;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
-using SparkTrade.Admin.Configuration;
 using SparkTrade.Admin.Contracts;
 using SparkTrade.Admin.Data.Entities;
-using SparkTrade.Admin.Data.Repositories;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -17,26 +14,17 @@ public interface IPipelineHistoryService
 }
 
 public partial class PipelineHistoryService(
-    [FromKeyedServices(StorageNames.ChartQuantAuditTable)] ITableRepository<ChartQuantAudit> chartQuantAuditRepository,
-    [FromKeyedServices(StorageNames.ChartQuantLogsTable)] ITableRepository<LogEntity> chartQuantLogRepository,
-    [FromKeyedServices(StorageNames.SparkTradeAuditTable)] ITableRepository<SparkTradeAudit> sparkTradeAuditRepository,
-    [FromKeyedServices(StorageNames.SparkTradeLogsTable)] ITableRepository<LogEntity> sparkTradeLogRepository,
-    IBlobCache blobCache, IMemoryCache memoryCache) : IPipelineHistoryService
+    TableServiceContext context,
+    IBlobCache blobCache,
+    IMemoryCache memoryCache) : IPipelineHistoryService
 {
-    private const string PartitionKeyFormat = "yyyyMMdd";
     private static readonly TimeSpan MemoryCacheExpiration = TimeSpan.FromMinutes(20);
 
     public async Task<IReadOnlyList<PipelineRunDto>> GetPreviousDayAsync(DateOnly current, CancellationToken ct = default)
     {
-        var currentKey = current.ToString(PartitionKeyFormat, CultureInfo.InvariantCulture);
-        var partitionKey = await chartQuantLogRepository.FindPreviousPartitionKeyAsync(
-            currentKey, IncrementCallback, "CorrelationId ne ''", ct);
+        var partitionDate = await context.ChartQuantLogs.GetNextPartitionDateAsync(current, e => e.CorrelationId != "", ct);
 
-        if (partitionKey is null)
-            return [];
-
-        var date = DateOnly.ParseExact(partitionKey, PartitionKeyFormat, CultureInfo.InvariantCulture);
-        return await GetDayAsync(date, ct);
+        return partitionDate.HasValue ? await GetDayAsync(partitionDate.Value, ct) : [];
     }
 
     //cached by partitionKey in both memory and blob - immutable data
@@ -46,19 +34,18 @@ public partial class PipelineHistoryService(
         if (isToday)
             return await GetTodayAsync(ct);
 
-        var partitionKey = date.ToString(PartitionKeyFormat, CultureInfo.InvariantCulture);
-
-        if (memoryCache.TryGetValue<IReadOnlyList<PipelineRunDto>>(partitionKey, out var cached))
+        var cacheKey = date.ToString(CultureInfo.InvariantCulture);
+        if (memoryCache.TryGetValue<IReadOnlyList<PipelineRunDto>>(cacheKey, out var cached))
             return cached!;
 
-        cached = await blobCache.GetAsync<IReadOnlyList<PipelineRunDto>>(partitionKey, ct);
+        cached = await blobCache.GetAsync<IReadOnlyList<PipelineRunDto>>(cacheKey, ct);
         if (cached is not null)
             return cached;
 
-        var result = await GetPartitionAsync(partitionKey, ct);
+        var result = await GetPartitionAsync(date, ct);
 
-        memoryCache.Set(partitionKey, result, MemoryCacheExpiration);
-        await blobCache.SetAsync(partitionKey, result, ct);
+        memoryCache.Set(cacheKey, result, MemoryCacheExpiration);
+        await blobCache.SetAsync(cacheKey, result, ct);
 
         return result;
     }
@@ -67,30 +54,29 @@ public partial class PipelineHistoryService(
     private async Task<IReadOnlyList<PipelineRunDto>> GetTodayAsync(CancellationToken ct = default)
     {
         var todayDate = DateOnly.FromDateTime(DateTime.UtcNow);
-        var partitionKey = todayDate.ToString(PartitionKeyFormat, CultureInfo.InvariantCulture);
 
-        var topRowKey = await chartQuantLogRepository.GetTopRowKeyAsync(partitionKey, ct);
-        if (topRowKey is null)
+        var lastRowId = await context.ChartQuantLogs.GetLastRecordIdAsync(todayDate, ct);
+        if (lastRowId is null)
             return [];
 
-        if (memoryCache.TryGetValue<IReadOnlyList<PipelineRunDto>>(topRowKey, out var cached))
+        if (memoryCache.TryGetValue<IReadOnlyList<PipelineRunDto>>(lastRowId, out var cached))
             return cached!;
 
-        var result = await GetPartitionAsync(partitionKey, ct);
+        var result = await GetPartitionAsync(todayDate, ct);
 
         var isRunning = result.Count > 0 && result[0].Status is PipelineStatus.Running;
         if (!isRunning)
-            memoryCache.Set(topRowKey, result, MemoryCacheExpiration);
+            memoryCache.Set(lastRowId, result, MemoryCacheExpiration);
 
         return result;
     }
 
-    private async Task<IReadOnlyList<PipelineRunDto>> GetPartitionAsync(string partitionKey, CancellationToken ct)
+    private async Task<IReadOnlyList<PipelineRunDto>> GetPartitionAsync(DateOnly partitionDate, CancellationToken ct)
     {
-        var chartQuantLogsTask = chartQuantLogRepository.GetByPartitionAsync(partitionKey, ct);
-        var chartQuantAuditsTask = chartQuantAuditRepository.GetByPartitionAsync(partitionKey, ct);
-        var sparkTradeLogsTask = sparkTradeLogRepository.GetByPartitionAsync(partitionKey, ct);
-        var sparkTradeAuditsTask = sparkTradeAuditRepository.GetByPartitionAsync(partitionKey, ct);
+        var chartQuantLogsTask = context.ChartQuantLogs.GetPartitionAsync(partitionDate, ct);
+        var chartQuantAuditsTask = context.ChartQuantAudit.GetPartitionAsync(partitionDate, ct);
+        var sparkTradeLogsTask = context.SparkTradeLogs.GetPartitionAsync(partitionDate, ct);
+        var sparkTradeAuditsTask = context.SparkTradeAudit.GetPartitionAsync(partitionDate, ct);
 
         await Task.WhenAll(chartQuantAuditsTask, chartQuantLogsTask, sparkTradeAuditsTask, sparkTradeLogsTask);
 
@@ -112,17 +98,17 @@ public partial class PipelineHistoryService(
     private static PipelineRunDto BuildPipelineRun(
         string correlationId,
         ILookup<string, ChartQuantAudit> chartQuantAudits,
-        ILookup<string, LogEntity> chartQuantLogs,
+        ILookup<string, ChartQuantLog> chartQuantLogs,
         ILookup<string, SparkTradeAudit> sparkTradeAudits,
-        ILookup<string, LogEntity> sparkTradeLogs)
+        ILookup<string, SparkTradeLog> sparkTradeLogs)
     {
         var chartQuantAudit = chartQuantAudits[correlationId].FirstOrDefault();
         var sparkTradeAudit = sparkTradeAudits[correlationId].FirstOrDefault();
 
         var logs = chartQuantLogs[correlationId]
-            .Select(x => x.ToLogDto("ChartQuant"))
-            .Concat(sparkTradeLogs[correlationId].Select(x => x.ToLogDto("SparkTrade")))
-            .OrderBy(x => x.Id)
+            .Select(x => x.ToLogDto())
+            .Concat(sparkTradeLogs[correlationId].Select(x => x.ToLogDto()))
+            .OrderByDescending(x => x.Timestamp)
             .ToList();
 
         var (symbol, interval) = (chartQuantAudit, sparkTradeAudit) switch
@@ -145,7 +131,7 @@ public partial class PipelineHistoryService(
         };
     }
 
-    private static IReadOnlyList<PipelineAttachmentDto> BuildAttachments(ChartQuantAudit? chartQuantAudit)
+    private static List<PipelineAttachmentDto> BuildAttachments(ChartQuantAudit? chartQuantAudit)
     {
         var attachments = new List<PipelineAttachmentDto>();
         if (!string.IsNullOrEmpty(chartQuantAudit?.BlobName))
@@ -153,14 +139,6 @@ public partial class PipelineHistoryService(
         if (!string.IsNullOrEmpty(chartQuantAudit?.TxtBlobName))
             attachments.Add(new PipelineAttachmentDto { BlobName = chartQuantAudit.TxtBlobName, Type = PipelineAttachmentType.AnalysisText });
         return attachments;
-    }
-
-    private static string IncrementCallback(string partitionKey, int increment)
-    {
-        return DateOnly
-            .ParseExact(partitionKey, PartitionKeyFormat, CultureInfo.InvariantCulture)
-            .AddDays(increment)
-            .ToString(PartitionKeyFormat, CultureInfo.InvariantCulture);
     }
 }
 
@@ -171,7 +149,7 @@ public partial class PipelineHistoryService
 
     private static (string? Symbol, string? Interval) ParseSymbolIntervalFromLogs(IReadOnlyList<PipelineLogDto> logs)
     {
-        foreach (var log in logs.OrderByDescending(x => x.Id))
+        foreach (var log in logs.OrderBy(x => x.Timestamp))
         {
             var match = SymbolIntervalRegex().Match(log.Message);
             if (match.Success)

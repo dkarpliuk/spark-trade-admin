@@ -9,7 +9,6 @@ using Serilog;
 using Serilog.Events;
 using SparkTrade.Admin.Auth;
 using SparkTrade.Admin.Configuration;
-using SparkTrade.Admin.Data.Entities;
 using SparkTrade.Admin.Services;
 
 var builder = FunctionsApplication.CreateBuilder(args);
@@ -43,10 +42,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddBlobCache(pipelineStorageConnection, StorageNames.HistoryCacheContainer);
 builder.Services.AddSingleton<IPipelineStatusService, PipelineStatusService>();
 builder.Services.AddSingleton<IPipelineHistoryService, PipelineHistoryService>();
-builder.Services.AddKeyedRepository<LogEntity>(StorageNames.ChartQuantLogsTable);
-builder.Services.AddKeyedRepository<LogEntity>(StorageNames.SparkTradeLogsTable);
-builder.Services.AddKeyedRepository<ChartQuantAudit>(StorageNames.ChartQuantAuditTable);
-builder.Services.AddKeyedRepository<SparkTradeAudit>(StorageNames.SparkTradeAuditTable);
+builder.Services.AddSingleton<TableServiceContext>();
 
 builder.Build().Run();
 
@@ -57,5 +53,5 @@ static void AddLogging(IServiceCollection services, string connectionString)
         .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
         .MinimumLevel.Override("Azure", LogEventLevel.Error)
         .WriteTo.Console()
-        .WriteTo.AzureTableStorage(connectionString, StorageNames.AdminLogsTable));
+        .WriteTo.AzureTableStorage<LogEntry>(connectionString, StorageNames.AdminLogsTable, TimeSpan.FromSeconds(10)));
 }

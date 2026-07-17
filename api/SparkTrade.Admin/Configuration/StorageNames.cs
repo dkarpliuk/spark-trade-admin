@@ -9,7 +9,7 @@ public static class StorageNames
 
     public const string AdminLogsTable = "SparkTradeAdminLogs";
 
-    public const string AnalysisImagesContainer = "analysis-images";
+    public const string AnalysisImagesContainer = "chart-screenshots";
     public const string AnalysisTextContainer = "analysis-text";
     public const string HistoryCacheContainer = "pipeline-history-cache";
 }
